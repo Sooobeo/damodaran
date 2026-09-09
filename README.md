@@ -75,7 +75,19 @@ npm run verify:translation:html
 
 초기 데이터는 train 200쌍(금융 160·일반 40), dev 40쌍(금융 30·일반 10), 독립 최종 test 60쌍이다. 모두 도우미가 작성한 미검수 보조 문장으로, 실제 사용자 검수쌍이나 다모다란 공식 한국어 번역이 아니다. [데이터 출처·분할 기준](content/training/README.md)을 확인할 수 있다. dev로 모델을 선택하고 최종 test로 다시 학습을 조정하지 않는다.
 
-현재 Intel Arc 140V에서 실제 optimizer 갱신 2회를 확인했고 본학습을 진행 중이다. 최종 평가 통과·번역 품질 향상·앱 적용 완료는 아직 보고하지 않는다. 금융 용어뿐 아니라 일반 문장 품질과 숫자 보존을 함께 비교한다. 실행 단계, 옵션과 중단·재개 방법은 [학습 도구 안내](scripts/model-training/README.md), 실제 결과는 [구현 상태](IMPLEMENTATION_STATUS.md)를 따른다.
+`finance-v3`는 Intel Arc 140V의 XPU/FP32에서 **150 updates·3 epochs 학습을 완료**했다. dev로 step 100을 선택했고 255개 tensor 중 253개에서 값이 바뀌었다. 학습 전후 모두 원래 SentencePiece ID에 맞게 복원한 같은 토크나이저를 사용했다. 어휘 복원 효과를 학습 성과로 세지 않는다.
+
+고정 test 60쌍에서 용어 적중은 **15/48 → 25/48**, 전체 chrF는 **30.668730 → 34.473414**로 증가했고 금융·일반 판정 기준을 통과했다. 전체 숫자 검사 일치는 두 모델 모두 **59/60**이며, 원문에 명시적 숫자가 있던 5개 행은 모두 보존했다. 개별 의미 오역과 회귀가 남아 전문 검수 완료를 뜻하지 않는다. 데이터·손실·기간·해시·영역별 정확 수치는 [실제 학습 보고서](content/training/TRAINING_REPORT.md)에 있다.
+
+**실제 학습한 FP32 모델은 로컬 CLI로 제공하고, 앱은 Argos를 유지한다.** 첫 INT8 변환은 금융·일반 BLEU 회귀로 실패했다. 학습된 decoder 시작 임베딩을 보존한 v2를 별도로 변환해 다시 비교했지만 금융 BLEU가 15.777430 → 14.666549로 1.110881점 하락하여 허용치 1점을 넘었다. 일반 영역은 통과했으나 앱 등록은 실행하지 않았다. 양자화만을 원인으로 단정하지 않으며 추가 변형·설정 스윕·재학습 없이 이번 실험을 종료했다. 학습 가중치·최종 test·판정 기준과 첫 실패 기록을 보존했다.
+
+선택된 FP32 모델의 실제 CPU 추론을 확인했다. 아래처럼 사용할 수 있다. 이 실행은 앱 번역 제공자를 바꾸거나 SQLite에 번역을 저장하지 않는다.
+
+```powershell
+npm.cmd run infer:model -- --run-id finance-v3 --text "The cost of equity reflects the return required by shareholders."
+```
+
+`export:model`의 현재 경로는 시작 임베딩을 보존하는 `scripts/model-training/export_model.py`다. 첫 변환·v2의 결과와 보존 경로는 [구현 상태](IMPLEMENTATION_STATUS.md), 실행 단계·옵션은 [학습 도구 안내](scripts/model-training/README.md)를 따른다. 새 finetuned 모델의 앱 E2E를 통과한 것으로 표시하지 않으며, 현재 Argos 앱의 번역·저장·캐시 E2E 18개는 통과했다.
 
 `.training/`의 학습 가중치·체크포인트·optimizer 상태·평가 기록은 **DB 백업에 포함되지 않는다.** 학습을 정상 중단하거나 완료한 뒤 실행 폴더와 사용한 데이터·설치 명세를 별도 저장소에 보관한다. 기반 모델 재설치만으로 개인 미세조정 결과를 복구할 수는 없다.
 
@@ -162,17 +174,21 @@ npm start
 | `npm run verify:translation:html` | 실제 HTML 3문단만 번역 검증, 범위 명시 |
 | `npm run export:translation-memory` | 검수된 영한 문장쌍을 로컬 JSONL로 내보내기. 학습 실행 없음 |
 | `npm run setup:training` | 격리된 학습 Python 환경·고정 공개 Marian 모델 설치 |
-| `npm run bench:model -- --run-id <ID>` | 실제 optimizer 시험 갱신·가중치 변화·시간 확인. 시험 가중치는 본학습에 사용하지 않음 |
-| `npm run train:model -- --run-id <ID>` | train으로 가중치 학습·체크포인트 저장·dev 평가와 선택 |
-| `npm run evaluate:model -- --run-id <ID>` | 고정 최종 test에서 기반 모델과 선택한 학습 모델 비교 |
-| `npm run export:model -- --run-id <ID>` | 평가 기준을 통과한 모델의 배포 형식 변환. 앱 적용·추론 동등성 검증과 별개 |
+| `npm.cmd run bench:model -- --run-id <ID>` | 실제 optimizer 시험 갱신·가중치 변화·시간 확인. 시험 가중치는 본학습에 사용하지 않음 |
+| `npm.cmd run train:model -- --run-id <ID>` | train으로 가중치 학습·체크포인트 저장·dev 평가와 선택 |
+| `npm.cmd run evaluate:model -- --run-id <ID>` | 고정 최종 test에서 기반 모델과 선택한 학습 모델 비교 |
+| `npm.cmd run export:model -- --run-id <ID>` | 평가 기준을 통과한 모델의 배포 형식 변환. 앱 적용·추론 동등성 검증과 별개 |
+| `npm.cmd run infer:model -- --run-id <ID> ...` | 선택한 원시 학습 모델의 로컬 단문 추론. 입력 옵션은 학습 도구 안내 참조 |
+| `npm.cmd run verify:model-export -- --run-id <ID>` | 변환본과 선택 FP32 모델의 저장된 dev 결과 비교. 최종 test 재사용 없음 |
+| `npm.cmd run register:model -- --run-id <ID>` | 최종 평가·변환 비교·무결성을 통과한 모델만 등록. 제공자 설정 전환과 별개 |
+| `npm run test:model` | 실제 모델을 로딩하지 않는 학습·추론 helper 회귀 검사 |
 | `npm run backup` / `npm run restore -- ...` | 백업 / 새 폴더 복원 |
 | `npm run typecheck` | TypeScript 검사 |
 | `npm test` | 임시 DATA_DIR에서 저장·추출·작업·번역 무결성 테스트 |
 | `npm run test:browser` | 격리된 DB·웹·worker에서 저장·PDF·재시작 브라우저 검증 |
 | `npm run test:smoke` | 실행 중인 웹의 PC·모바일 주요 화면 확인 |
 
-학습 명령의 `<ID>`는 같은 실험에 사용할 실행 ID로 바꾼다. 학습·최종 평가·내보내기는 순서와 전제조건이 있으므로 [학습 도구 안내](scripts/model-training/README.md)를 먼저 따른다. 순수 학습 판정 테스트는 `.venv-training/Scripts/python.exe scripts/model-training/test_training.py`로 실행한다.
+학습 명령의 `<ID>`는 같은 실험에 사용할 실행 ID로 바꾼다. 학습·최종 평가·내보내기·등록은 순서와 전제조건이 있으므로 [학습 도구 안내](scripts/model-training/README.md)를 먼저 따른다. `finance-v3`의 고정 test는 이미 최종 비교에 사용했으므로 같은 test 결과를 보며 새 학습을 반복하지 않는다. **Windows PowerShell 5.1에서는 옵션이 있는 학습 명령에 `npm.cmd`를 사용한다.** `npm.ps1`을 거치면 `--run-id` 등의 인자가 누락되는 문제를 실제 확인했다. 학습 도구 안내의 Python 직접 실행도 사용할 수 있으며 옵션 없는 `npm test`·build 등은 이 문제와 구분한다.
 
 브라우저 검증에는 이 PC에 설치된 Google Chrome이 필요하다. `test:browser`는 먼저 프로덕션 빌드를 완료하고 R01 원문을 가져온 상태에서 실행한다. 운영 DB를 백업·복원한 임시 사본과 포트 3011을 사용하며 원본 메모·진도는 바꾸지 않는다. T01을 미리 가져오면 실제 Excel 파일 해시도 확인한다. 결과는 `test-results/browser-e2e.json`에 남는다.
 

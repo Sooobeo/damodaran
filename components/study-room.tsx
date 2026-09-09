@@ -173,8 +173,8 @@ function SettingsPage() {
         <p className="small-notice">검수 번역은 같은 원문·문맥·용어집 기준에서 재사용합니다.</p>
         {status.glossarySources && status.glossarySources.length > 0 && <p className="row-gap" style={{ flexWrap: 'wrap' }}>{status.glossarySources.map(source => <a className="text-link" key={source} href={source} target="_blank" rel="noreferrer">{source.includes('definitions.html') ? '금융지표 정의' : source.includes('glossary.htm') ? '금융용어사전' : '용어 규칙 출처'}<ExternalLink size={12}/></a>)}</p>}
         <details className="setup-instructions">
-          <summary>{status.local ? '무료 번역 설치 방법' : '번역 설정 방법'}</summary>
-          {status.local ? <><p>처음 한 번, 인터넷에 연결한 상태에서 앱 폴더의 터미널에서 실행하세요.</p><pre>npm run setup:translation</pre><p>Argos Translate와 영어 → 한국어 모델을 이 PC에 설치합니다. 설치가 끝나면 앱을 다시 실행하세요. 이후 번역할 원문은 외부 서버로 보내지 않습니다.</p></> : <><p>앱 폴더의 <code>.env.local</code>에 아래 서버 설정을 추가한 뒤 앱을 다시 실행하세요.</p><pre>TRANSLATION_PROVIDER=openai{'\n'}OPENAI_API_KEY=발급받은_API_키{'\n'}TRANSLATION_MODEL=사용할_모델_ID</pre><p>무료 로컬 번역을 쓰려면 제공자를 <code>argos</code>로 변경하고 <code>npm run setup:translation</code>을 실행하세요.</p></>}
+          <summary>{status.provider === 'finetuned' ? '학습 모델 사용 안내' : status.local ? '무료 번역 설치 방법' : '번역 설정 방법'}</summary>
+          {status.provider === 'finetuned' ? <p>학습·평가를 마친 모델을 등록해 주세요. 등록한 모델은 이 PC에서 무료로 사용하며, 번역 결과는 사용자 검수가 필요합니다.</p> : status.local ? <><p>처음 한 번, 인터넷에 연결한 상태에서 앱 폴더의 터미널에서 실행하세요.</p><pre>npm run setup:translation</pre><p>Argos Translate와 영어 → 한국어 모델을 이 PC에 설치합니다. 설치가 끝나면 앱을 다시 실행하세요. 이후 번역할 원문은 외부 서버로 보내지 않습니다.</p></> : <><p>앱 폴더의 <code>.env.local</code>에 아래 서버 설정을 추가한 뒤 앱을 다시 실행하세요.</p><pre>TRANSLATION_PROVIDER=openai{'\n'}OPENAI_API_KEY=발급받은_API_키{'\n'}TRANSLATION_MODEL=사용할_모델_ID</pre><p>무료 로컬 번역을 쓰려면 제공자를 <code>argos</code>로 변경하고 <code>npm run setup:translation</code>을 실행하세요.</p></>}
           <p>저장한 번역은 재사용합니다. 원문·메모·기존 번역은 새 번역 설정 없이도 읽을 수 있습니다.</p>
         </details>
         <p className="small-notice">기계 번역은 사용자 미검수 상태로 저장됩니다. 금융용어·숫자·수식은 원문과 함께 확인하세요.</p>

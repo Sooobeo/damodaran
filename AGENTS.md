@@ -62,6 +62,7 @@
 ## 6. 번역·작업·실제 상태
 
 - 기본 `TRANSLATION_PROVIDER=argos`는 공개 도구 Argos Translate와 로컬 영어→한국어 모델 1.1을 사용한다. API 키 없이 실제 번역이 가능해야 한다. 모델이 설치되지 않았으면 로컬 설치 필요 상태를 안내한다.
+- `TRANSLATION_PROVIDER=finetuned`는 별도로 등록한 금융 학습 모델을 사용하는 선택형 로컬 제공자다. `.training/deployed/manifest.json`의 모델·런타임·평가 해시를 검증하고, 등록되지 않았으면 준비되지 않은 상태로 표시한다. 원본 FP32 평가 통과와 앱용 변환 품질 통과를 혼동하지 않는다. 실패한 변환을 기본 엔진으로 적용하거나 다른 제공자로 조용히 대체하지 않는다.
 - `TRANSLATION_PROVIDER=openai`를 명시한 경우에만 서버의 공식 OpenAI SDK를 사용한다. 이 경우만 `OPENAI_API_KEY`와 `TRANSLATION_MODEL`이 필요하며 실제 API 사용량이 발생한다. API 연동 작성 시 공식 문서의 실제 요청·출력 계약을 확인한다. 키가 있다는 이유로 자동 선택하지 않는다.
 - 로컬 번역 설치 전이나 선택형 API 설정이 없어도 탐색·원문·용어·메모·기존 번역은 동작하게 한다. 테스트 fixture를 실제 번역으로 제공하지 않는다.
 - 번역은 사용자가 선택한 문단·페이지 범위만 실행한다. 화면 방문·초기화로 전체 번역을 예약하지 않는다.
@@ -97,7 +98,7 @@
 | 백업 | 별도 폴더 복원, 무결성·파일 해시, 메모·진도·원문 복구, 자동 호출 없음 |
 | 모델 학습 | 분할 누수·출처 구분, 실제 가중치 변화, 안전한 중단·재개, dev/test 분리, 일반 번역·숫자 회귀 거부, 배포 변환 후 추론 비교 |
 
-앱 구현을 마칠 때 README.md에는 실제 실행 가능한 명령과 복원 절차를, IMPLEMENTATION_STATUS.md에는 완료한 P0·실행한 검사·외부 제약·미완료를 기록한다. 요구사항의 명령 계약을 빠뜨리지 않는다: `setup`, `setup:translation`, `dev`, `worker`, `build`, `start`, `import:core`, `verify:translation`, `backup`. 승인된 학습 확장의 `setup:training`, `bench:model`, `train:model`, `evaluate:model`, `export:model`도 현재 package.json과 [학습 도구 안내](scripts/model-training/README.md)에 맞춰 기록한다.
+앱 구현을 마칠 때 README.md에는 실제 실행 가능한 명령과 복원 절차를, IMPLEMENTATION_STATUS.md에는 완료한 P0·실행한 검사·외부 제약·미완료를 기록한다. 요구사항의 명령 계약을 빠뜨리지 않는다: `setup`, `setup:translation`, `dev`, `worker`, `build`, `start`, `import:core`, `verify:translation`, `backup`. 승인된 학습 확장의 `setup:training`, `bench:model`, `train:model`, `evaluate:model`, `export:model`, `infer:model`, `verify:model-export`, `register:model`, `test:model`도 현재 package.json과 [학습 도구 안내](scripts/model-training/README.md)에 맞춰 기록한다.
 
 최종 보고는 변경한 동작과 이유, 실제로 검증한 내용, 남은 제약을 한국어로 설명한다. **구현 완료 / 테스트 통과 / 실제 번역 엔진 검증 / 외부 조건 미충족**을 구분한다. 실제 로컬 엔진으로 HTML 3문단·PDF 1페이지의 번역·저장·캐시를 확인한다. 선택형 OpenAI 실호출은 명시 선택과 키·모델이 있는 경우에만 수행하며 별도 보고한다. 테스트 제공자의 결과를 실제 번역 품질 검증으로 보고하지 않는다.
 

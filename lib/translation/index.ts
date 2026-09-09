@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { config } from '../config';
 import { db, hash, json } from '../db';
 import { PipelineError } from '../sources';
-import { assertTranslationAvailable, translationRuntime, OPENAI_PROMPT_VERSION, type TranslationProvider } from './runtime';
+import { assertTranslationAvailable, translationRuntime, isLocalTranslationProvider, OPENAI_PROMPT_VERSION, type TranslationProvider } from './runtime';
 import { translateLocally } from './local';
 import { selectTranslationGlossary, type TranslationGlossaryEntry, type StudyTerm } from './glossary';
 import { linkedReview } from './memory';
@@ -65,7 +65,7 @@ export function setTestTranslationProvider(provider:typeof testProvider){if(proc
 async function callProvider(input:ProviderRequest,provider:TranslationProvider):Promise<ProviderResult>{
   if(testProvider&&process.env.NODE_ENV==='test')return testProvider(input);
   assertTranslationAvailable({provider,model:input.model});
-  if(provider==='argos')return translateLocally(input);
+  if(isLocalTranslationProvider(provider))return translateLocally(input);
   if(!config.OPENAI_API_KEY||!input.model)throw new PipelineError('SETUP_REQUIRED','번역 API 키와 모델을 설정한 뒤 다시 시도하세요.');
   // Responses uses text.format, not Chat Completions response_format.
   // https://developers.openai.com/api/docs/guides/structured-outputs

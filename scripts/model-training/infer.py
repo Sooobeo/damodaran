@@ -1,6 +1,6 @@
 """Inspect a selected trained checkpoint locally, without glossary or memory.
 
-Example: python infer.py --run-id finance-v2 --text "The book value is positive."
+Example: python infer.py --run-id finance-v3 --text "The book value is positive."
 Without --text, read plain UTF-8 text from stdin. This tool never evaluates the
 held-out test set, changes model files, or promotes a model into the application.
 """
@@ -16,7 +16,7 @@ import re
 import sys
 import time
 
-from train import APP_ROOT, BASE_ID, BASE_REVISION, BASE_WEIGHT_HASH, WORK_ROOT, local_path, network_off, numeric_tokens, relative, sha256
+from train import APP_ROOT, BASE_ID, BASE_REVISION, BASE_WEIGHT_HASH, WORK_ROOT, local_path, network_off, numeric_tokens, relative, sha256, validate_tokenizer_files
 
 
 class InferenceError(ValueError):
@@ -51,7 +51,7 @@ def verified_model(run_id):
     # Verify the final copy against the selected training checkpoint. The
     # tokenizer's learned vocabulary must remain the pinned original vocabulary;
     # no user-controlled remote tokenizer code or additional token files load.
-    files = ("source.spm", "target.spm", "vocab.json", "tokenizer_config.json", "special_tokens_map.json", "config.json", "generation_config.json")
+    files = ("source.spm", "target.spm", "vocab.json", "target_vocab.json", "tokenizer_config.json", "special_tokens_map.json", "config.json", "generation_config.json")
     hashes = {}
     for name in files:
         current, original = model_path / name, selected / "model" / name
@@ -59,18 +59,21 @@ def verified_model(run_id):
             raise InferenceError("Selected model/tokenizer file integrity check failed")
         hashes[name] = sha256(current)
     base_path = local_path(manifest["basePath"], WORK_ROOT)
-    for name in ("source.spm", "target.spm", "vocab.json", "tokenizer_config.json"):
+    for name in ("source.spm", "target.spm", "vocab.json", "target_vocab.json", "tokenizer_config.json", "prepared-manifest.json"):
         if sha256(base_path / name) != manifest["baseFiles"].get(name):
             raise InferenceError("Pinned base tokenizer integrity check failed")
     for name in ("source.spm", "target.spm"):
         if hashes[name] != manifest["baseFiles"][name]:
             raise InferenceError("The trained model uses an unexpected SentencePiece tokenizer")
-    if read_json(model_path / "vocab.json") != read_json(base_path / "vocab.json"):
-        raise InferenceError("The trained model vocabulary differs from the original")
+    for name in ("vocab.json", "target_vocab.json"):
+        if read_json(model_path / name) != read_json(base_path / name):
+            raise InferenceError("The trained model vocabulary differs from the prepared original")
     base_tokenizer = read_json(base_path / "tokenizer_config.json")
-    expected_settings = {"source_lang": "en", "target_lang": "ko", "unk_token": "<unk>", "eos_token": "</s>", "pad_token": "<pad>", "separate_vocabs": False}
+    expected_settings = {"source_lang": "en", "target_lang": "ko", "unk_token": "<unk>", "eos_token": "</s>", "pad_token": "<pad>", "separate_vocabs": True}
     if any(base_tokenizer.get(key) != value for key, value in expected_settings.items()):
         raise InferenceError("Unexpected base tokenizer contract")
+    validate_tokenizer_files(base_path, manifest["baseFiles"])
+    validate_tokenizer_files(model_path)
 
     evaluation_path = run_dir / "evaluation-summary.json"
     evaluation = read_json(evaluation_path) if evaluation_path.exists() else None
@@ -97,8 +100,9 @@ def translate(text, verified, device="cpu", threads=4):
     # of interpreting optional remote/custom tokenizer configuration fields.
     tokenizer = MarianTokenizer(source_spm=str(path / "source.spm"), target_spm=str(path / "target.spm"),
                                 vocab=str(path / "vocab.json"), source_lang="en", target_lang="ko",
+                                target_vocab_file=str(path / "target_vocab.json"),
                                 unk_token="<unk>", eos_token="</s>", pad_token="<pad>",
-                                separate_vocabs=False, model_max_length=512)
+                                separate_vocabs=True, model_max_length=512)
     config = read_json(path / "config.json")
     if config.get("model_type") != "marian" or tokenizer.pad_token_id != config.get("pad_token_id") or tokenizer.eos_token_id != config.get("eos_token_id"):
         raise InferenceError("Model and tokenizer special tokens do not agree")

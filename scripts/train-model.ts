@@ -13,8 +13,12 @@ if (!setup && !fs.existsSync(python)) {
   process.exit(1);
 }
 const prefix = setup && python === 'py' ? ['-3.11'] : [];
-const script = path.join(root, 'scripts/model-training', setup ? 'setup.py' : 'train.py');
-const child = spawn(python, [...prefix, '-X', 'utf8', '-u', script, ...(!setup ? [stage] : []), ...args], {
+const direct = ['setup', 'infer', 'test', 'export'].includes(stage);
+const deploy = ['parity', 'register'].includes(stage);
+const script = path.join(root, 'scripts/model-training', setup ? 'setup.py' : stage === 'infer' ? 'infer.py' : stage === 'export' ? 'export_model.py' : stage === 'test' ? 'test_training.py' : deploy ? 'deploy.py' : 'train.py');
+const command = stage === 'test' ? ['-m', 'unittest', 'discover', '-s', path.join(root, 'scripts/model-training'), '-p', 'test_*.py', ...args]
+  : [script, ...(direct ? [] : [stage]), ...args];
+const child = spawn(python, [...prefix, '-X', 'utf8', '-u', ...command], {
   cwd: root, windowsHide: true, stdio: 'inherit',
   env: { ...process.env, OPENAI_API_KEY: '', PYTHONUTF8: '1', TOKENIZERS_PARALLELISM: 'false' },
 });

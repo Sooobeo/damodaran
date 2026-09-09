@@ -107,15 +107,36 @@ test('changing to the free provider invalidates the cache and rejects a queued p
     assert.throws(()=>assertTranslationAvailable(original),error=>error instanceof Error&&'code' in error&&error.code==='PROVIDER_CHANGED');
   }finally {config.TRANSLATION_PROVIDER=previous;}
 });
-test('local work with no metered tokens is counted separately from unknown paid calls',async()=>{
+for(const localProvider of ['argos','finetuned'] as const)test(`${localProvider} work is counted separately from unknown paid calls`,async()=>{
   const previous=config.TRANSLATION_PROVIDER;
   try {
-    config.TRANSLATION_PROVIDER='argos';const before=usage();const texts=['Revenue is 100.','Costs are 60.'];const f=fixture(texts);
+    config.TRANSLATION_PROVIDER=localProvider;const before=usage();const texts=['Revenue is 100.','Costs are 60.'];const f=fixture(texts);
     setTestTranslationProvider(async input=>({data:{segments:input.segments.map(s=>({id:s.id,translatedText:'테스트용 로컬 결과: '+s.text,warnings:[]}))},inputTokens:null,outputTokens:null,requestId:null}));
     const work=enqueueTranslation({sourceVersionId:f.versionId,blockIds:f.blockIds});await runOnce();assert.equal(getJob(work.jobIds[0]).completed,2);
+    assert.deepEqual((db().prepare('SELECT DISTINCT reservation_status FROM usage_records WHERE job_id=?').all(work.jobIds[0]) as {reservation_status:string}[]).map(row=>row.reservation_status),['reported']);
     const after=usage();assert.equal(after.localJobs,before.localJobs+1);assert.equal(after.localSourceChars,before.localSourceChars+texts.join('').length);
     assert.equal(after.unknownCount,before.unknownCount);assert.equal(after.remoteSourceChars,before.remoteSourceChars);
     assert.equal(after.inputTokens,before.inputTokens);assert.equal(after.outputTokens,before.outputTokens);
     assert.equal(enqueueTranslation({sourceVersionId:f.versionId,blockIds:f.blockIds}).cached,2);
   }finally {config.TRANSLATION_PROVIDER=previous;}
+});
+
+test('switching between local providers changes cache ownership and rejects old queued settings',()=>{
+  const previous=config.TRANSLATION_PROVIDER;
+  try {
+    config.TRANSLATION_PROVIDER='argos';const f=fixture(['Local model ownership.']);const original=translationSnapshot(f.blockIds[0]);
+    config.TRANSLATION_PROVIDER='finetuned';const next=translationSnapshot(f.blockIds[0]);assert.equal(next.provider,'finetuned');assert.notEqual(next.cacheKey,original.cacheKey);
+    assert.throws(()=>assertTranslationAvailable(original),error=>error instanceof Error&&'code' in error&&error.code==='PROVIDER_CHANGED');
+  }finally{config.TRANSLATION_PROVIDER=previous;}
+});
+
+test('a rejected finetuned response records local work without unknown paid usage',async()=>{
+  const previous=config.TRANSLATION_PROVIDER;
+  try {
+    config.TRANSLATION_PROVIDER='finetuned';const before=usage(),f=fixture(['Local response failure.']);
+    setTestTranslationProvider(async()=>({data:{segments:[]},inputTokens:null,outputTokens:null,requestId:null}));
+    const work=enqueueTranslation({sourceVersionId:f.versionId,blockIds:f.blockIds});await runOnce();assert.equal(getJob(work.jobIds[0]).failed,1);
+    const after=usage();assert.equal(after.localJobs,before.localJobs+1);assert.equal(after.unknownCount,before.unknownCount);assert.equal(after.remoteSourceChars,before.remoteSourceChars);
+    assert.equal((db().prepare('SELECT reservation_status FROM usage_records WHERE job_id=?').get(work.jobIds[0]) as {reservation_status:string}).reservation_status,'reported');
+  }finally{config.TRANSLATION_PROVIDER=previous;}
 });

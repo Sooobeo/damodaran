@@ -1,13 +1,18 @@
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import path from 'node:path';
 import { APP_ROOT } from '../config';
 import { PipelineError } from '../sources';
-import { localRuntime } from './runtime';
+import { localRuntime, translationRuntime } from './runtime';
 import type { ProviderRequest, ProviderResult } from './index';
 
 type Waiting = { resolve: (result: ProviderResult) => void; reject: (error: Error) => void; timer: ReturnType<typeof setTimeout> };
 let engine: LocalEngine | undefined;
+export function assertLocalReady(message: Record<string, unknown>, runtime: Pick<NonNullable<ReturnType<typeof localRuntime>>, 'provider' | 'model' | 'modelHash' | 'runtimeVersion'>) {
+  if (message.ready !== true || message.model !== runtime.model || message.modelHash !== runtime.modelHash || message.runtimeVersion !== runtime.runtimeVersion
+      || (message.provider != null && message.provider !== runtime.provider) || (runtime.provider === 'finetuned' && message.provider !== 'finetuned')) {
+    throw new PipelineError('PROVIDER_CHANGED', '실행 중 번역 모델이 변경되었습니다. 다시 요청하세요.');
+  }
+}
 class LocalEngine {
   child: ChildProcessWithoutNullStreams;
   identity: string;
@@ -17,7 +22,7 @@ class LocalEngine {
   private ended = false;
   constructor(runtime: NonNullable<ReturnType<typeof localRuntime>>) {
     this.identity = runtime.identity;
-    this.child = spawn(runtime.pythonPath, ['-u', path.join(APP_ROOT, 'scripts/local-translation/bridge.py')], {
+    this.child = spawn(runtime.pythonPath, ['-u', runtime.bridgePath], {
       cwd: APP_ROOT, windowsHide: true, env: { ...process.env, OPENAI_API_KEY: '', PYTHONUTF8: '1', PYTHONIOENCODING: 'utf-8', APP_ROOT },
       stdio: ['pipe', 'pipe', 'pipe'],
     });
@@ -37,12 +42,10 @@ class LocalEngine {
         let message: Record<string, any>;
         try { message = JSON.parse(line); } catch { this.fail(new PipelineError('LOCAL_PROTOCOL', '로컬 번역 응답 형식이 올바르지 않습니다.')); return; }
         if (message.ready === true) {
-          if (message.model !== runtime.model || message.modelHash !== runtime.modelHash || message.runtimeVersion !== runtime.runtimeVersion) {
-            this.fail(new PipelineError('PROVIDER_CHANGED', '실행 중 번역 모델이 변경되었습니다. 다시 요청하세요.')); return;
-          }
+          try { assertLocalReady(message, runtime); } catch (error) { this.fail(error as Error); return; }
           readyResolve(); continue;
         }
-        if (message.error && !message.id) { this.fail(new PipelineError('LOCAL_SETUP_ERROR', '로컬 번역 모델을 열 수 없습니다. npm run setup:translation을 다시 실행하세요.')); return; }
+        if (message.error && !message.id) { this.fail(new PipelineError('LOCAL_SETUP_ERROR', runtime.provider === 'finetuned' ? '학습 모델을 열 수 없습니다. 등록 상태를 확인해 주세요.' : '로컬 번역 모델을 열 수 없습니다. npm run setup:translation을 다시 실행하세요.')); return; }
         const waiting = this.pending.get(message.id); if (!waiting) continue;
         this.pending.delete(message.id); clearTimeout(waiting.timer);
         if (message.error) waiting.reject(new PipelineError('LOCAL_TRANSLATION_ERROR', '로컬 번역을 완료하지 못했습니다. 더 짧은 문단으로 다시 시도하세요.'));
@@ -75,7 +78,7 @@ class LocalEngine {
 }
 export async function translateLocally(input: ProviderRequest): Promise<ProviderResult> {
   const runtime = localRuntime();
-  if (!runtime) throw new PipelineError('SETUP_REQUIRED', '무료 번역 모델을 설치하세요: npm run setup:translation');
+  if (!runtime) throw new PipelineError('SETUP_REQUIRED', translationRuntime().statusMessage);
   if (runtime.identity !== input.model) throw new PipelineError('PROVIDER_CHANGED', '번역 모델이 변경되었습니다. 현재 설정으로 다시 요청하세요.');
   if (engine && engine.identity !== runtime.identity) { engine.close(); engine = undefined; }
   engine ||= new LocalEngine(runtime);

@@ -48,18 +48,18 @@ export function saveSettings(input:unknown){const parsed=settingSchema.parse(inp
 export function translationStatus(){
   const runtime=translationRuntime();
   const record=db().prepare("SELECT non_secret_value_json FROM settings WHERE key='translationVerification'").get() as Row|undefined;
-  const verified=z.object({provider:z.enum(['argos','openai']).default('openai'),model:z.string(),promptVersion:z.string(),verifiedAt:z.string()}).safeParse(json(record?.non_secret_value_json,null));
+  const verified=z.object({provider:z.enum(['argos','finetuned','openai']).default('openai'),model:z.string(),promptVersion:z.string(),verifiedAt:z.string()}).safeParse(json(record?.non_secret_value_json,null));
   return {provider:runtime.provider,providerLabel:runtime.providerLabel,local:runtime.local,apiKeyRequired:runtime.apiKeyRequired,statusMessage:runtime.statusMessage,configured:runtime.configured,keyConfigured:!!config.OPENAI_API_KEY,modelConfigured:runtime.modelConfigured,model:runtime.model,maxCharsPerJob:config.MAX_SOURCE_CHARS_PER_JOB,maxCharsPerDay:config.MAX_SOURCE_CHARS_PER_DAY,liveVerified:!!(verified.success&&verified.data.provider===runtime.provider&&verified.data.model===runtime.identity&&verified.data.promptVersion===runtime.promptVersion),verifiedAt:verified.success?verified.data.verifiedAt:null,glossaryRuleCount:translationGlossaryInfo().ruleCount,glossarySources:translationGlossaryInfo().sources,reviewedPairCount:reviewedTranslationPairs().length};
 }
 export function usage(){
   const row=db().prepare(`SELECT
     COALESCE(SUM(CASE WHEN u.reservation_status<>'released' THEN u.source_chars ELSE 0 END),0) AS sourceChars,
-    COALESCE(SUM(CASE WHEN json_extract(i.scope_json,'$.provider')='argos' AND u.reservation_status<>'released' THEN u.source_chars ELSE 0 END),0) AS localSourceChars,
-    COUNT(DISTINCT CASE WHEN json_extract(i.scope_json,'$.provider')='argos' AND u.reservation_status<>'released' THEN u.job_id END) AS localJobs,
-    COALESCE(SUM(CASE WHEN COALESCE(json_extract(i.scope_json,'$.provider'),'openai')<>'argos' AND u.reservation_status<>'released' THEN u.source_chars ELSE 0 END),0) AS remoteSourceChars,
-    COALESCE(SUM(CASE WHEN COALESCE(json_extract(i.scope_json,'$.provider'),'openai')<>'argos' THEN u.input_tokens ELSE 0 END),0) AS inputTokens,
-    COALESCE(SUM(CASE WHEN COALESCE(json_extract(i.scope_json,'$.provider'),'openai')<>'argos' THEN u.output_tokens ELSE 0 END),0) AS outputTokens,
-    COUNT(CASE WHEN COALESCE(json_extract(i.scope_json,'$.provider'),'openai')<>'argos' AND (u.reservation_status='unknown' OR (u.reservation_status='reported' AND (u.input_tokens IS NULL OR u.output_tokens IS NULL))) THEN 1 END) AS unknownCount
+    COALESCE(SUM(CASE WHEN json_extract(i.scope_json,'$.provider') IN ('argos','finetuned') AND u.reservation_status<>'released' THEN u.source_chars ELSE 0 END),0) AS localSourceChars,
+    COUNT(DISTINCT CASE WHEN json_extract(i.scope_json,'$.provider') IN ('argos','finetuned') AND u.reservation_status<>'released' THEN u.job_id END) AS localJobs,
+    COALESCE(SUM(CASE WHEN COALESCE(json_extract(i.scope_json,'$.provider'),'openai') NOT IN ('argos','finetuned') AND u.reservation_status<>'released' THEN u.source_chars ELSE 0 END),0) AS remoteSourceChars,
+    COALESCE(SUM(CASE WHEN COALESCE(json_extract(i.scope_json,'$.provider'),'openai') NOT IN ('argos','finetuned') THEN u.input_tokens ELSE 0 END),0) AS inputTokens,
+    COALESCE(SUM(CASE WHEN COALESCE(json_extract(i.scope_json,'$.provider'),'openai') NOT IN ('argos','finetuned') THEN u.output_tokens ELSE 0 END),0) AS outputTokens,
+    COUNT(CASE WHEN COALESCE(json_extract(i.scope_json,'$.provider'),'openai') NOT IN ('argos','finetuned') AND (u.reservation_status='unknown' OR (u.reservation_status='reported' AND (u.input_tokens IS NULL OR u.output_tokens IS NULL))) THEN 1 END) AS unknownCount
     FROM usage_records u LEFT JOIN job_items i ON i.id=u.job_item_id`).get() as Row;
   return row;
 }

@@ -4,7 +4,7 @@ import { db, hash, id, json, now } from '../db';
 import { downloadSource, EXTRACTOR_VERSION, extractionConfigHash, mimeFor, PipelineError, sniffFile, storeOriginal, validateSourceUrl } from '../sources';
 import { extractHtml, extractPdf, type ExtractedDocument } from '../extraction';
 import { translationSnapshot, translateSnapshot, type TranslationSnapshot } from '../translation';
-import { assertTranslationAvailable } from '../translation/runtime';
+import { assertTranslationAvailable, isLocalTranslationProvider } from '../translation/runtime';
 import { reuseReviewedTranslation } from '../translation/memory';
 
 type JobRow={id:string;type:string;status:string;scope_json:string;cancel_requested_at:string|null;lease_owner:string|null;lease_until:string|null;error_message:string|null;attempts:number};
@@ -115,12 +115,12 @@ async function processTranslation(job:JobRow,item:ItemRow,owner:string){
       const needsReview=!acceptedReview&&result.warnings.length>0,validity=needsReview?'needs_review':'passed';
       if(!acceptedReview)db().prepare(`INSERT INTO translations(id,block_id,cache_key,text_ko,provider,model,prompt_version,glossary_version,context_hash,generation_status,validation_status,review_status,usage_json,structure_json,created_at) VALUES(?,?,?,?,?,?,?,?,?,'ready',?,'unreviewed',?,?,?) ON CONFLICT(cache_key) DO UPDATE SET text_ko=excluded.text_ko,validation_status=excluded.validation_status,usage_json=excluded.usage_json,structure_json=excluded.structure_json,created_at=excluded.created_at`).run(translationId,snapshot.blockId,snapshot.cacheKey,result.textKo,snapshot.provider,snapshot.model,snapshot.promptVersion,snapshot.glossaryVersion,snapshot.contextHash,validity,JSON.stringify({inputTokens:result.usage.inputTokens,outputTokens:result.usage.outputTokens,warnings:result.warnings}),result.structure?JSON.stringify(result.structure):null,now());
       db().prepare(`UPDATE job_items SET status=?,result_id=?,error_code=?,error_message=? WHERE id=?`).run(needsReview?'needs_review':'completed',translationId,needsReview?'VALIDATION_FAILED':null,needsReview?result.warnings.join(' '):null,item.id);
-      db().prepare(`UPDATE usage_records SET reservation_status=?,provider_request_id=?,input_tokens=?,output_tokens=?,outcome=? WHERE attempt_id=?`).run(snapshot.provider==='argos'?'reported':result.usage.inputTokens===null?'unknown':'reported',result.usage.requestId,result.usage.inputTokens,result.usage.outputTokens,validity,attemptId);
+      db().prepare(`UPDATE usage_records SET reservation_status=?,provider_request_id=?,input_tokens=?,output_tokens=?,outcome=? WHERE attempt_id=?`).run(isLocalTranslationProvider(snapshot.provider)?'reported':result.usage.inputTokens===null?'unknown':'reported',result.usage.requestId,result.usage.inputTokens,result.usage.outputTokens,validity,attemptId);
       if(needsReview)db().prepare('UPDATE jobs SET error_message=? WHERE id=?').run('일부 번역의 숫자·수식·용어 검토가 필요합니다.',job.id);
     }).immediate();
   }catch(error){const usage=(error as {providerUsage?:{inputTokens:number|null;outputTokens:number|null;requestId:string|null}}).providerUsage;
-    if(usage)db().prepare(`UPDATE usage_records SET reservation_status=?,input_tokens=?,output_tokens=?,provider_request_id=?,outcome=? WHERE attempt_id=?`).run(usage.inputTokens===null?'unknown':'reported',usage.inputTokens,usage.outputTokens,usage.requestId,errorDetails(error).code,attemptId);
-    else db().prepare(`UPDATE usage_records SET reservation_status=?,outcome=? WHERE attempt_id=? AND reservation_status IN ('reserved','sent')`).run(snapshot.provider==='argos'?'reported':'unknown',errorDetails(error).code,attemptId);throw error;}
+    if(usage)db().prepare(`UPDATE usage_records SET reservation_status=?,input_tokens=?,output_tokens=?,provider_request_id=?,outcome=? WHERE attempt_id=?`).run(isLocalTranslationProvider(snapshot.provider)?'reported':usage.inputTokens===null?'unknown':'reported',usage.inputTokens,usage.outputTokens,usage.requestId,errorDetails(error).code,attemptId);
+    else db().prepare(`UPDATE usage_records SET reservation_status=?,outcome=? WHERE attempt_id=? AND reservation_status IN ('reserved','sent')`).run(isLocalTranslationProvider(snapshot.provider)?'reported':'unknown',errorDetails(error).code,attemptId);throw error;}
 }
 
 function recordDiscoveredLinks(resource:ResourceRow,doc:ExtractedDocument){

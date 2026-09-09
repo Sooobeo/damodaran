@@ -5,6 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { execFileSync, spawn, type ChildProcess } from 'node:child_process';
+import { parseArgs } from 'node:util';
 import Database from 'better-sqlite3';
 import { chromium, expect, type Browser, type Page } from '@playwright/test';
 import { backup, restore } from '../lib/backup';
@@ -12,6 +13,11 @@ import { closeDb } from '../lib/db';
 import { APP_ROOT } from '../lib/config';
 import type { Bootstrap, ResourceDetail, BlocksResult, Job, Translation } from '../lib/client-types';
 
+type LocalTranslationProvider = 'argos' | 'finetuned';
+const {values:arguments_} = parseArgs({options:{provider:{type:'string'}},strict:true});
+const selectedProvider = arguments_.provider ?? process.env.TRANSLATION_PROVIDER ?? 'argos';
+assert.ok(selectedProvider === 'argos' || selectedProvider === 'finetuned', '브라우저 실검증은 --provider=argos 또는 --provider=finetuned만 지원합니다.');
+const requestedProvider: LocalTranslationProvider = selectedProvider;
 const base = 'http://127.0.0.1:3011';
 const resultsDirectory = path.join(APP_ROOT, 'test-results'); fs.mkdirSync(resultsDirectory, { recursive: true });
 const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'damodaran-browser-e2e-'));
@@ -20,7 +26,8 @@ const checks: { name: string; status: string; durationMs: number; detail?: strin
 const consoleErrors: string[] = []; const pageErrors: string[] = [];
 let browser: Browser | undefined; let page: Page | undefined; let server: ChildProcess | undefined;
 let serverOutput = ''; let reportError: string | null = null;
-const localTranslationEvidence: { format: 'html' | 'pdf'; resourceId: string; sourceVersionId: string; blockIds: string[]; provider: 'argos'; blocks: number; sourceChars: number; cached: number; semanticReview: string }[] = [];
+let initialTranslationStatus: Bootstrap['translationStatus'] | null = null;
+const localTranslationEvidence: { format: 'html' | 'pdf'; resourceId: string; sourceVersionId: string; blockIds: string[]; provider: LocalTranslationProvider; model: string | null; blocks: number; sourceChars: number; cached: number; semanticReview: string }[] = [];
 const translationFailures: { blockId: string; source: string; textKo: string; validationStatus: string; provider: string; usageJson: string }[] = [];
 const reviewEvidence: { correctedTranslationId: string; reviewId: string; reusedTranslationId?: string; originalMachineTextPreserved: boolean; extraTranslationUsage: number; exportedPairVerified?: boolean }[] = [];
 const hash = (bytes: Uint8Array) => createHash('sha256').update(bytes).digest('hex');
@@ -51,7 +58,7 @@ async function startServer() {
   serverOutput = '';
   server = spawn(process.execPath, ['--import', 'tsx', path.join(APP_ROOT, 'scripts/run.ts'), 'start'], {
     cwd: APP_ROOT, windowsHide: true,
-    env: { ...process.env, APP_PORT: '3011', DATA_DIR: isolatedData, TRANSLATION_PROVIDER: 'argos', OPENAI_API_KEY: '', TRANSLATION_MODEL: '', WEB_ONLY: '0', NODE_ENV: 'production' },
+    env: { ...process.env, APP_PORT: '3011', DATA_DIR: isolatedData, TRANSLATION_PROVIDER: requestedProvider, OPENAI_API_KEY: '', TRANSLATION_MODEL: '', WEB_ONLY: '0', NODE_ENV: 'production' },
     stdio: ['ignore', 'pipe', 'pipe', 'ipc'],
   });
   server.stdout?.on('data', chunk => { serverOutput += chunk.toString(); }); server.stderr?.on('data', chunk => { serverOutput += chunk.toString(); });
@@ -110,12 +117,12 @@ async function verifyCache(scope: TranslationScope, expectedBlocks: number) {
   assert.deepEqual(after, before, '캐시 요청은 추가 로컬 처리량 또는 원격 호출을 만들지 않아야 합니다.');
   return result;
 }
-function assertStoredLocalTranslations(blockIds: string[]) {
+function assertStoredLocalTranslations(blockIds: string[], provider: LocalTranslationProvider) {
   const snapshot = new Database(path.join(isolatedData, 'library.sqlite'), { readonly: true, fileMustExist: true });
   try {
     for (const blockId of blockIds) {
       const row = snapshot.prepare('SELECT provider,review_status FROM translations WHERE block_id=? ORDER BY created_at DESC LIMIT 1').get(blockId) as { provider: string; review_status: string } | undefined;
-      assert.ok(row); assert.equal(row.provider, 'argos'); assert.equal(row.review_status, 'unreviewed');
+      assert.ok(row); assert.equal(row.provider, provider); assert.equal(row.review_status, 'unreviewed');
     }
   } finally { snapshot.close(); }
 }
@@ -125,7 +132,7 @@ try {
     const snapshot = await backup(); closeDb(); const copy = restore(snapshot.path, isolatedData);
     assert.equal(copy.workerStarted, false); assert.notEqual(path.resolve(isolatedData), path.resolve(APP_ROOT, 'data'));
     execFileSync(process.execPath, ['--import', 'tsx', '--input-type=module', '-e', "import {setupDatabase,closeDb} from './lib/db/index.ts'; setupDatabase(); closeDb();"], {
-      cwd: APP_ROOT, windowsHide: true, encoding: 'utf8', env: { ...process.env, APP_ROOT, DATA_DIR: isolatedData, TRANSLATION_PROVIDER: 'argos', OPENAI_API_KEY: '', TRANSLATION_MODEL: '', WEB_ONLY: '1' },
+      cwd: APP_ROOT, windowsHide: true, encoding: 'utf8', env: { ...process.env, APP_ROOT, DATA_DIR: isolatedData, TRANSLATION_PROVIDER: requestedProvider, OPENAI_API_KEY: '', TRANSLATION_MODEL: '', WEB_ONLY: '1' },
     });
   });
   await startServer();
@@ -134,8 +141,14 @@ try {
   page.setDefaultTimeout(15000);
   page.on('pageerror', error => pageErrors.push(error.message)); page.on('console', message => { if (message.type() === 'error') consoleErrors.push(message.text()); });
   const initial = await request<Bootstrap>('/api/bootstrap');
-  const verifyLocalTranslation = initial.translationStatus.provider === 'argos' && initial.translationStatus.configured;
-  if (process.env.VERIFY_LOCAL_TRANSLATION === '1') assert.ok(verifyLocalTranslation, '실제 로컬 번역 검증을 요청했지만 Argos 모델이 준비되지 않았습니다.');
+  initialTranslationStatus = initial.translationStatus;
+  assert.equal(initial.translationStatus.provider, requestedProvider, '격리 서버가 요청한 실제 번역 제공자를 사용해야 합니다.');
+  const activeProvider = initial.translationStatus.provider;
+  assert.ok(activeProvider === 'argos' || activeProvider === 'finetuned');
+  assert.equal(initial.translationStatus.local, true); assert.equal(initial.translationStatus.apiKeyRequired, false); assert.equal(initial.translationStatus.keyConfigured, false);
+  const providerLabel = initial.translationStatus.providerLabel;
+  const verifyLocalTranslation = initial.translationStatus.configured;
+  if (requestedProvider === 'finetuned' || process.env.VERIFY_LOCAL_TRANSLATION === '1') assert.ok(verifyLocalTranslation, `실제 ${providerLabel} 검증을 요청했지만 모델이 준비되지 않았습니다. ${initial.translationStatus.statusMessage}`);
   const first = initial.resources.find(r => r.id === 'R01'); assert.ok(first?.versionId, '실제 가져온 R01 원문이 있어야 HTML 읽기를 검증할 수 있습니다.');
   const blocks = await request<BlocksResult>(`/api/resources/R01/blocks?versionId=${first.versionId}`);
   const paragraph = blocks.blocks.find(b => b.type === 'paragraph' && b.text.length > 70); assert.ok(paragraph, '실제 HTML 문단이 있어야 합니다.');
@@ -193,7 +206,7 @@ try {
     await expect(page!.locator(`[id="block-${paragraph.id}"]`)).toBeVisible();
     await page!.screenshot({ path: path.join(resultsDirectory, 'e2e-html-reader.png') });
   });
-  if (verifyLocalTranslation) await step('실제 Argos: HTML 선택 문단 번역·저장·유효 캐시 재사용', async () => {
+  if (verifyLocalTranslation) await step(`실제 ${providerLabel}: HTML 선택 문단 번역·저장·유효 캐시 재사용`, async () => {
     const target = blocks.blocks.find(b => b.type === 'paragraph' && b.text.length > 70 && b.text.length < 2000 && !b.translation?.current);
     assert.ok(target, '새로 번역할 실제 R01 문단이 필요합니다.'); translatedHtmlBlockId = target.id;
     await navigate(`/reader/R01?versionId=${first.versionId}&blockId=${target.id}&mode=parallel`);
@@ -210,12 +223,12 @@ try {
     assert.ok(translation?.current); assert.equal(translation.validationStatus, 'passed'); assert.match(translation.textKo, /[가-힣]/); translatedHtmlText = translation.textKo;
     await expect(block.locator('.translated-block')).toContainText(translatedHtmlText.slice(0, 50), { timeout: 20000 });
     await expect(block.locator('.translation-badges')).toContainText('기계 번역 · 사용자 미검수');
-    assertStoredLocalTranslations([target.id]);
+    assertStoredLocalTranslations([target.id], activeProvider);
     const cached = await verifyCache({ sourceVersionId: first.versionId!, blockIds: [target.id] }, 1);
-    localTranslationEvidence.push({ format: 'html', resourceId: 'R01', sourceVersionId: first.versionId!, blockIds: [target.id], provider: 'argos', blocks: 1, sourceChars: target.text.length, cached: cached.cached, semanticReview: '자동 무결성·동작 검증이며 전문가 의미 검수가 아닙니다.' });
-    await block.scrollIntoViewIfNeeded(); await page!.screenshot({ path: path.join(resultsDirectory, 'e2e-argos-html-translation.png') });
+    localTranslationEvidence.push({ format: 'html', resourceId: 'R01', sourceVersionId: first.versionId!, blockIds: [target.id], provider: activeProvider, model: initial.translationStatus.model ?? null, blocks: 1, sourceChars: target.text.length, cached: cached.cached, semanticReview: '자동 무결성·동작 검증이며 전문가 의미 검수가 아닙니다.' });
+    await block.scrollIntoViewIfNeeded(); await page!.screenshot({ path: path.join(resultsDirectory, `e2e-${activeProvider}-html-translation.png`) });
   });
-  else checks.push({ name: '실제 Argos HTML·PDF 번역 검증', status: 'skipped', durationMs: 0, detail: '무료 모델 미설치: npm run setup:translation 후 다시 실행하세요.' });
+  else checks.push({ name: `실제 ${providerLabel} HTML·PDF 번역 검증`, status: 'skipped', durationMs: 0, detail: initial.translationStatus.statusMessage });
   const pdf = testPdf();
   await step('격리된 테스트 PDF 업로드와 실제 worker 추출', async () => {
     await navigate('/library'); await page!.locator('input[type=file]').setInputFiles({ name: 'TEST FIXTURE browser-e2e.pdf', mimeType: 'application/pdf', buffer: pdf });
@@ -239,7 +252,7 @@ try {
     await expect(page!.locator('.textLayer')).toContainText('TEST FIXTURE - Second page');
     await page!.screenshot({ path: path.join(resultsDirectory, 'e2e-pdf-reader.png') });
   });
-  if (verifyLocalTranslation) await step('실제 Argos: 업로드 PDF 1페이지 번역·숫자 보존·유효 캐시', async () => {
+  if (verifyLocalTranslation) await step(`실제 ${providerLabel}: 업로드 PDF 1페이지 번역·숫자 보존·유효 캐시`, async () => {
     await navigate(`/reader/${uploadedId}?versionId=${pdfVersionId}&page=1&mode=parallel`);
     const original = await request<BlocksResult>(`/api/resources/${uploadedId}/blocks?versionId=${pdfVersionId}&page=1`);
     const targets = original.blocks.filter(b => b.type !== 'image' && b.text.trim()); assert.ok(targets.length > 0);
@@ -252,14 +265,14 @@ try {
     translatedPdfText = translated.blocks.map(b => b.translation?.textKo || '').join('\n'); assert.match(translatedPdfText, /[가-힣]/);
     for (const token of ['100', '60', '40%']) assert.ok(translatedPdfText.includes(token), `숫자·단위 보존: ${token}`);
     await expect(page!.locator('.translation-badges').first()).toContainText('기계 번역 · 사용자 미검수', { timeout: 20000 });
-    assertStoredLocalTranslations(targets.map(b => b.id));
+    assertStoredLocalTranslations(targets.map(b => b.id), activeProvider);
     const cached = await verifyCache({ sourceVersionId: pdfVersionId, pageRange: [1, 1] }, targets.length);
-    localTranslationEvidence.push({ format: 'pdf', resourceId: uploadedId, sourceVersionId: pdfVersionId, blockIds: targets.map(b => b.id), provider: 'argos', blocks: targets.length, sourceChars: targets.reduce((sum, b) => sum + b.text.length, 0), cached: cached.cached, semanticReview: '직접 작성한 TEST FIXTURE PDF이며 Damodaran PDF 수집·의미 검수를 대신하지 않습니다.' });
+    localTranslationEvidence.push({ format: 'pdf', resourceId: uploadedId, sourceVersionId: pdfVersionId, blockIds: targets.map(b => b.id), provider: activeProvider, model: initial.translationStatus.model ?? null, blocks: targets.length, sourceChars: targets.reduce((sum, b) => sum + b.text.length, 0), cached: cached.cached, semanticReview: '직접 작성한 TEST FIXTURE PDF이며 Damodaran PDF 수집·의미 검수를 대신하지 않습니다.' });
     const usage = (await request<Bootstrap>('/api/bootstrap')).usage;
     assert.equal(usage.remoteSourceChars, initial.usage.remoteSourceChars, '원격 유료 호출 추가 없음');
     assert.equal(usage.inputTokens, initial.usage.inputTokens); assert.equal(usage.outputTokens, initial.usage.outputTokens); assert.equal(usage.unknownCount, initial.usage.unknownCount);
     assert.ok(usage.localSourceChars > initial.usage.localSourceChars);
-    await page!.locator('.document-column-labels').scrollIntoViewIfNeeded(); await page!.screenshot({ path: path.join(resultsDirectory, 'e2e-argos-pdf-translation.png') });
+    await page!.locator('.document-column-labels').scrollIntoViewIfNeeded(); await page!.screenshot({ path: path.join(resultsDirectory, `e2e-${activeProvider}-pdf-translation.png`) });
   });
   if (verifyLocalTranslation) await step('PDF 문단 검수: 숫자 오류 거부·수정 저장·기계 번역 보존·추가 처리 없음', async () => {
     const original = await request<BlocksResult>(`/api/resources/${uploadedId}/blocks?versionId=${pdfVersionId}&page=1`);
@@ -277,7 +290,7 @@ try {
     const saved = await response.json() as Translation; assert.equal(saved.reviewStatus, 'user_reviewed'); assert.equal(saved.origin, 'user'); assert.ok(saved.reviewId); reviewId = saved.reviewId;
     await expect(block.locator('.translation-badges')).toContainText('사용자 검수 완료'); await expect(field).toHaveCount(0); await expect(block.locator('.translated-block')).toContainText(reviewedPdfText);
     const snapshot = new Database(path.join(isolatedData, 'library.sqlite'), { readonly: true, fileMustExist: true });
-    try { const row = snapshot.prepare('SELECT text_ko,provider FROM translations WHERE id=?').get(machineTranslation.id) as { text_ko: string; provider: string }; assert.equal(row.text_ko, machineTranslation.textKo); assert.equal(row.provider, 'argos'); }
+    try { const row = snapshot.prepare('SELECT text_ko,provider FROM translations WHERE id=?').get(machineTranslation.id) as { text_ko: string; provider: string }; assert.equal(row.text_ko, machineTranslation.textKo); assert.equal(row.provider, activeProvider); }
     finally { snapshot.close(); }
     await verifyCache({ sourceVersionId: pdfVersionId, pageRange: [1, 1] }, original.blocks.filter(b => b.type !== 'image' && b.text.trim()).length);
     const fresh = await request<BlocksResult>(`/api/resources/${uploadedId}/blocks?versionId=${pdfVersionId}&page=1`); translatedPdfText = fresh.blocks.map(b => b.translation?.textKo || '').join('\n');
@@ -301,7 +314,7 @@ try {
     reviewEvidence[0].reusedTranslationId = translation.id; assert.notEqual(translation.id, reviewEvidence[0].correctedTranslationId);
     assert.deepEqual((await request<Bootstrap>('/api/bootstrap')).usage, before);
     const exported = JSON.parse(execFileSync(process.execPath, ['--import', 'tsx', 'scripts/export-translation-memory.ts'], {
-      cwd: APP_ROOT, windowsHide: true, encoding: 'utf8', env: { ...process.env, APP_ROOT, DATA_DIR: isolatedData, OPENAI_API_KEY: '', TRANSLATION_MODEL: '' },
+      cwd: APP_ROOT, windowsHide: true, encoding: 'utf8', env: { ...process.env, APP_ROOT, DATA_DIR: isolatedData, TRANSLATION_PROVIDER: requestedProvider, OPENAI_API_KEY: '', TRANSLATION_MODEL: '' },
     })) as { path: string; pairs: number; modelTrainingStarted: boolean };
     assert.equal(exported.modelTrainingStarted, false); assert.ok(path.resolve(exported.path).startsWith(path.resolve(isolatedData) + path.sep));
     const pairs = fs.readFileSync(exported.path, 'utf8').trim().split('\n').filter(Boolean).map(line => JSON.parse(line));
@@ -360,12 +373,16 @@ try {
     assert.equal(after.notes.find(n => n.id === noteId)?.text, editedText); assert.ok(after.bookmarks.some(b => b.id === bookmarkId));
     assert.equal(after.progress.find(p => p.moduleId === 'M01')?.status, 'completed'); assert.ok(after.resources.some(r => r.id === uploadedId && r.versionId === pdfVersionId));
     assert.deepEqual(after.positions, beforeRestart.positions); assert.equal(after.translationStatus.keyConfigured, false);
+    assert.equal(after.translationStatus.provider, activeProvider); assert.equal(after.translationStatus.model, initial.translationStatus.model);
+    assert.equal(after.translationStatus.local, true); assert.equal(after.translationStatus.apiKeyRequired, false);
     if (verifyLocalTranslation) {
-      assert.equal(after.translationStatus.provider, 'argos'); assert.deepEqual(after.usage, beforeRestart.usage);
+      assert.equal(after.translationStatus.configured, true); assert.deepEqual(after.usage, beforeRestart.usage);
       const html = await request<BlocksResult>(`/api/resources/R01/blocks?versionId=${first.versionId}&anchorBlockId=${translatedHtmlBlockId}`);
       assert.equal(html.blocks.find(b => b.id === translatedHtmlBlockId)?.translation?.textKo, translatedHtmlText);
+      assert.equal(html.blocks.find(b => b.id === translatedHtmlBlockId)?.translation?.current, true);
       const pdf = await request<BlocksResult>(`/api/resources/${uploadedId}/blocks?versionId=${pdfVersionId}&page=1`);
       assert.equal(pdf.blocks.map(b => b.translation?.textKo || '').join('\n'), translatedPdfText);
+      assert.ok(pdf.blocks.filter(b => b.type !== 'image' && b.text.trim()).every(b => b.translation?.current));
       const reviewed = pdf.blocks.find(b => b.id === reviewedPdfBlockId)?.translation; assert.equal(reviewed?.reviewId, reviewId); assert.equal(reviewed?.reviewStatus, 'user_reviewed');
       const copied = await request<BlocksResult>(`/api/resources/${memoryResourceId}/blocks?versionId=${memoryVersionId}&page=1`); assert.equal(copied.blocks.find(b => b.id === memoryBlockId)?.translation?.textKo, reviewedPdfText); assert.equal(copied.blocks.find(b => b.id === memoryBlockId)?.translation?.origin, 'memory');
     }
@@ -381,12 +398,13 @@ try {
   });
   assert.deepEqual(pageErrors, [], '브라우저 JavaScript 런타임 오류');
 } catch (error) {
+  if (!checks.some(check => check.status === 'failed')) checks.push({name:`실제 ${requestedProvider} 검증 실행 조건`,status:'failed',durationMs:0,detail:error instanceof Error ? error.message : String(error)});
   reportError = error instanceof Error ? error.stack || error.message : String(error); console.error(reportError);
   try { await page?.screenshot({ path: path.join(resultsDirectory, 'e2e-failure.png') }); } catch { /* Closed browser cannot provide a screenshot. */ }
   process.exitCode = 1;
 } finally {
   await browser?.close(); await stopServer(); closeDb();
-  fs.writeFileSync(path.join(resultsDirectory, 'browser-e2e.json'), JSON.stringify({ generatedAt: new Date().toISOString(), dataIsolation: true, isolatedData, browser: 'Chrome headless', checks, localTranslationEvidence, reviewEvidence, translationFailures, pageErrors, consoleErrors, error: reportError }, null, 2));
+  fs.writeFileSync(path.join(resultsDirectory, 'browser-e2e.json'), JSON.stringify({ generatedAt: new Date().toISOString(), dataIsolation: true, isolatedData, browser: 'Chrome headless', requestedProvider, initialTranslationStatus, checks, localTranslationEvidence, reviewEvidence, translationFailures, pageErrors, consoleErrors, error: reportError }, null, 2));
   fs.writeFileSync(path.join(resultsDirectory, 'browser-e2e-server.log'), serverOutput);
   const resolvedTemp = path.resolve(tempRoot), allowedParent = path.resolve(os.tmpdir());
   if (path.dirname(resolvedTemp) === allowedParent && path.basename(resolvedTemp).startsWith('damodaran-browser-e2e-')) fs.rmSync(resolvedTemp, { recursive: true, force: true });

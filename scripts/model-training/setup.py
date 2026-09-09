@@ -66,6 +66,9 @@ def main():
     try:
         if not args.model_only:environment(args.backend)
         model()
+        if not args.model_only:
+            python=ROOT/'.venv-training'/('Scripts/python.exe' if os.name=='nt' else 'bin/python')
+            subprocess.run([str(python),str(ROOT/'scripts/model-training/prepare_tokenizer.py')],check=True)
     finally:lock.unlink(missing_ok=True)
 
 if __name__=='__main__':main()

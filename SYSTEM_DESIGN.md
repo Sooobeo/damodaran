@@ -362,6 +362,12 @@ Argos는 `content/translation-glossary.json`의 출처 있는 복합구·명시�
 
 기반 모델과 후보는 같은 추론 설정에서 용어 보정·검수 메모리 없이 비교한다. dev/test 모두 금융 용어 적중, chrF·BLEU, 숫자 보존, 빈 결과·잘림과 일반 문장 유지 기준을 확인한다. 실제 tensor 해시 변화와 optimizer 갱신을 학습 증거로 남긴다. 내보내기 조건 충족과 변환 후 추론 비교·무결성 확인은 별개이며, 통과하지 않은 결과로 현재 Argos 앱을 자동 교체하지 않는다. 작은 합성 평가의 점수를 전문 번역 의미 검수로 표시하지 않는다.
 
+원본 모델의 `vocab.json`이 한국어 target ID를 영어 source에도 연결한 문제는 원본을 보존한 `.training/prepared-model/`에서 별도 영어·한국어 어휘표와 `separate_vocabs=true`로 복원한다. 원본 가중치와 두 SPM 해시는 그대로 유지하며 준비 manifest를 검증한다. 학습 전후 모두 같은 복원 토크나이저를 사용한다. `finance-v3`는 XPU/FP32 150 updates / 3 epochs를 완료하고 dev로 step 100을 선택했으며, 최종 test 판정은 통과했다. 수치·loss·가중치 해시·미검수 데이터 한계는 [학습 보고서](content/training/TRAINING_REPORT.md)에 있다.
+
+`export:model`의 기본 진입점은 `scripts/model-training/export_model.py`이며 학습된 decoder 시작 임베딩을 보존하는 v2 CTranslate2 INT8 변환을 사용한다. 고정 train.py의 옛 변환 경로를 새 기본으로 사용하지 않는다. `verify:model-export`는 선택 FP32 체크포인트에 저장한 원시 dev 예측과 v2 변환본을 금융·일반별로 비교한다. 최종 test는 다시 읽지 않는다. `register:model`은 v2의 최종 평가·변환 비교·데이터/모델/코드 해시와 파일 무결성이 모두 맞을 때만 배포 manifest를 등록하며 제공자 환경설정 자체를 바꾸지 않는다. 원시 모델의 `infer:model`은 별도 CLI이고 운영 DB를 사용하지 않는다.
+
+첫 INT8 비교는 금융·일반 BLEU 회귀로 실패했다. 표준 변환의 시작 임베딩 누락을 고친 v2는 dev 재비교에서 일반 기준을 통과했으나 금융 BLEU가 1.110881점 하락해 허용치 1점을 초과했다. 이로써 추가 변형·설정 스윕·재학습 없이 **FP32 모델 제공 완료·앱 Argos 유지**로 종료했다. 두 시도에서 학습 가중치·고정 train.py·최종 test·판정 기준을 바꾸지 않았다. 첫 시도의 원본과 `deployment-attempts/int8-v1/`의 15개 파일·해시 보존 manifest, 별도의 v2 변환·판정 기록을 유지한다. 잔여 beam·연산 환경 차이의 기여는 분리하지 못했으므로 양자화만을 원인으로 단정하지 않는다. 학습 성공과 앱용 런타임 비교 실패를 구분하고 실제 새 모델의 앱 E2E를 완료한 것으로 표시하지 않는다.
+
 설치 후 학습·평가는 로컬 파일만 사용하며 운영 SQLite·원문·메모·기존 번역을 변경하지 않는다. 웹 요청이나 앱 worker가 모델 학습을 시작하지 않는다. 본학습, 최종 평가, 배포 변환, 앱 적용의 실제 완료 여부는 [구현 상태](IMPLEMENTATION_STATUS.md)에 기록한다.
 
 ## 9. 백업·복원·운영 절차
@@ -400,13 +406,17 @@ Argos는 `content/translation-glossary.json`의 출처 있는 복합구·명시�
 | `npm run verify:translation:html` | HTML 3문단만 검증하고 html-only 범위를 명시 |
 | `npm run export:translation-memory` | 개인 검수 영한 문장쌍 내보내기. 자동 모델 학습 없음 |
 | `npm run setup:training` | 별도 학습 Python 환경과 고정 Marian 기반 모델 설치 |
-| `npm run bench:model -- --run-id <ID>` | 실제 optimizer 시험 갱신·가중치 변화·시간 측정. 본학습은 원본에서 다시 시작 |
-| `npm run train:model -- --run-id <ID>` | train 가중치 갱신·체크포인트·dev 평가 및 선택 |
-| `npm run evaluate:model -- --run-id <ID>` | 고정 최종 test의 기반 모델·선택 모델 비교와 소비 기록 |
-| `npm run export:model -- --run-id <ID>` | 평가 기준을 충족한 모델의 배포 형식 변환. 앱 적용과 구분 |
+| `npm.cmd run bench:model -- --run-id <ID>` | 실제 optimizer 시험 갱신·가중치 변화·시간 측정. 본학습은 원본에서 다시 시작 |
+| `npm.cmd run train:model -- --run-id <ID>` | train 가중치 갱신·체크포인트·dev 평가 및 선택 |
+| `npm.cmd run evaluate:model -- --run-id <ID>` | 고정 최종 test의 기반 모델·선택 모델 비교와 소비 기록 |
+| `npm.cmd run export:model -- --run-id <ID>` | 평가 기준을 충족한 모델의 배포 형식 변환. 앱 적용과 구분 |
+| `npm.cmd run infer:model -- --run-id <ID> ...` | 선택 원시 가중치로 단문 로컬 추론. 입력 옵션은 학습 도구 안내 참조 |
+| `npm.cmd run verify:model-export -- --run-id <ID>` | 저장된 선택본 dev 예측과 변환본 비교. 최종 test 재사용 없음 |
+| `npm.cmd run register:model -- --run-id <ID>` | 최종 평가·변환 비교·무결성을 통과한 모델만 등록. 환경설정 전환 없음 |
+| `npm run test:model` | 모델·학습 자료를 로딩하지 않는 순수 helper 회귀 검사 |
 | `npm run backup` | DB와 참조 파일의 일관된 백업·검증 |
 
-실제 실행 순서와 각 명령의 실행 검증 여부는 README와 구현 상태 문서를 따른다. 검증 기록은 제공자·모델 정체성·검증 범위·시각을 포함하며 HTML만 성공한 기록을 PDF까지 검증한 것으로 표시하지 않는다. 테스트는 운영 `data/`와 분리한 임시 DATA_DIR에서 실행한다.
+실제 실행 순서와 각 명령의 실행 검증 여부는 README와 구현 상태 문서를 따른다. Windows PowerShell 5.1의 `npm.ps1` 옵션 누락을 피하도록 인자가 있는 학습 명령은 `npm.cmd` 또는 Python 직접 실행을 사용한다. 검증 기록은 제공자·모델 정체성·검증 범위·시각을 포함하며 HTML만 성공한 기록을 PDF까지 검증한 것으로 표시하지 않는다. 테스트는 운영 `data/`와 분리한 임시 DATA_DIR에서 실행한다.
 
 ## 10. 구현 순서와 검증 기준
 

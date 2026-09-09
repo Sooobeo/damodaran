@@ -1,7 +1,7 @@
 # Damodaran 한국어 개인 학습실 — Codex 구현 설계서
 
 작성일: 2026-09-09  
-문서 버전: 1.3  
+문서 버전: 1.3
 제품 가칭: 가치평가 공부방  
 대상: 혼자 사용하는 한국어 사용자, 재무·가치평가 입문자  
 원본 사이트: https://pages.stern.nyu.edu/~adamodar/New_Home_Page/home.htm
@@ -76,7 +76,7 @@
 
 - 공개 `Helsinki-NLP/opus-mt-tc-big-en-ko`의 학습 가능한 Marian 가중치로 소규모 금융 영한 미세조정을 실행한다. 기존 Argos 추론 파일을 원래 학습 체크포인트로 간주하지 않는다.
 - 별도 학습 환경·명령, 출처가 명확한 train/dev/test, 실제 가중치 변화 증거, 전후 평가와 일반 문장 회귀 검사를 제공한다. 세부 계약은 7.8절과 [학습 도구 안내](scripts/model-training/README.md)를 따른다.
-- 본학습·평가·앱 적용 상태를 별도 보고한다. 전문 품질 향상이나 앱 기본 모델 교체가 이미 완료됐다고 표시하지 않는다.
+- 본학습·평가·앱 적용 상태를 별도 보고한다. 실측 개선을 전문 의미 검수나 앱 기본 모델 교체 완료로 확대해 표시하지 않는다. `finance-v3`의 학습·최종 평가는 완료했고 FP32 모델을 로컬 CLI로 제공한다. 첫 INT8 및 시작 임베딩 보존 v2 비교가 기준에 미달해 앱은 Argos를 유지하는 것으로 이번 실험을 종료했다. 결과는 [구현 상태](IMPLEMENTATION_STATUS.md)에 기록한다.
 
 ### P1 — P0 완료 후 추가할 범위
 
@@ -447,6 +447,10 @@ worker는 실행 직전 현재 제공자·모델 정체성과 작업 생성 당�
 
 실행 기록에는 기반 모델·데이터·설정·추론 조건 해시, optimizer 갱신 수, 손실, 체크포인트, 실제 tensor 변화 증거를 남긴다. GPU 시험에서 역전파가 된 사실만으로 본학습이 끝났다고 보고하지 않는다. 기반 모델과 학습 모델을 같은 조건에서 용어 사후 보정·검수 메모리 없이 비교하고, 금융 용어 적중과 chrF·BLEU·숫자 보존·빈 결과·잘림을 평가한다. 일반 문장 점수의 악화도 별도 거부 기준으로 삼는다. 작은 합성 표본의 점수는 전문 번역 품질의 보증이 아니다.
 
+원본 배포 어휘의 source/target ID 불일치는 원본 가중치·SPM을 보존한 별도 prepared 모델에서 복원한다. 양쪽 비교에 같은 복원 토크나이저를 사용하여 어휘 복원 효과를 학습 성과로 세지 않는다. 현재 `finance-v3`는 150 updates / 3 epochs를 완료하고 dev로 step 100을 선택했다. 최종 test 판정 통과와 남은 의미 문제·숫자 검사 불일치는 [학습 보고서](content/training/TRAINING_REPORT.md)에 함께 기록한다.
+
+변환본 비교는 선택 FP32 체크포인트의 저장된 dev 예측만 사용하며 최종 test를 변환 조정에 재사용하지 않는다. 금융·일반 chrF/BLEU·용어 적중·숫자 검사를 확인하고 회귀 기준을 통과하지 못하면 등록을 거부한다. 첫 INT8 비교는 금융·일반 BLEU 회귀로 실패했다. 현재 기본 exporter `scripts/model-training/export_model.py`가 학습된 decoder 시작 임베딩을 보존하는 v2를 만들었으나, dev 재비교에서 일반은 통과하고 금융 BLEU 회귀로 다시 실패했다. 두 시도와 보존 manifest를 남기고 기준 완화·추가 변형·재학습 없이 FP32 모델 제공·Argos 유지로 종료했다. 원시 모델 CLI 추론 성공·변환 파일 생성·등록·실제 앱 동작을 각각 구분한다.
+
 앱의 현재 기본 제공자는 Argos다. 학습·평가를 통과한 결과라도 배포 형식 변환 후 추론 비교·무결성 확인을 마치기 전에는 앱 적용 완료로 보고하지 않는다. `.training/`의 개인 파생 가중치와 실행 기록은 DB 백업에 포함되지 않으므로 별도로 보관한다. 구체적인 명령·모델 출처·현재 실행 상태는 [학습 도구 안내](scripts/model-training/README.md)와 [구현 상태](IMPLEMENTATION_STATUS.md)를 따른다.
 
 ## 8. 용어사전
@@ -607,9 +611,10 @@ WORKER_CONCURRENCY=1
 - 초기 실제 원문을 가져오는 npm run import:core 명령.
 - 현재 제공자로 실제 HTML 3문단·준비된 PDF 1페이지 번역을 명시적으로 검증하는 npm run verify:translation 명령. 로컬 제공자는 키가 필요 없으며 원격·업로드 PDF를 사용할 수 있다. --html-only는 HTML만 검증하고 그 범위를 명시한다.
 - 개인 데이터를 일관된 스냅샷으로 보관하는 npm run backup 명령.
-- 승인된 모델 학습의 환경 설치·벤치마크·학습·최종 평가·조건부 내보내기를 위한 `npm run setup:training`, `npm run bench:model -- --run-id <ID>`, `npm run train:model -- --run-id <ID>`, `npm run evaluate:model -- --run-id <ID>`, `npm run export:model -- --run-id <ID>` 명령. 실행 순서와 옵션은 [학습 도구 안내](scripts/model-training/README.md)를 따른다.
+- 승인된 모델 학습의 환경 설치·벤치마크·학습·최종 평가·조건부 내보내기를 위한 `npm run setup:training`, `npm.cmd run bench:model -- --run-id <ID>`, `npm.cmd run train:model -- --run-id <ID>`, `npm.cmd run evaluate:model -- --run-id <ID>`, `npm.cmd run export:model -- --run-id <ID>` 명령. 실행 순서와 옵션은 [학습 도구 안내](scripts/model-training/README.md)를 따른다.
+- 선택 가중치의 단문 추론 `npm run infer:model`, dev 기반 변환 비교 `npm run verify:model-export`, 조건 충족 모델 등록 `npm run register:model`, 순수 helper 검사 `npm run test:model` 명령. 등록은 제공자 설정 전환과 별개이며 실패 모델로 앱 기본값을 바꾸지 않는다.
 
-위 명령 이름은 구현해야 할 인터페이스다. 현재 존재한다고 가정하지 않는다. Windows PowerShell에서 동작하고 bash 전용 명령 연결에 의존하지 않게 한다.
+위 명령 이름은 실행 인터페이스이며 실제 구현 여부는 package.json과 구현 상태를 확인한다. Windows PowerShell 5.1에서 `npm.ps1`이 `--run-id` 등의 옵션을 소모하는 문제가 확인되어 옵션 있는 학습 명령은 `npm.cmd` 또는 안내된 Python 직접 실행을 사용한다. bash 전용 명령 연결에 의존하지 않게 한다.
 
 ## 11. 데이터 모델
 

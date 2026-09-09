@@ -31,7 +31,12 @@ WORK_ROOT = APP_ROOT / ".training"
 BASE_ID = "Helsinki-NLP/opus-mt-tc-big-en-ko"
 BASE_REVISION = "ae8606b7b29a495f31ce679cee2007f536a3a5ce"
 BASE_WEIGHT_HASH = "f7d6ccf642f1672e6b06d46bc406a3f12220b70603f6745dfbce5c097f8511c2"
-SCRIPT_VERSION = "marian-finance-train-v1"
+SCRIPT_VERSION = "marian-finance-train-v2-tokenizer-repair"
+BASE_SPM_HASHES = {
+    "source.spm": "3d0591e65c49541d82f48df33d7b322c3d4ee7aa0ee8747f9a7f9355dbf22c95",
+    "target.spm": "3d2aa641a0890d8966ab8703b109895a4e522713ce99b4a0192bfacb495bc97c",
+}
+TOKENIZER_REPAIR = "separate-spm-vocab-v1"
 STOP_REQUESTED = False
 
 # Frozen before baseline evaluation. A failed gate keeps the experiment and
@@ -307,8 +312,70 @@ def encode_rows(tokenizer, rows, max_length):
         target = tokenizer(text_target=row["target"], truncation=False)["input_ids"]
         if max(len(source), len(target)) > max_length:
             raise ValueError(f"Row {row['id']} exceeds max-length; data is never silently truncated")
+        for side, ids in (("source", source), ("target", target)):
+            # A broken source vocabulary previously converted ordinary English
+            # words into <unk>. Reject excessive unknowns before any update.
+            unknowns = ids.count(tokenizer.unk_token_id)
+            # Permit one rare character (e.g. a Hangul syllable absent from
+            # this old tokenizer); multiple missing pieces indicate damage.
+            if unknowns >= 2 and unknowns / max(1, len(ids) - 1) > 0.05:
+                raise ValueError(f"Row {row['id']} has excessive unknown {side} tokens; verify the tokenizer")
         encoded.append({"input_ids": source, "labels": target})
     return encoded
+
+
+def validate_tokenizer_files(path, prepared_files=None):
+    """Verify the deterministic repair of the pinned release's wrong source map.
+
+    Only token-to-ID metadata changes. The two original SentencePiece models and
+    pretrained weight bytes remain immutable; this is separate from training.
+    """
+    import sentencepiece as spm
+    if prepared_files is not None:
+        preparation = json.loads((path / "prepared-manifest.json").read_text("utf-8"))
+        expected_preparation = {"schemaVersion": 1, "preparationVersion": TOKENIZER_REPAIR,
+                                "baseRepository": BASE_ID, "baseRevision": BASE_REVISION,
+                                "baseWeightSha256": BASE_WEIGHT_HASH,
+                                "weightTrainingPerformed": False, "separateVocabs": True}
+        if any(preparation.get(key) != value for key, value in expected_preparation.items()):
+            raise ValueError("Unexpected prepared-model provenance")
+        records = preparation.get("files", [])
+        recorded = {item["name"]: item["sha256"] for item in records}
+        actual = {name: value for name, value in prepared_files.items() if name != "prepared-manifest.json"}
+        if len(recorded) != len(records) or recorded != actual:
+            raise ValueError("Prepared-model inventory differs from the recorded tokenizer repair")
+        if any((path / item["name"]).stat().st_size != item["size"] for item in records):
+            raise ValueError("Prepared-model file size differs from the repair manifest")
+    config = json.loads((path / "tokenizer_config.json").read_text("utf-8"))
+    expected = {"source_lang": "en", "target_lang": "ko", "unk_token": "<unk>",
+                "eos_token": "</s>", "pad_token": "<pad>", "separate_vocabs": True}
+    if any(config.get(key) != value for key, value in expected.items()):
+        raise ValueError("Expected the repaired, separate English/Korean tokenizer contract")
+    report = {"repair": TOKENIZER_REPAIR, "weightChange": False, "files": {}}
+    for spm_name, vocab_name in (("source.spm", "vocab.json"), ("target.spm", "target_vocab.json")):
+        actual_hash = sha256(path / spm_name)
+        if actual_hash != BASE_SPM_HASHES[spm_name]:
+            raise ValueError("SentencePiece model differs from the pinned original")
+        processor = spm.SentencePieceProcessor(model_file=str(path / spm_name))
+        if processor.get_piece_size() != 32000:
+            raise ValueError("Unexpected SentencePiece vocabulary size")
+        expected_vocab = {processor.id_to_piece(index): index for index in range(processor.get_piece_size())}
+        expected_vocab["<pad>"] = 32000
+        actual_vocab = json.loads((path / vocab_name).read_text("utf-8"))
+        if actual_vocab != expected_vocab:
+            raise ValueError("Vocabulary IDs differ from the pinned SentencePiece model")
+        if any(actual_vocab.get(token) != index for token, index in (("<unk>", 0), ("</s>", 2), ("<pad>", 32000))):
+            raise ValueError("Unexpected tokenizer special token IDs")
+        report["files"][spm_name] = actual_hash
+        report["files"][vocab_name] = sha256(path / vocab_name)
+    return report
+
+
+def validate_baseline(scores):
+    # Never train against a malfunctioning baseline just because relative gains
+    # would be easy to obtain. Absolute quality still needs human review.
+    if not scores.get("count") or scores.get("emptyOutputs", 0) or scores.get("cappedOutputs", 0):
+        raise ValueError("Baseline sanity failed: empty or capped generation; no training updates are allowed")
 
 
 def batch_items(tokenizer, encoded, torch, device):
@@ -513,9 +580,11 @@ def setup(args):
     base_files = {path.name: sha256(path) for path in sorted(base_path.iterdir()) if path.is_file()}
     if base_files.get("model.safetensors") != BASE_WEIGHT_HASH:
         raise ValueError("Base weights do not match the pinned official release")
+    tokenizer_validation = validate_tokenizer_files(base_path, base_files)
     config = {name: getattr(args, name) for name in ("seed", "threads", "precision", "epochs", "batch_size", "accumulation", "learning_rate", "warmup_updates", "max_length", "max_new_tokens", "beams", "checkpoint_every", "max_updates")}
     identity = {"scriptVersion": SCRIPT_VERSION, "scriptSha256": sha256(Path(__file__)), "baseModel": BASE_ID, "baseRevision": BASE_REVISION,
-                "basePath": relative(base_path), "baseFiles": base_files, "datasets": data["files"], "config": config, "gate": GATE}
+                "basePath": relative(base_path), "baseFiles": base_files, "tokenizerRepair": tokenizer_validation,
+                "datasets": data["files"], "config": config, "gate": GATE}
     manifest_path = run_dir / "manifest.json"
     if manifest_path.exists():
         manifest = json.loads(manifest_path.read_text("utf-8"))
@@ -644,6 +713,7 @@ def train(args, run_dir, base_path, rows, manifest):
             baseline["tokenLoss"] = token_loss(model, tokenizer, dev_encoded, torch, device, args)
             write_json(baseline_path, baseline)
         baseline = json.loads(baseline_path.read_text("utf-8"))
+        validate_baseline(baseline)
         if baseline.get("generationProtocol") != generation_protocol(args, device):
             raise ValueError("Use the original evaluation device/precision/runtime for this run; mixed baseline comparisons are forbidden")
         # The last optimizer update can be safely saved before dev generation.
@@ -791,17 +861,44 @@ def export(args, run_dir, _base_path, _rows, _manifest):
         raise ValueError("Model did not pass the preregistered gate; deployment export is disabled")
     network_off()
     from ctranslate2.converters import TransformersConverter
+    from ctranslate2.converters.transformers import MarianMTLoader, _MODEL_LOADERS
     target = run_dir / "ctranslate2"
     if target.exists():
         raise ValueError("Export directory already exists")
     model_path = local_path(summary["modelPath"], run_dir)
     if sha256(model_path / "model.safetensors") != summary["trainedWeightFileSha256"]:
         raise ValueError("Model weights changed after the sealed final evaluation")
-    converter = TransformersConverter(str(model_path), copy_files=["source.spm", "target.spm", "vocab.json", "tokenizer_config.json", "special_tokens_map.json", "generation_config.json"])
-    converter.convert(str(target), quantization="int8")
+    validate_tokenizer_files(model_path)
+    # CT2 4.8.2's stock Marian loader registers one shared vocabulary even
+    # when tokenization uses separate source/target ID maps. Weight tying does
+    # not imply that the token labels of those maps are identical.
+    class SeparateVocabularyMarianLoader(MarianMTLoader):
+        def get_vocabulary(self, model, tokenizer):
+            if not tokenizer.separate_vocabs:
+                raise ValueError("Export requires the verified separate Marian vocabularies")
+            lists = []
+            for vocab in (tokenizer.encoder, tokenizer.target_encoder):
+                ordered = sorted(vocab.items(), key=lambda item: item[1])
+                if [value for _, value in ordered] != list(range(32001)) or ordered[-1][0] != "<pad>":
+                    raise ValueError("Unexpected vocabulary IDs during export")
+                lists.append([token for token, _ in ordered[:-1]])
+            return lists
+
+        def set_vocabulary(self, spec, tokens):
+            spec.register_source_vocabulary(tokens[0])
+            spec.register_target_vocabulary(tokens[1])
+
+    converter = TransformersConverter(str(model_path), copy_files=["source.spm", "target.spm", "vocab.json", "target_vocab.json", "tokenizer_config.json", "special_tokens_map.json", "generation_config.json"])
+    original_loader = _MODEL_LOADERS["MarianConfig"]
+    try:
+        _MODEL_LOADERS["MarianConfig"] = SeparateVocabularyMarianLoader()
+        converter.convert(str(target), quantization="int8")
+    finally:
+        _MODEL_LOADERS["MarianConfig"] = original_loader
     files = {path.name: sha256(path) for path in target.iterdir() if path.is_file()}
     write_json(run_dir / "export-manifest.json", {"format": "ctranslate2", "quantization": "int8", "files": files,
-               "sourceModelSha256": sha256(model_path / "model.safetensors"), "needsIndependentInferenceParityCheck": True})
+               "sourceModelSha256": sha256(model_path / "model.safetensors"), "separateVocabularies": True,
+               "tokenizerRepair": TOKENIZER_REPAIR, "needsIndependentInferenceParityCheck": True})
     emit("export-complete", path=relative(target), needsInferenceParityCheck=True)
 
 
@@ -811,7 +908,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("stage", choices=["validate", "bench", "train", "evaluate", "export"])
     parser.add_argument("--run-id", required=True)
-    parser.add_argument("--base-model", default=".training/base-model")
+    parser.add_argument("--base-model", default=".training/prepared-model")
     parser.add_argument("--train-data", default="content/training/train.jsonl")
     parser.add_argument("--dev-data", default="content/training/dev.jsonl")
     parser.add_argument("--test-data", default="content/training/evaluation.jsonl")
