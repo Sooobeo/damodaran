@@ -1,0 +1,23 @@
+export type LanguageMode = 'ko' | 'en' | 'parallel';
+export type Resource = {
+  id: string; titleKo: string; titleEn: string; summaryKo: string; kind: string; format: string;
+  level: string; priority: string; url: string | null; author: string; tags: string[];
+  objectives: string[]; question?: string; sourceStatus: string; versionId?: string | null;
+  versionCount: number; blockCount: number; translatedCount: number; bookmarked: boolean; moduleIds: string[];
+};
+export type Module = { id: string; slug: string; order: number; titleKo: string; question: string; objectives: string[]; prerequisiteTermIds: string[]; resourceIds: string[]; questions: string[] };
+export type Term = { id: string; termEn: string; termKo: string; acronym?: string; aliases: string[]; definitionKo: string; formula?: string; exampleKo?: string; notes?: string; sources: string[]; moduleIds: string[]; revision: number };
+export type ToolGuide = { resourceId: string; slug: string; purpose: string; inputs: string[]; steps: string[]; interpretation: string; commonMistakes: string[]; sources: string[]; internalVerified: boolean };
+export type Position = { resourceId: string; sourceVersionId: string; blockId?: string | null; pageIndex?: number | null; offset: number; languageMode: LanguageMode; updatedAt?: string; titleKo?: string };
+export type Note = { id: string; resourceId: string; sourceVersionId?: string | null; blockId?: string | null; pageIndex?: number | null; quote?: string | null; text: string; updatedAt: string; titleKo?: string };
+export type Bookmark = Omit<Note, 'text' | 'updatedAt'> & { createdAt?: string };
+export type Progress = { moduleId: string; status: 'not_started' | 'in_progress' | 'completed'; completedAt?: string | null };
+export type Job = { id: string; type: string; status: string; total: number; completed: number; failed: number; needsReview: number; remaining: number; errorMessage?: string | null; resourceId?: string; createdAt?: string };
+export type Version = { id: string; resourceId: string; fileHash: string; format: string; pageCount: number | null; importedAt: string; publishedAt?: string | null; extractionStatus: string; originalPath?: string };
+export type Translation = { id: string; textKo: string; validationStatus: string; reviewStatus: string; current: boolean; structure?: Record<string, unknown> | null; warnings?: string[]; reviewId?: string | null; origin?: 'user' | 'memory' | 'machine' };
+export type Block = { id: string; order: number; type: string; text: string; pageIndex: number | null; structure: Record<string, unknown> | null; warnings: string[]; translation?: Translation | null; activeJobId?: string | null };
+export type ResourceDetail = { resource: Resource; versions: Version[]; relations: (Resource & { relation: string })[]; modules: Module[]; position?: Position | null };
+export type BlocksResult = { version: Version; blocks: Block[]; total: number; nextCursor?: string | number | null; prevCursor?: string | number | null; pageCount?: number | null; position?: Position | null };
+export type TranslationStatus = { provider: 'argos' | 'openai'; providerLabel: string; local: boolean; apiKeyRequired: boolean; statusMessage: string; configured: boolean; keyConfigured: boolean; modelConfigured: boolean; model?: string | null; maxCharsPerJob: number; maxCharsPerDay: number; liveVerified: boolean; verifiedAt?: string | null; glossaryRuleCount?: number; reviewedPairCount?: number; glossarySources?: string[] };
+export type TranslationUsage = { sourceChars: number; localSourceChars: number; localJobs: number; remoteSourceChars: number; inputTokens: number; outputTokens: number; unknownCount: number };
+export type Bootstrap = { resources: Resource[]; modules: Module[]; glossary: Term[]; toolGuides: ToolGuide[]; notes: Note[]; bookmarks: Bookmark[]; positions: Position[]; progress: Progress[]; jobs: Job[]; settings: { fontSize: number; languageMode: LanguageMode }; translationStatus: TranslationStatus; usage: TranslationUsage };

@@ -1,0 +1,46 @@
+{
+  "name": "damodaran-study-room",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "setup": "tsx scripts/setup.ts",
+    "setup:translation": "tsx scripts/setup-translation.ts",
+    "dev": "tsx scripts/run.ts dev",
+    "worker": "tsx worker/index.ts",
+    "build": "tsx scripts/assets.ts && next build --webpack",
+    "start": "tsx scripts/run.ts start",
+    "import:core": "tsx scripts/import-core.ts",
+    "verify:translation": "tsx scripts/verify-translation.ts",
+    "verify:translation:html": "tsx scripts/verify-translation.ts --html-only",
+    "export:translation-memory": "tsx scripts/export-translation-memory.ts",
+    "backup": "tsx scripts/backup.ts",
+    "restore": "tsx scripts/restore.ts",
+    "test": "tsx --test tests/*.test.ts",
+    "test:browser": "tsx tests/browser.e2e.ts",
+    "test:smoke": "tsx scripts/smoke-browser.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "better-sqlite3": "13.0.3",
+    "cheerio": "1.2.0",
+    "dotenv": "17.4.2",
+    "iconv-lite": "0.7.3",
+    "lucide-react": "1.43.0",
+    "next": "16.3.4",
+    "openai": "7.12.1",
+    "pdfjs-dist": "5.4.624",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/better-sqlite3": "9.6.0",
+    "@types/node": "26.5.0",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "tsx": "4.23.13",
+    "typescript": "7.0.2"
+  }
+}

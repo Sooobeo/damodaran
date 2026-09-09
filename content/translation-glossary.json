@@ -1,0 +1,793 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "id": "FT01",
+      "source": "financial statements",
+      "target": "재무제표",
+      "aliases": [
+        "financial statement"
+      ],
+      "replacements": [
+        "금융 진술",
+        "금융 성명",
+        "재무 성명"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/AccPrimer/accstate.htm"
+      ],
+      "note": "재무 보고 문맥의 statements다. 일반적인 발언·성명까지 바꾸지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT02",
+      "source": "accounting statements",
+      "target": "재무제표",
+      "aliases": [
+        "accounting statement"
+      ],
+      "replacements": [
+        "회계 진술",
+        "회계 성명"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/AccPrimer/accstate.htm"
+      ],
+      "note": "이 입문 글에서는 기업의 회계 보고서들을 가리킨다. accounting 단독어의 번역 규칙은 아니다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT03",
+      "source": "balance sheet",
+      "target": "재무상태표",
+      "aliases": [
+        "balance sheets"
+      ],
+      "replacements": [
+        "잔액 시트"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/AccPrimer/accstate.htm"
+      ],
+      "note": "특정 시점의 자산·부채·자본 보고서다. 현금흐름표나 일반 balance의 의미와 구분한다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT04",
+      "source": "income statement",
+      "target": "손익계산서",
+      "aliases": [
+        "income statements"
+      ],
+      "replacements": [
+        "소득표"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/AccPrimer/accstate.htm"
+      ],
+      "note": "기간의 수익·비용·이익을 보고한다. 재무상태표의 특정 시점 기준과 구분한다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT05",
+      "source": "statement of cash flows",
+      "target": "현금흐름표",
+      "aliases": [
+        "statements of cash flows",
+        "cash flow statement",
+        "cash flow statements",
+        "cashflow statement",
+        "cashflow statements"
+      ],
+      "replacements": [
+        "현금 흐름의 성명"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "현금의 유입·유출 보고서다. cash flows 자체를 보고서 이름으로 바꾸지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT06",
+      "source": "present value",
+      "target": "현재가치",
+      "aliases": [
+        "present values"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/PVPrimer/pvprimer.htm"
+      ],
+      "note": "G01. 미래 금액을 평가 시점으로 환산한 가치다. net present value 규칙을 먼저 판별한다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT07",
+      "source": "future value",
+      "target": "미래가치",
+      "aliases": [
+        "future values"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/PVPrimer/pvprimer.htm"
+      ],
+      "note": "G02. 현재 금액을 미래 시점으로 옮긴 가치다. 일반적인 미래 전망 전체를 뜻하지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT08",
+      "source": "net present value",
+      "target": "순현재가치",
+      "aliases": [
+        "net present values"
+      ],
+      "replacements": [
+        "net 선물 값"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G07. 투자안의 할인된 유입·유출을 합한 순가치다. 현재가치와 구분하며 NPV 수식은 보존한다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT09",
+      "source": "discount rate",
+      "target": "할인율",
+      "aliases": [
+        "discount rates"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/PVPrimer/pvprimer.htm"
+      ],
+      "note": "G03. 현금흐름의 시점을 바꾸는 비율이다. 할인액과 구분하며 기간·통화 기준을 유지한다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT10",
+      "source": "internal rate of return",
+      "target": "내부수익률",
+      "aliases": [
+        "internal rates of return"
+      ],
+      "replacements": [
+        "반환의 내부 비율"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm"
+      ],
+      "note": "G08. NPV를 0으로 만드는 비율이다. return 단독어와 재투자 가정까지 일괄 변경하지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT11",
+      "source": "riskfree rate",
+      "target": "무위험수익률",
+      "aliases": [
+        "riskfree rates",
+        "risk-free rate",
+        "risk-free rates",
+        "risk free rate",
+        "risk free rates",
+        "riskless rate",
+        "riskless rates"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G09. 위험 프리미엄의 기준 수익률이다. 특정 국채의 무위험성을 이 규칙으로 판정하지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT12",
+      "source": "equity risk premium",
+      "target": "주식위험프리미엄",
+      "aliases": [
+        "equity risk premiums"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G10. 주식 위험에 대한 추가 기대수익률이다. 개별 기업의 베타와 같은 값으로 취급하지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT13",
+      "source": "cost of equity",
+      "target": "자기자본비용",
+      "aliases": [
+        "costs of equity"
+      ],
+      "replacements": [
+        "주식의 비용"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G14. 주주의 요구수익률이다. 회계상 자본 금액이나 자본비용 전체와 구분한다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT14",
+      "source": "cost of debt",
+      "target": "부채비용",
+      "aliases": [
+        "costs of debt"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G15. 차입 조달비용이다. 세전·세후 수식과 수식 밖의 한정 표현을 보존한다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT15",
+      "source": "cost of capital",
+      "target": "자본비용",
+      "aliases": [
+        "costs of capital"
+      ],
+      "replacements": [
+        "자본금의 비용"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G16. 자금 원천 전체의 비용을 가리킨다. weighted average cost of capital을 먼저 판별한다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT16",
+      "source": "weighted average cost of capital",
+      "target": "가중평균자본비용",
+      "aliases": [
+        "weighted-average cost of capital",
+        "weighted average costs of capital"
+      ],
+      "replacements": [
+        "자본의 무게가 큰 평균 비용"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/lectures/fcff.html",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G17. 자금 원천별 비용을 가중한 WACC다. 세후 부채비용과 시장가치 가중치의 계산은 바꾸지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT17",
+      "source": "default spread",
+      "target": "부도위험 스프레드",
+      "aliases": [
+        "default spreads"
+      ],
+      "replacements": [
+        "기본 스프레드"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G18. 무위험 기준에 더하는 채무불이행 위험 관련 프리미엄이다. default 단독어는 보정하지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT18",
+      "source": "interest coverage ratio",
+      "target": "이자보상배율",
+      "aliases": [
+        "interest coverage ratios"
+      ],
+      "replacements": [
+        "관심 적용 비율"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/AccPrimer/accstate.htm"
+      ],
+      "note": "G19. EBIT를 이자비용과 비교하는 배율이다. 다른 분모의 상환능력 지표와 합치지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT19",
+      "source": "return on equity",
+      "target": "자기자본이익률",
+      "aliases": [
+        "returns on equity"
+      ],
+      "replacements": [
+        "주식의 수익"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/AccPrimer/accstate.htm"
+      ],
+      "note": "G20. 회계상 순이익과 자기자본의 비율이다. cost of equity인 요구수익률과 구분한다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT20",
+      "source": "return on invested capital",
+      "target": "투하자본수익률",
+      "aliases": [
+        "returns on invested capital"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G21. 세후 영업이익과 영업 투하자본의 대응을 확인한다. return on capital을 무조건 같은 별칭으로 넣지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT21",
+      "source": "operating income",
+      "target": "영업이익",
+      "aliases": [
+        "operating incomes"
+      ],
+      "replacements": [
+        "운영 소득"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/AccPrimer/accstate.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G23. 영업 성과 문맥의 이익이다. EBIT·조정 EBIT와 재무제표상 영업이익을 항상 동일하다고 단정하지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT22",
+      "source": "net income",
+      "target": "순이익",
+      "aliases": [
+        "net incomes"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/AccPrimer/accstate.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G24. 비용·이자·세금 등을 반영한 회계 이익이다. 현금흐름 또는 주주 귀속 범위를 임의로 바꾸지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT23",
+      "source": "capital expenditures",
+      "target": "자본적 지출",
+      "aliases": [
+        "capital expenditure",
+        "capital expenses",
+        "capital expense"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm"
+      ],
+      "note": "G25. 장기간 효익을 기대하는 투자 지출이다. capital 단독어나 cost of capital과 구분한다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT24",
+      "source": "depreciation and amortization",
+      "target": "감가상각·무형자산상각",
+      "aliases": [
+        "depreciation & amortization"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/AccPrimer/accstate.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G26. 유형·무형자산 원가 배분을 함께 가리킨다. 당기 현금 지급과 같다고 해석하지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT25",
+      "source": "working capital",
+      "target": "운전자본",
+      "aliases": [],
+      "replacements": [
+        "작업 자본"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm"
+      ],
+      "note": "G27. 현금·차입 포함 범위가 문맥에 따라 다르다. non-cash working capital을 먼저 판별한다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT26",
+      "source": "non-cash working capital",
+      "target": "비현금 운전자본",
+      "aliases": [
+        "noncash working capital",
+        "non cash working capital"
+      ],
+      "replacements": [
+        "비 현금 작업 자본"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G27 관련. 현금과 이자부 부채를 제외하는 분석용 범위다. 일반 순운전자본과 합치지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT27",
+      "source": "reinvestment rate",
+      "target": "재투자율",
+      "aliases": [
+        "reinvestment rates"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G28. 영업이익 중 재투자에 쓰는 비중이다. equity reinvestment rate의 equity 한정이나 부호를 지우지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT28",
+      "source": "free cash flow to the firm",
+      "target": "기업잉여현금흐름",
+      "aliases": [
+        "free cash flows to the firm",
+        "free cash flow to firm",
+        "free cash flows to firm",
+        "free cashflow to the firm",
+        "free cashflows to the firm",
+        "free cashflow to firm",
+        "free cashflows to firm"
+      ],
+      "replacements": [
+        "회사의 무료 현금 흐름"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/lectures/fcff.html"
+      ],
+      "note": "G29. 부채·자기자본 제공자 전체에 대응하는 FCFF다. FCFE·배당·일반 현금흐름과 구분한다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT29",
+      "source": "free cash flow to equity",
+      "target": "주주잉여현금흐름",
+      "aliases": [
+        "free cash flows to equity",
+        "free cashflow to equity",
+        "free cashflows to equity"
+      ],
+      "replacements": [
+        "주식에 자유로운 현금 교류"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G30. 재투자와 순차입을 반영한 FCFE다. 실제 배당액과 반드시 같지는 않다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT30",
+      "source": "terminal value",
+      "target": "계속가치",
+      "aliases": [
+        "terminal values"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/lectures/fcff.html"
+      ],
+      "note": "G31. 기업 DCF의 예측기간 이후 가치에 쓰는 학습실 용어다. 프로젝트 청산·잔존가치와 혼동하지 않도록 완전 일치 표제에만 적용한다.",
+      "mode": "exact"
+    },
+    {
+      "id": "FT31",
+      "source": "stable growth",
+      "target": "안정성장",
+      "aliases": [
+        "stable-growth"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/lectures/fcff.html"
+      ],
+      "note": "G32. 장기에 지속 가능한 성장 상태다. growth rate를 이 표현의 별칭으로 합쳐 비율 의미를 없애지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT32",
+      "source": "intrinsic value",
+      "target": "내재가치",
+      "aliases": [
+        "intrinsic values"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://aswathdamodaran.blogspot.com/2011/06/thoughts-on-intrinsic-value.html"
+      ],
+      "note": "G33. 경제적 기초와 가정에서 추정하는 가치다. 시장가격과 같다는 판단을 추가하지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT33",
+      "source": "enterprise value",
+      "target": "기업가치",
+      "aliases": [
+        "enterprise values"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G34. 주주가치와 구분한다. firm value·현금·리스·비지배지분의 포함 범위를 자동 통일하지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT34",
+      "source": "equity value",
+      "target": "주주가치",
+      "aliases": [
+        "equity values"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G35. 주주에게 귀속되는 가치다. market capitalization 및 book value of equity와 합치지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT35",
+      "source": "market capitalization",
+      "target": "시가총액",
+      "aliases": [
+        "market capitalizations",
+        "market capitalisation",
+        "market capitalisations",
+        "market cap",
+        "market caps"
+      ],
+      "replacements": [
+        "시장 자본"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G36. 주식의 시장가치다. 부채를 포함한 enterprise value와 구분한다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT36",
+      "source": "book value",
+      "target": "장부가치",
+      "aliases": [
+        "book values"
+      ],
+      "replacements": [
+        "책 값"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/AccPrimer/accstate.htm"
+      ],
+      "note": "G37. 회계에 기록된 가치다. equity·debt·capital 등 뒤따르는 대상 한정 표현을 유지한다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT37",
+      "source": "price earnings ratio",
+      "target": "주가수익비율",
+      "aliases": [
+        "price earnings ratios",
+        "price/earnings ratio",
+        "price/earnings ratios",
+        "price-to-earnings ratio",
+        "price-to-earnings ratios",
+        "price to earnings ratio",
+        "price to earnings ratios",
+        "P/E ratio",
+        "P/E ratios",
+        "PE ratio",
+        "PE ratios"
+      ],
+      "replacements": [
+        "가격 수입 비율"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G38. 가격과 대응 이익의 배수다. 과거·현재·예상 이익과 주당 기준을 유지하며 PE 단독어는 본문 치환하지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT38",
+      "source": "price to book ratio",
+      "target": "주가순자산비율",
+      "aliases": [
+        "price to book ratios",
+        "price/book ratio",
+        "price/book ratios",
+        "price-to-book ratio",
+        "price-to-book ratios",
+        "price to book value ratio",
+        "price to book value ratios",
+        "price/book value ratio",
+        "price/book value ratios",
+        "P/B ratio",
+        "P/B ratios",
+        "PB ratio",
+        "PB ratios"
+      ],
+      "replacements": [
+        "책 비율의 가격"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G39. 주식시장가치와 장부상 자기자본의 배수다. 부채 포함 자본 배수와 구분하며 PB 단독어는 보존한다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT39",
+      "source": "unlevered beta",
+      "target": "무차입 베타",
+      "aliases": [
+        "unlevered betas"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G12. 차입 효과를 분리한 베타다. 현금 조정된 자산베타까지 무조건 같은 값으로 취급하지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT40",
+      "source": "bottom-up beta",
+      "target": "상향식 베타",
+      "aliases": [
+        "bottom-up betas",
+        "bottom up beta",
+        "bottom up betas"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "G13. 사업별 비교기업 정보로 추정하는 베타다. 특정 기업의 회귀베타와 합치지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT41",
+      "source": "current assets",
+      "target": "유동자산",
+      "aliases": [
+        "current asset"
+      ],
+      "replacements": [
+        "현재 자산"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/AccPrimer/accstate.htm"
+      ],
+      "note": "재무상태표의 단기 자산 분류다. current 단독어나 현재 자산가치 일반을 일괄 변경하지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT42",
+      "source": "current liabilities",
+      "target": "유동부채",
+      "aliases": [
+        "current liability"
+      ],
+      "replacements": [
+        "현재 책임"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/AccPrimer/accstate.htm"
+      ],
+      "note": "재무상태표의 단기 부채 분류다. 장기 차입과 같은 뜻으로 처리하지 않는다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT43",
+      "source": "earnings per share",
+      "target": "주당순이익",
+      "aliases": [],
+      "replacements": [
+        "몫 당 수입"
+      ],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/AccPrimer/accstate.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html"
+      ],
+      "note": "주식 수에 대응하는 이익 지표다. 기본·희석 기준과 보통주 귀속 범위를 유지하며 EPS 수식은 보존한다.",
+      "mode": "phrase"
+    },
+    {
+      "id": "FT44",
+      "source": "compounding",
+      "target": "복리 계산",
+      "aliases": [],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/PVPrimer/pvprimer.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm"
+      ],
+      "note": "G04. 단어만 있는 금융 표제·셀에 한정한다. 일반 문장의 복합·악화 의미를 본문에서 강제 치환하지 않는다.",
+      "mode": "exact"
+    },
+    {
+      "id": "FT45",
+      "source": "annuity",
+      "target": "연금",
+      "aliases": [
+        "annuities"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/PVPrimer/pvprimer.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm"
+      ],
+      "note": "G05. 완전 일치 금융 표제·셀에 적용한다. 현금흐름의 일정 주기·유한 기간 조건은 본문에서 따로 확인한다.",
+      "mode": "exact"
+    },
+    {
+      "id": "FT46",
+      "source": "perpetuity",
+      "target": "영구연금",
+      "aliases": [
+        "perpetuities"
+      ],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/PVPrimer/pvprimer.htm",
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm"
+      ],
+      "note": "G06. 완전 일치 금융 표제·셀에 적용한다. 일반적인 영구성 표현이나 growing perpetuity 전체를 이 규칙으로 덮지 않는다.",
+      "mode": "exact"
+    },
+    {
+      "id": "FT47",
+      "source": "A Primer on Financial Statements",
+      "target": "재무제표 입문",
+      "aliases": [],
+      "replacements": [],
+      "sources": [
+        "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/AccPrimer/accstate.htm"
+      ],
+      "note": "R01에서 확인한 제목 전체에만 적용하는 학습실 편집 제목이다. primer 단독어 또는 다른 문장의 제목 일부를 본문 치환하지 않는다.",
+      "mode": "exact"
+    }
+  ]
+}

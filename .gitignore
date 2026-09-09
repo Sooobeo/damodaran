@@ -1,0 +1,15 @@
+node_modules/
+.next/
+data/
+.env*
+!.env.example
+*.tsbuildinfo
+test-results/
+playwright-report/
+.setup.lock
+*.log
+public/pdf.worker.min.mjs
+public/pdfjs/
+.venv-translation/
+.translation/
+__pycache__/
