@@ -1,0 +1,6 @@
+# PyTorch Intel XPU is installed separately from its official wheel index.
+transformers==4.57.6
+sentencepiece==0.2.2
+safetensors==0.7.0
+sacrebleu==2.5.1
+ctranslate2==4.8.2

@@ -12,4 +12,6 @@ public/pdf.worker.min.mjs
 public/pdfjs/
 .venv-translation/
 .translation/
+.training/
+.venv-training/
 __pycache__/

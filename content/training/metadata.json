@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "finance-en-ko-synthetic-pilot-v1",
+  "createdOn": "2026-09-09",
+  "sourceLanguage": "en",
+  "targetLanguage": "ko",
+  "purpose": "Small supervised adaptation pilot for English-to-Korean financial educational prose.",
+  "provenance": "assistant-authored training; not user-reviewed",
+  "authorship": {
+    "english": "Independently composed by the assistant for this pilot.",
+    "korean": "Translated and edited by the same assistant; not a user-reviewed or professional reference translation.",
+    "thirdPartySentenceCorpusUsed": false,
+    "realUserReviewedPairs": 0,
+    "officialKoreanTranslation": false
+  },
+  "files": [
+    {
+      "path": "train.jsonl",
+      "split": "train",
+      "count": 200,
+      "domains": {
+        "finance": 160,
+        "general": 40
+      },
+      "bytes": 75885,
+      "sha256": "57a33cb6cb691b0c31fa6ab7a45e4dc8b52298bd7c77a5ded4ac744ad7e03cfc",
+      "use": "Weight updates only."
+    },
+    {
+      "path": "dev.jsonl",
+      "split": "dev",
+      "count": 40,
+      "domains": {
+        "finance": 30,
+        "general": 10
+      },
+      "bytes": 16183,
+      "sha256": "8c94b2a249b90cda542cc206f9605aee9779b301aa789f308dd11722c877fe36",
+      "use": "Checkpoint/model selection and general-language retention gating only; never include in gradient updates."
+    }
+  ],
+  "glossary": {
+    "path": "../translation-glossary.json",
+    "version": 1,
+    "rules": 47,
+    "coveredRulesInTraining": 47,
+    "annotation": "Actual English span and its Korean target; longer overlapping phrases take precedence. This is terminology annotation, not a separate set of sentence references."
+  },
+  "topicGroups": [
+    {
+      "id": "accounting",
+      "idPrefix": "train-accounting-",
+      "count": 20,
+      "conceptSourceIds": [
+        "damodaran-accounting",
+        "damodaran-glossary",
+        "damodaran-definitions"
+      ]
+    },
+    {
+      "id": "time_value",
+      "idPrefix": "train-time_value-",
+      "count": 20,
+      "conceptSourceIds": [
+        "damodaran-present-value",
+        "damodaran-glossary"
+      ]
+    },
+    {
+      "id": "risk",
+      "idPrefix": "train-risk-",
+      "count": 20,
+      "conceptSourceIds": [
+        "damodaran-glossary",
+        "damodaran-definitions"
+      ]
+    },
+    {
+      "id": "discount_rates",
+      "idPrefix": "train-discount_rates-",
+      "count": 20,
+      "conceptSourceIds": [
+        "damodaran-glossary",
+        "damodaran-definitions"
+      ]
+    },
+    {
+      "id": "cash_flows",
+      "idPrefix": "train-cash_flows-",
+      "count": 20,
+      "conceptSourceIds": [
+        "damodaran-accounting",
+        "damodaran-definitions",
+        "damodaran-fcff"
+      ]
+    },
+    {
+      "id": "growth",
+      "idPrefix": "train-growth-",
+      "count": 20,
+      "conceptSourceIds": [
+        "damodaran-fcff",
+        "damodaran-definitions"
+      ]
+    },
+    {
+      "id": "relative_value",
+      "idPrefix": "train-relative_value-",
+      "count": 20,
+      "conceptSourceIds": [
+        "damodaran-definitions",
+        "damodaran-intrinsic"
+      ]
+    },
+    {
+      "id": "judgment",
+      "idPrefix": "train-judgment-",
+      "count": 20,
+      "conceptSourceIds": [
+        "damodaran-intrinsic",
+        "damodaran-present-value"
+      ]
+    },
+    {
+      "id": "general",
+      "idPrefix": "train-general-",
+      "count": 40,
+      "conceptSourceIds": []
+    }
+  ],
+  "conceptSources": [
+    {
+      "id": "damodaran-accounting",
+      "url": "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/AccPrimer/accstate.htm",
+      "use": "Concepts of financial statements; the short verified chapter title is used in one independently written sentence."
+    },
+    {
+      "id": "damodaran-present-value",
+      "url": "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/PVPrimer/pvprimer.htm",
+      "use": "Time value of money concepts, not copied sentence pairs."
+    },
+    {
+      "id": "damodaran-glossary",
+      "url": "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/glossary.htm",
+      "use": "English financial terminology and conceptual distinctions."
+    },
+    {
+      "id": "damodaran-definitions",
+      "url": "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html",
+      "use": "Definitions and relationships among financial ratios."
+    },
+    {
+      "id": "damodaran-fcff",
+      "url": "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/lectures/fcff.html",
+      "use": "Firm cash flow and continuing business valuation concepts."
+    },
+    {
+      "id": "damodaran-intrinsic",
+      "url": "https://aswathdamodaran.blogspot.com/2011/06/thoughts-on-intrinsic-value.html",
+      "use": "Distinction between intrinsic valuation assumptions and market price."
+    }
+  ],
+  "splitPolicy": {
+    "train": "160 finance sentences from 8 concept areas; 40 independent general-language retention examples.",
+    "dev": "30 finance audit, document reconciliation, and reviewer-comment contexts plus 10 independently composed general review, communication, and troubleshooting contexts; not shuffled numeric substitutions of training examples.",
+    "test": "Assigned to a separate author without reading train/dev sentences. Test content and metadata are maintained separately.",
+    "exactSourceDuplicatesTrainDev": 0,
+    "maximumTrainDevTokenJaccard": 0.4,
+    "trainPairsAtOrAboveTokenJaccard06": 0,
+    "similarityMethod": "Lowercase English word sets; numeric sequences replaced by #; Jaccard intersection/union. This check cannot prove semantic or pretraining independence.",
+    "contaminationLimit": "Synthetic data can share common financial concepts and writing habits. No claim that the base model has never seen similar concepts or sentences."
+  },
+  "qualityChecks": {
+    "jsonlParsed": 240,
+    "uniqueIds": 240,
+    "numberAndCurrencyTokenMultisetMatches": 240,
+    "allAnnotatedSourceAndTargetSpansPresent": true,
+    "financeConceptReview": "Assistant review for meaning, conditions, negation, time basis, and equity/firm claim distinctions; not independent expert review.",
+    "numericExamples": "Invented illustrative amounts; not historical company data. Digits, percentages, and explicit currency codes are preserved.",
+    "modelPerformance": "Not assessed by dataset creation. Baseline and tuned models must be evaluated separately; improvement is not guaranteed."
+  },
+  "rightsAndAccess": {
+    "dataset": "Assistant-authored synthetic adaptation examples. No separate redistribution license is assigned by this metadata.",
+    "conceptReferences": "Source URLs establish conceptual provenance; they do not imply that source publishers created, approved, translated, or licensed this dataset.",
+    "externalCorpusDownloaded": false,
+    "externalApiOrPaidTranslationUsed": false
+  },
+  "excludedExternalCandidates": [
+    {
+      "id": "aihub-specialized-111",
+      "url": "https://aihub.or.kr/aihubdata/data/view.do?dataSetSn=111",
+      "scope": "Official page: 1.5 million paired sentences overall; finance/stocks category 200,000.",
+      "access": "Domestic-user application and download approval required. Not downloaded; no account action taken.",
+      "license": "Check dataset approval conditions and supplied license before ingestion; no CC0 claim.",
+      "downloadBytes": null
+    },
+    {
+      "id": "aihub-social-sciences-125",
+      "url": "https://aihub.or.kr/aihubdata/data/view.do?dataSetSn=125",
+      "scope": "Official target table: 1.5 million overall; economics 300,000 including finance 68,000. Actual delivered finance count not verified.",
+      "access": "Domestic-user application and download approval required. Not downloaded.",
+      "license": "Schema contains per-record source and license fields. Their actual values were not obtained.",
+      "downloadBytes": null
+    },
+    {
+      "id": "bok-terms-800",
+      "url": "https://www.bok.or.kr/portal/bbs/B0000249/view.do?menuNo=200765&nttId=10096081",
+      "scope": "2026-01-29 Korean economics/finance glossary, 800 entries; not confirmed as an English-Korean parallel sentence corpus.",
+      "access": "Public landing page and downloadable PDF; not downloaded for training.",
+      "license": "BOK copyright policy distinguishes designated public data from other website information. No training permission inferred from public access.",
+      "downloadBytes": null
+    },
+    {
+      "id": "bok-monetary-policy-2025-03",
+      "url": "https://www.bok.or.kr/eng/bbs/E0000628/view.do?depth=400215&menuNo=400215&nttId=10091096&oldMenuNo=400007&programType=newsDataEng&relate=Y",
+      "scope": "English report released 2025-04-24 explicitly identifies itself as translation of Korean report published 2025-03-13. Sentence alignment not performed.",
+      "access": "Public report page; not downloaded for training.",
+      "license": "Same BOK copyright-policy check would be required; not assumed open training data.",
+      "downloadBytes": null
+    }
+  ],
+  "accessPolicySources": [
+    "https://aihub.or.kr/useStplat.do?currMenu=110&topMenu=110",
+    "https://www.bok.or.kr/portal/main/contents.do?menuNo=200228"
+  ]
+}

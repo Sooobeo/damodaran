@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "file": "evaluation.jsonl",
+  "split": "test",
+  "frozen": true,
+  "frozenAt": "2026-09-09T08:46:12.142Z",
+  "sha256": "85d82f670f077e74ebc817583b555f5b4aae07046282170190e35a8468cbbd23",
+  "encoding": "utf-8",
+  "format": "jsonl",
+  "provenance": "assistant-authored evaluation; not user-reviewed",
+  "sourceCopiedFromDamodaran": false,
+  "userDataIncluded": false,
+  "modelOutputsViewedBeforeFreeze": false,
+  "trainDevSentencesViewedByAuthor": false,
+  "allowedUse": "Final comparison of the base model and a candidate already selected using dev only.",
+  "excludedUses": [
+    "training",
+    "data augmentation",
+    "glossary or postprocessing rule tuning",
+    "early stopping",
+    "hyperparameter tuning",
+    "checkpoint or model selection"
+  ],
+  "counts": {
+    "total": 60,
+    "finance": 40,
+    "general": 20,
+    "termMentions": 48,
+    "numericOrUnitRows": 6
+  },
+  "sourceWordCount": {
+    "method": "split on whitespace",
+    "minimum": 14,
+    "maximum": 20,
+    "mean": 17.783333333333335
+  },
+  "validation": {
+    "schemaPassed": true,
+    "uniqueIds": true,
+    "uniqueNumericNormalizedSources": true,
+    "termsMatchSourceTargetAndGlossary": true,
+    "numericAndUnitTokensPreserved": true,
+    "normalization": "lowercase; replace decimal numbers with #; replace characters outside a-z, #, and spaces with spaces; collapse whitespace",
+    "crossSplitPairsCompared": 13800,
+    "crossSplitExactDuplicates": 0,
+    "crossSplitNumericNormalizedDuplicates": 0,
+    "maximumTokenSetJaccard": {
+      "score": 0.36363636363636365,
+      "testId": "TEST-F21",
+      "otherId": "train-discount_rates-06"
+    },
+    "maximumCharacter4gramSetJaccard": {
+      "score": 0.3382352941176471,
+      "testId": "TEST-F22",
+      "otherId": "train-discount_rates-08"
+    },
+    "comparedFiles": [
+      {
+        "file": "train.jsonl",
+        "rows": 200,
+        "sha256": "57a33cb6cb691b0c31fa6ab7a45e4dc8b52298bd7c77a5ded4ac744ad7e03cfc"
+      },
+      {
+        "file": "dev.jsonl",
+        "rows": 30,
+        "sha256": "17c5e5737b4ea29ea04495a62e66c060fb1ec0fa217af67e0e2d644ea27a516d"
+      }
+    ]
+  },
+  "subsequentCrossSplitChecks": [
+    {
+      "checkedAt": "2026-09-09T08:48:55.337Z",
+      "reason": "Ten independently authored general rows added to dev for retention evaluation.",
+      "testSha256Unchanged": true,
+      "trainRows": 200,
+      "devRows": 40,
+      "devSha256": "8c94b2a249b90cda542cc206f9605aee9779b301aa789f308dd11722c877fe36",
+      "crossSplitPairsCompared": 14400,
+      "crossSplitExactDuplicates": 0,
+      "crossSplitNumericNormalizedDuplicates": 0,
+      "maximumTokenSetJaccard": 0.36363636363636365,
+      "maximumCharacter4gramSetJaccard": 0.3382352941176471
+    }
+  ],
+  "limitations": [
+    "Assistant-authored references have not been reviewed by the user or a domain expert.",
+    "A small sample with one reference per sentence cannot establish general translation quality.",
+    "Lexical similarity checks do not prove semantic independence.",
+    "If train or dev changes, rerun overlap checks without altering this frozen test file."
+  ]
+}

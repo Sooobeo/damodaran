@@ -67,6 +67,18 @@ npm run verify:translation:html
 
 이 PC에서 실행 환경과 모델은 합계 약 1.28 GB를 사용했다. 첫 모델 열기는 보통 수 초였지만 한 번은 222초가 걸렸으며 원인은 확정하지 못했다. 시작과 개별 번역 요청은 각각 최대 5분까지 기다리고, 시간이 초과되면 실패를 표시한다. 준비 후에는 같은 worker에서 모델을 재사용한다.
 
+## 실제 모델 가중치 미세조정
+
+최신 사용자 승인으로 무료 공개 Marian 모델을 금융 영한 문장에 맞춰 추가 학습하는 도구를 넣었다. [Helsinki-NLP/opus-mt-tc-big-en-ko](https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-ko)의 고정 revision `ae8606b7b29a495f31ce679cee2007f536a3a5ce`를 사용한다. 실제로 불러온 모델은 전체 211,223,552개, 학습 가능한 파라미터는 209,126,400개다. 기존 Argos의 용어 사후 보정과 별도로 실제 가중치를 갱신한다.
+
+학습 환경은 `.venv-training/`, 기반 모델·체크포인트·평가 기록은 `.training/`에 둔다. `npm run setup:training`으로 설치하고 이후 학습·평가는 로컬 파일만 사용한다. 앱의 기본 Argos 환경과 운영 DB는 그대로 사용한다. 학습된 결과가 자동으로 앱 기본 번역기를 바꾸지는 않는다.
+
+초기 데이터는 train 200쌍(금융 160·일반 40), dev 40쌍(금융 30·일반 10), 독립 최종 test 60쌍이다. 모두 도우미가 작성한 미검수 보조 문장으로, 실제 사용자 검수쌍이나 다모다란 공식 한국어 번역이 아니다. [데이터 출처·분할 기준](content/training/README.md)을 확인할 수 있다. dev로 모델을 선택하고 최종 test로 다시 학습을 조정하지 않는다.
+
+현재 Intel Arc 140V에서 실제 optimizer 갱신 2회를 확인했고 본학습을 진행 중이다. 최종 평가 통과·번역 품질 향상·앱 적용 완료는 아직 보고하지 않는다. 금융 용어뿐 아니라 일반 문장 품질과 숫자 보존을 함께 비교한다. 실행 단계, 옵션과 중단·재개 방법은 [학습 도구 안내](scripts/model-training/README.md), 실제 결과는 [구현 상태](IMPLEMENTATION_STATUS.md)를 따른다.
+
+`.training/`의 학습 가중치·체크포인트·optimizer 상태·평가 기록은 **DB 백업에 포함되지 않는다.** 학습을 정상 중단하거나 완료한 뒤 실행 폴더와 사용한 데이터·설치 명세를 별도 저장소에 보관한다. 기반 모델 재설치만으로 개인 미세조정 결과를 복구할 수는 없다.
+
 ## 선택형 OpenAI 번역
 
 OpenAI를 사용하려는 경우에만 `.env.local`을 다음처럼 설정하고 웹과 worker를 재시작한다. 기본 로컬 번역에 이 설정은 필요 없다.
@@ -92,6 +104,8 @@ data/
   tmp/                 임시 파일
 .venv-translation/     재설치 가능한 Python 가상환경
 .translation/          로컬 번역 모델·설치 정보
+.venv-training/        별도 모델 학습 Python 환경
+.training/             기반 모델·개인 학습 가중치·체크포인트·평가 기록
 ```
 
 DB는 `better-sqlite3`와 버전 관리하는 SQL 마이그레이션으로 관리한다. WAL·외래키·busy timeout·짧은 트랜잭션을 적용했다. 설치한 드라이버의 SQLite 런타임은 3.53.4다. 초기 Drizzle 후보 대신 직접 파라미터 SQL을 선택하여 복합 외래키·작업 lease·네이티브 백업을 한 계층에서 관리한다.
@@ -107,6 +121,8 @@ npm run backup
 ```
 
 SQLite 백업 API로 DB 스냅샷을 만들고 그 DB가 참조하는 원본·자산 파일을 복사한다. DB에 기록된 해시·크기와 실제 파일을 대조하고 manifest를 남긴다. `.env.local`과 키, 재설치 가능한 Python 환경·모델은 제외한다. 새 PC에서는 `npm run setup:translation`으로 번역 환경을 다시 준비한다. 실행 중인 SQLite 파일 하나를 수동 복사하지 않는다.
+
+별도 미세조정 작업의 `.training/`도 이 백업 대상에 포함되지 않는다. 이 안의 개인 학습 결과는 재설치 가능한 기본 모델과 다르므로 위의 별도 보관 절차를 따른다.
 
 복원은 기존 데이터와 다른 **존재하지 않는 새 폴더**를 지정한다.
 
@@ -145,11 +161,18 @@ npm start
 | `npm run verify:translation` | 현재 제공자의 실제 HTML 3문단·PDF 1페이지 번역·캐시 검증 |
 | `npm run verify:translation:html` | 실제 HTML 3문단만 번역 검증, 범위 명시 |
 | `npm run export:translation-memory` | 검수된 영한 문장쌍을 로컬 JSONL로 내보내기. 학습 실행 없음 |
+| `npm run setup:training` | 격리된 학습 Python 환경·고정 공개 Marian 모델 설치 |
+| `npm run bench:model -- --run-id <ID>` | 실제 optimizer 시험 갱신·가중치 변화·시간 확인. 시험 가중치는 본학습에 사용하지 않음 |
+| `npm run train:model -- --run-id <ID>` | train으로 가중치 학습·체크포인트 저장·dev 평가와 선택 |
+| `npm run evaluate:model -- --run-id <ID>` | 고정 최종 test에서 기반 모델과 선택한 학습 모델 비교 |
+| `npm run export:model -- --run-id <ID>` | 평가 기준을 통과한 모델의 배포 형식 변환. 앱 적용·추론 동등성 검증과 별개 |
 | `npm run backup` / `npm run restore -- ...` | 백업 / 새 폴더 복원 |
 | `npm run typecheck` | TypeScript 검사 |
 | `npm test` | 임시 DATA_DIR에서 저장·추출·작업·번역 무결성 테스트 |
 | `npm run test:browser` | 격리된 DB·웹·worker에서 저장·PDF·재시작 브라우저 검증 |
 | `npm run test:smoke` | 실행 중인 웹의 PC·모바일 주요 화면 확인 |
+
+학습 명령의 `<ID>`는 같은 실험에 사용할 실행 ID로 바꾼다. 학습·최종 평가·내보내기는 순서와 전제조건이 있으므로 [학습 도구 안내](scripts/model-training/README.md)를 먼저 따른다. 순수 학습 판정 테스트는 `.venv-training/Scripts/python.exe scripts/model-training/test_training.py`로 실행한다.
 
 브라우저 검증에는 이 PC에 설치된 Google Chrome이 필요하다. `test:browser`는 먼저 프로덕션 빌드를 완료하고 R01 원문을 가져온 상태에서 실행한다. 운영 DB를 백업·복원한 임시 사본과 포트 3011을 사용하며 원본 메모·진도는 바꾸지 않는다. T01을 미리 가져오면 실제 Excel 파일 해시도 확인한다. 결과는 `test-results/browser-e2e.json`에 남는다.
 

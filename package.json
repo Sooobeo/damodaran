@@ -6,6 +6,11 @@
   "scripts": {
     "setup": "tsx scripts/setup.ts",
     "setup:translation": "tsx scripts/setup-translation.ts",
+    "setup:training": "tsx scripts/train-model.ts setup",
+    "bench:model": "tsx scripts/train-model.ts bench",
+    "train:model": "tsx scripts/train-model.ts train",
+    "evaluate:model": "tsx scripts/train-model.ts evaluate",
+    "export:model": "tsx scripts/train-model.ts export",
     "dev": "tsx scripts/run.ts dev",
     "worker": "tsx worker/index.ts",
     "build": "tsx scripts/assets.ts && next build --webpack",
