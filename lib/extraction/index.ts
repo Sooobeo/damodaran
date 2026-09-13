@@ -3,7 +3,8 @@ import iconv from 'iconv-lite';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { APP_ROOT, config } from '../config';
-import { PipelineError } from '../sources';
+import { EXTRACTOR_VERSION, PDF_EXTRACTOR_V1, PDF_EXTRACTOR_VERSION, PipelineError } from '../sources';
+import { pdfParagraphs } from './pdf-paragraphs';
 
 export type ExtractedBlock={type:string;text:string;pageIndex?:number;bbox?:number[];structure?:Record<string,unknown>;warnings:string[]};
 export type ExtractedDocument={title:string|null;blocks:ExtractedBlock[];links:Array<{url:string;text:string}>;images:Array<{url:string;alt:string}>;pageCount:number|null;warnings:string[];status:'ready'|'partial'|'ocr_needed'};
@@ -62,7 +63,10 @@ export function extractHtml(bytes:Buffer,finalUrl:string,contentType=''):Extract
   return {title,blocks,links:links.slice(0,300),images,pageCount:null,warnings,status:'ready'};
 }
 
-export async function extractPdf(bytes:Buffer):Promise<ExtractedDocument> {
+// Direct legacy callers retain their original extraction contract. Persisted
+// versions must pass their recorded identity; new imports explicitly use v2.
+export async function extractPdf(bytes:Buffer,extractorVersion:string=EXTRACTOR_VERSION):Promise<ExtractedDocument> {
+  if(![EXTRACTOR_VERSION,PDF_EXTRACTOR_V1,PDF_EXTRACTOR_VERSION].includes(extractorVersion))throw new PipelineError('UNSUPPORTED_EXTRACTOR','저장된 PDF 추출기 버전을 지원하지 않습니다. 기존 원문을 확인하세요.');
   const pdfjs=await import('pdfjs-dist/legacy/build/pdf.mjs');
   const task=pdfjs.getDocument({data:new Uint8Array(bytes),isEvalSupported:false,useSystemFonts:true,disableFontFace:true,standardFontDataUrl:pathToFileURL(path.join(APP_ROOT,'node_modules/pdfjs-dist/standard_fonts/')).href});
   let pdf;try{pdf=await task.promise;}catch{throw new PipelineError('INVALID_PDF','PDF를 열 수 없습니다. 암호 또는 손상 여부를 확인하세요.');}
@@ -74,6 +78,13 @@ export async function extractPdf(bytes:Buffer):Promise<ExtractedDocument> {
       try{
         const page=await pdf.getPage(pageIndex+1),viewport=page.getViewport({scale:1}),content=await page.getTextContent();
         const items=content.items.filter((x):x is typeof x & {str:string;transform:number[];width:number;height:number;hasEOL:boolean}=>'str' in x);
+        if(extractorVersion===PDF_EXTRACTOR_V1||extractorVersion===PDF_EXTRACTOR_VERSION){
+          const paragraphVersion=extractorVersion===PDF_EXTRACTOR_V1?1:2;
+          const paragraphs=pdfParagraphs(items,viewport,6000,paragraphVersion);
+          if(paragraphs.map(p=>p.text).join('').trim().length<8){blank++;warnings.push(`${pageIndex+1}페이지: 텍스트가 적어 OCR 또는 원본 확인이 필요합니다.`);}
+          for(const paragraph of paragraphs)blocks.push({type:'paragraph',text:paragraph.text,pageIndex,bbox:paragraph.bbox,structure:{schemaVersion:1,pdfParagraphVersion:paragraphVersion,lineCount:paragraph.lineBoxes.length,lineBoxes:paragraph.lineBoxes},warnings:paragraph.ambiguousLayout?['표·수식·다단 또는 회전 텍스트가 있어 줄 병합을 하지 않았습니다. 원본 PDF와 대조하세요.']:['문단 경계는 보수적으로 추정했습니다. 원본 PDF와 대조하세요.']});
+          page.cleanup();continue;
+        }
         let lines:Array<{text:string;x:number;y:number;width:number;height:number}>=[],line:{text:string;x:number;y:number;width:number;height:number}|null=null;
         for(const item of items){
           if(!item.str.trim())continue;const x=item.transform[4],y=item.transform[5];

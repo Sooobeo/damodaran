@@ -1,0 +1,243 @@
+{
+  "version": "real-reading-check-20260910-v1",
+  "status": "frozen",
+  "createdAt": "2026-09-10T10:24:13.315443+00:00",
+  "purpose": "small follow-up comparison using actual public learning text; not independent final quality certification",
+  "humanReviewed": false,
+  "referencesHumanReviewed": false,
+  "selectionSawModelOutputs": false,
+  "selectionOrder": {
+    "resourcePriority": [
+      "R02",
+      "R05"
+    ],
+    "versionRule": "stored ready structured-v2 version identified before selection",
+    "paragraphRule": "ascending sort_order; first six satisfying all criteria",
+    "selectedResourceIds": [
+      "R02"
+    ]
+  },
+  "eligibility": [
+    "60-140 English alphanumeric words using documented normalization",
+    "one unchanged stored paragraph",
+    "self-contained propositions; exclude external figures/tables/formula continuations and essential unresolved references",
+    "exclude known prior source block IDs and any eight consecutive normalized source tokens matching Q26, v5 train/dev/test or earlier operational Hy-MT source blocks",
+    "exclude U+FFFD source encoding damage"
+  ],
+  "wordTokenPattern": "[a-z0-9]+(?:'[a-z]+)?",
+  "sourceNormalization": "none for stored source; lower-case/canonical apostrophe tokenization is used only for counting and overlap detection",
+  "inferenceInputFields": [
+    "id",
+    "source",
+    "context",
+    "domain",
+    "sourceSha256",
+    "contextSha256"
+  ],
+  "evaluationFileExcludedFromInference": "assistant-reference.jsonl",
+  "dataset": {
+    "file": "sources.jsonl",
+    "sha256": "becd55204f1533adf68c0512638f17db676d4848a175367c841ed71fca34f8d0",
+    "count": 6,
+    "ids": [
+      "REAL26-001",
+      "REAL26-002",
+      "REAL26-003",
+      "REAL26-004",
+      "REAL26-005",
+      "REAL26-006"
+    ]
+  },
+  "references": {
+    "file": "assistant-reference.jsonl",
+    "sha256": "14ba0102578b660026fef9a094bbdfbaecc3767a861e20ab7585ed225406baef",
+    "count": 6
+  },
+  "priorInputExclusionSources": [
+    {
+      "path": ".training/comparisons/finance-quality-20260910/dataset.jsonl",
+      "sha256": "73fb2b2c4291090e49205aeff34cecfa24132d91c19522834fe779139a457737",
+      "count": 24,
+      "fieldsReadForComparison": [
+        "source",
+        "id",
+        "sourceBlockId"
+      ]
+    },
+    {
+      "path": ".training/datasets/finance-v5/train.jsonl",
+      "sha256": "0b1395d3050a09a1951b1ddc48f2be47f7732a91789e8c1beb87869ec0a0a7f3",
+      "count": 1152,
+      "fieldsReadForComparison": [
+        "source",
+        "id",
+        "sourceBlockId"
+      ]
+    },
+    {
+      "path": ".training/datasets/finance-v5/dev.jsonl",
+      "sha256": "6f42a31d85c7a5eaf03dd65bbeb2d169318cfc39acce4dae8d20b6e523eb2398",
+      "count": 140,
+      "fieldsReadForComparison": [
+        "source",
+        "id",
+        "sourceBlockId"
+      ]
+    },
+    {
+      "path": ".training/datasets/finance-v5/test.jsonl",
+      "sha256": "5c94c92530f31eb240d57634d54e4006a8d3918ce2b8edff3daec7e3a41878a1",
+      "count": 140,
+      "fieldsReadForComparison": [
+        "source",
+        "id",
+        "sourceBlockId"
+      ]
+    }
+  ],
+  "priorOperationalBlockCount": 3,
+  "priorOperationalTranslationOutputsRead": false,
+  "manualSelectionDecisions": [
+    {
+      "sortOrderZeroBased": 1,
+      "sourceBlockId": "64b60ecc-2eba-4e4e-b6e5-e247c3edc67e",
+      "selected": true,
+      "reason": "first self-contained eligible paragraph in fixed order"
+    },
+    {
+      "sortOrderZeroBased": 3,
+      "sourceBlockId": "4242fb7f-62a6-488c-8f92-420ce4750a31",
+      "selected": false,
+      "reason": "references Figure 3.1 for the depicted timeline"
+    },
+    {
+      "sortOrderZeroBased": 12,
+      "sourceBlockId": "726c8c04-d991-4af0-9de0-0f061636af3a",
+      "selected": true,
+      "reason": "first self-contained eligible paragraph in fixed order"
+    },
+    {
+      "sortOrderZeroBased": 14,
+      "sourceBlockId": "27cf2e57-0058-4ee9-8823-dc3fd7348bd0",
+      "selected": true,
+      "reason": "first self-contained eligible paragraph in fixed order"
+    },
+    {
+      "sortOrderZeroBased": 15,
+      "sourceBlockId": "7a24fd16-eac9-4069-aff2-b24b547f6f58",
+      "selected": false,
+      "reason": "these factors and above mentioned factors require preceding list"
+    },
+    {
+      "sortOrderZeroBased": 26,
+      "sourceBlockId": "d34fc8a6-be5c-4989-aea6-a7508411bd4e",
+      "selected": false,
+      "reason": "ends with formula lead-in as follows"
+    },
+    {
+      "sortOrderZeroBased": 34,
+      "sourceBlockId": "e673f914-7d85-4561-94f5-fea1ace8d6d2",
+      "selected": false,
+      "reason": "ends with unfinished computation lead-in"
+    },
+    {
+      "sortOrderZeroBased": 48,
+      "sourceBlockId": "97f76bd4-f738-40fe-b7df-5c154f354358",
+      "selected": false,
+      "reason": "uses external Table 3.1 values"
+    },
+    {
+      "sortOrderZeroBased": 51,
+      "sourceBlockId": "adf8e2c8-c884-454a-9602-bd98f90d4bef",
+      "selected": true,
+      "reason": "first self-contained eligible paragraph in fixed order"
+    },
+    {
+      "sortOrderZeroBased": 53,
+      "sourceBlockId": "e0621abd-c4e8-416a-8349-872f4812b34b",
+      "selected": true,
+      "reason": "first self-contained eligible paragraph in fixed order"
+    },
+    {
+      "sortOrderZeroBased": 55,
+      "sourceBlockId": "937d0622-24a0-453d-a5a6-38ec6995ce7b",
+      "selected": false,
+      "reason": "refers to preceding examples and external figure"
+    },
+    {
+      "sortOrderZeroBased": 98,
+      "sourceBlockId": "18fbac4b-f6c2-43bd-b2d0-e7cd34a020d2",
+      "selected": false,
+      "reason": "second and third annuities require prior scenario"
+    },
+    {
+      "sortOrderZeroBased": 101,
+      "sourceBlockId": "5db60f0e-1467-4b56-a47c-e7cdd0cee679",
+      "selected": false,
+      "reason": "ends with examined below lead-in"
+    },
+    {
+      "sortOrderZeroBased": 113,
+      "sourceBlockId": "ca982919-3d14-4ae5-a105-3d6fc9d2c614",
+      "selected": false,
+      "reason": "external figure/table or continuation-dependent example"
+    },
+    {
+      "sortOrderZeroBased": 119,
+      "sourceBlockId": "c809a2ad-f77a-44c8-a20a-77fdde237418",
+      "selected": false,
+      "reason": "ends with symbolic formula lead-in"
+    },
+    {
+      "sortOrderZeroBased": 122,
+      "sourceBlockId": "d8f8aab3-55f6-4e9b-8e64-1cc19e7770d0",
+      "selected": false,
+      "reason": "ends with amount calculation lead-in"
+    },
+    {
+      "sortOrderZeroBased": 126,
+      "sourceBlockId": "99ab517b-15d9-4f6a-8ae6-7b74b94179a9",
+      "selected": false,
+      "reason": "chapter-relative end/beginning illustration continues outside paragraph"
+    },
+    {
+      "sortOrderZeroBased": 139,
+      "sourceBlockId": "90ec9c52-4c3e-4fc2-a2ad-0d92d7af9119",
+      "selected": false,
+      "reason": "ends with missing higher-value result"
+    },
+    {
+      "sortOrderZeroBased": 155,
+      "sourceBlockId": "ac009de9-9559-4883-a9eb-4aa9c8b55c2e",
+      "selected": false,
+      "reason": "external figure/table or continuation-dependent example"
+    },
+    {
+      "sortOrderZeroBased": 220,
+      "sourceBlockId": "80d3a955-30c1-45e9-acaa-717109a29b79",
+      "selected": true,
+      "reason": "first self-contained eligible paragraph in fixed order"
+    }
+  ],
+  "selectionAuditPath": ".training\\comparisons\\real-reading-check-20260910\\selection-candidates.json",
+  "selectionAuditSha256": "3624768a3e0bec226df5ce043832e1b29543ce6fc76fae6759f49c48046a5171",
+  "limitations": [
+    "single current-value-primer document; not representative of all finance genres",
+    "assistant references have not been checked by a human",
+    "historical numerical examples are translated as source scenarios, not current facts",
+    "eight-token exclusion is a conservative lexical screen, not a proof of absence of all semantic similarity"
+  ],
+  "frozenAt": "2026-09-10T10:34:04.276725+00:00",
+  "reviewAdvisory": {
+    "file": "review-advisory.json",
+    "sha256": "fde0755683d1cc85b94cd5cf7e544d04977feb08eab399bf1909b73ca0175c78",
+    "evaluationOnly": true,
+    "inferenceInput": false
+  },
+  "freezeReview": {
+    "reviewerType": "assistant",
+    "humanReviewed": false,
+    "sourceAndReferenceChanged": false,
+    "realReadingModelOutputsObserved": false
+  }
+}

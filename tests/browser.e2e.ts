@@ -165,6 +165,65 @@ try {
     await navigate('/library'); await page!.getByLabel('파일 형식', { exact: true }).selectOption('xls');
     await expect(page!.locator('.resource-card')).toHaveCount(9); assert.ok(new URL(page!.url()).searchParams.get('format') === 'xls');
   });
+  await step('외부 원문 보관과 로컬 보관본 다운로드 UI 구분', async () => {
+    await navigate('/resources/R01');
+    await expect(page!.getByRole('heading', { name: '보관한 원문', exact: true })).toBeVisible();
+    const r01 = initial.resources.find(r => r.id === 'R01'); assert.ok(r01?.url);
+    const r01Detail = await request<ResourceDetail>('/api/resources/R01');
+    const savedOriginals = page!.locator('.stored-source-panel .version-download');
+    await expect(savedOriginals).toHaveCount(r01Detail.versions.length);
+    const downloadNames = await savedOriginals.evaluateAll(links => links.map(link => link.getAttribute('aria-label')));
+    assert.equal(new Set(downloadNames).size, downloadNames.length, '원문 버전 다운로드 이름은 서로 달라야 합니다.');
+    const savedOriginal = page!.getByRole('link', { name: /보관본 다운로드/ }).first();
+    await expect(savedOriginal).toHaveAttribute('href', /\/api\/resources\/R01\/original\?versionId=/); await expect(savedOriginal).toHaveAttribute('download', '');
+    await expect(savedOriginal).not.toHaveAttribute('target', '_blank');
+    const sourceSite = page!.getByRole('link', { name: '보관하지 않고 원저자 사이트 열기 (새 탭)', exact: true });
+    await expect(sourceSite).toHaveAttribute('href', r01.url); await expect(sourceSite).toHaveAttribute('target', '_blank'); await expect(sourceSite).toHaveAttribute('rel', /noreferrer/); await expect(sourceSite).not.toHaveAttribute('download', '');
+    await expect(page!.getByRole('button', { name: '새 원문 확인', exact: true })).toBeVisible();
+    await expect(page!.getByRole('region', { name: '새 원문 버전 확인', exact: true })).toBeVisible();
+    await expect(page!.getByLabel('원저자 사이트에서 앱 보관함으로')).toBeVisible();
+
+    await navigate('/tools/capital-budgeting');
+    const originalPanel = page!.locator('.original-file-panel');
+    await expect(originalPanel.getByLabel('앱 보관함에서 내 파일로')).toBeVisible(); await expect(originalPanel.getByLabel('원저자 사이트에서 앱 보관함으로')).toBeVisible();
+    await expect(originalPanel).toContainText('인터넷 불필요'); await expect(originalPanel).toContainText('인터넷 필요');
+    const excel = initial.resources.find(r => r.id === 'T02'); assert.ok(excel);
+    assert.ok(excel.url);
+    const directSource = originalPanel.getByRole('link', { name: '앱에 보관하지 않고 원저자 파일 열기 (새 탭)', exact: true });
+    await expect(directSource).toHaveAttribute('href', excel.url); await expect(directSource).toHaveAttribute('target', '_blank'); await expect(directSource).toHaveAttribute('rel', /noreferrer/); await expect(directSource).not.toHaveAttribute('download', '');
+    if (excel.versionId) {
+      await expect(originalPanel.locator('.source-action-section').first()).toContainText('보관본 다운로드');
+      await expect(originalPanel.getByRole('region', { name: '보관본 다운로드', exact: true })).toBeVisible();
+      await expect(originalPanel.getByRole('region', { name: '새 원본 확인', exact: true })).toBeVisible();
+      const localDownload = originalPanel.getByRole('link', { name: '보관본 다운로드', exact: true });
+      await expect(localDownload).toHaveAttribute('href', `/api/resources/T02/original?versionId=${excel.versionId}`); await expect(localDownload).toHaveAttribute('download', '');
+      await expect(localDownload).not.toHaveAttribute('target', '_blank');
+      await expect(originalPanel.getByRole('button', { name: '새 원본 확인', exact: true })).toBeVisible();
+    } else {
+      await expect(originalPanel.locator('.source-action-section').first()).toContainText('원본 가져오기');
+      await expect(originalPanel.getByRole('button', { name: '원본 가져오기', exact: true })).toBeVisible();
+    }
+    await originalPanel.screenshot({ path: path.join(resultsDirectory, 'e2e-source-actions-desktop.png') });
+    const unarchivedGuide = initial.toolGuides.find(guide => {
+      const resource = initial.resources.find(item => item.id === guide.resourceId);
+      return resource?.url && !resource.versionId;
+    });
+    if (unarchivedGuide) {
+      await navigate(`/tools/${unarchivedGuide.slug}`);
+      const unarchivedPanel = page!.locator('.original-file-panel');
+      await expect(unarchivedPanel.locator('.source-action-section').first()).toContainText('원본 가져오기');
+      await expect(unarchivedPanel.getByRole('button', { name: '원본 가져오기', exact: true })).toBeVisible();
+      await expect(unarchivedPanel.getByRole('region', { name: '보관본 다운로드', exact: true })).toContainText('아직 없음');
+    }
+    await page!.setViewportSize({ width: 390, height: 844 }); await navigate('/tools/capital-budgeting');
+    await expect(page!.getByRole('heading', { name: '원본 Excel 파일', exact: true })).toBeInViewport();
+    await expect(page!.locator('.original-file-panel').getByLabel('앱 보관함에서 내 파일로')).toBeVisible();
+    assert.equal(await page!.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false, '원본 동작 패널 모바일 가로 넘침');
+    await page!.locator('.original-file-panel').screenshot({ path: path.join(resultsDirectory, 'e2e-source-actions-mobile.png') });
+    await navigate('/resources/R01'); await expect(page!.getByRole('link', { name: /보관본 다운로드/ }).first()).toBeVisible();
+    assert.equal(await page!.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false, '자료 원문 패널 모바일 가로 넘침');
+    await page!.setViewportSize({ width: 1440, height: 1000 });
+  });
   await step('영문·약어 용어 검색과 정의 표시', async () => {
     await navigate('/glossary'); await page!.getByLabel('금융 용어 검색', { exact: true }).fill('WACC'); await page!.getByRole('button', { name: '검색', exact: true }).click();
     await expect(page!.locator('.glossary-list>a')).toHaveCount(1); await expect(page!.locator('.term-article')).toContainText('가중평균');

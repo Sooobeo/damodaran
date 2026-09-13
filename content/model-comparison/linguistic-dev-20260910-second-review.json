@@ -1,0 +1,53 @@
+{
+  "version": "linguistic-dev-20260910-second-review-v1",
+  "reviewerType": "assistant",
+  "reviewerId": "root",
+  "humanReviewed": false,
+  "completed": true,
+  "modelOutputsViewedBeforeJudgment": false,
+  "inputSha256": "1519fb370a2041ee0cdb153d364074495df37a4031a5464183f9ee7029a605d8",
+  "outputSha256": "b8a2b91802e36d96654631a9965566f774e050ea4139ca7270d9f84d2a916848",
+  "rowCount": 18,
+  "reviewedIds": [
+    "LDEV26-001",
+    "LDEV26-002",
+    "LDEV26-003",
+    "LDEV26-004",
+    "LDEV26-005",
+    "LDEV26-006",
+    "LDEV26-007",
+    "LDEV26-008",
+    "LDEV26-009",
+    "LDEV26-010",
+    "LDEV26-011",
+    "LDEV26-012",
+    "LDEV26-013",
+    "LDEV26-014",
+    "LDEV26-015",
+    "LDEV26-016",
+    "LDEV26-017",
+    "LDEV26-018"
+  ],
+  "sourceGrounded": true,
+  "comment": "Root가 모델 출력을 보지 않은 상태에서 전체 18개 원문·참조·핵심 주석을 검토하고 의미 대립·부정·조건 설계를 승인했다. 001/002의 reimbursement를 대출금 상환으로 오인하지 않도록 비용 보전 표현으로 다듬고 의미 주석을 추가하라는 의견을 반영했다.",
+  "corrections": [
+    {
+      "id": "LDEV26-001",
+      "fields": [
+        "reference",
+        "omissionAdditionChecks"
+      ],
+      "reason": "여기서 상환/보전은 이미 지출한 검사 비용을 되돌려주는 의미다. 대출금이나 이자 지급이라고 추가하면 안 된다."
+    },
+    {
+      "id": "LDEV26-002",
+      "fields": [
+        "reference",
+        "omissionAdditionChecks"
+      ],
+      "reason": "여기서 상환/보전은 이미 지출한 검사 비용을 되돌려주는 의미다. 대출금이나 이자 지급이라고 추가하면 안 된다."
+    }
+  ],
+  "sourcesChanged": false,
+  "recordedBy": "v5_train_b_from_root_review_message"
+}

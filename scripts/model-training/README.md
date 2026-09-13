@@ -4,7 +4,7 @@
 
 2026-09-09 실행 `finance-v3`의 학습과 원본 FP32 모델의 최종 평가를 완료했다. 약 2.09억 개 학습 가능 파라미터를 150회 갱신하고 dev로 step 100을 선택했다. 고정 test 60문장에서 금융 용어 표기 적중은 15/48 → 25/48, 전체 chrF는 30.669 → 34.473이었다. 실제 tensor 변화와 평가의 한계는 [학습 결과 보고서](../../content/training/TRAINING_REPORT.md)에 기록했다.
 
-현재 앱 기본은 **Argos**다. CTranslate2 INT8 변환과 시작 가중치를 보존한 수정본까지 실제로 검증했지만, 수정본의 금융 BLEU가 원본보다 1.111점 낮아 허용 하락 1점 기준을 통과하지 못했다. 일반 문장 기준은 수정본에서 통과했다. 학습된 FP32 원본은 아래 `infer:model`로 사용할 수 있다. 최종 test는 이미 사용했으므로 이를 보고 재학습하거나 기준 번역을 바꾸지 않는다.
+설정을 생략한 초기 앱 기본값은 **Argos**다. 이 PC는 이후 별도 비교·앱 검증을 거쳐 Hy-MT2 7B를 명시 선택했으며, 현재 등록과 후속 비교는 [전체 품질 기록](../../content/model-comparison/QUALITY_LOCAL_REPORT.md)과 [언어학적 비교 기록](../../content/model-comparison/LINGUISTIC_COMPARISON_REPORT.md)에 구분한다. 아래 Marian 모델의 CTranslate2 INT8 변환과 시작 가중치를 보존한 수정본까지 실제로 검증했지만, 수정본의 금융 BLEU가 원본보다 1.111점 낮아 허용 하락 1점 기준을 통과하지 못했다. 일반 문장 기준은 수정본에서 통과했다. 학습된 FP32 원본은 아래 `infer:model`로 사용할 수 있다. 최종 test는 이미 사용했으므로 이를 보고 재학습하거나 기준 번역을 바꾸지 않는다.
 
 ## 기반 모델과 설치
 
@@ -47,7 +47,7 @@ py -3.11 scripts/model-training/setup.py
 
 최종 기준을 통과한 실행만 `export_model.py --run-id finance-v3`로 CTranslate2 INT8 형식으로 변환할 수 있다. 현재 `npm.cmd run export:model`도 이 별도 스크립트를 실행한다. 학습 당시 `train.py`의 원래 export 구현은 재현 기록으로 보존하지만 새 배포에는 사용하지 않는다. 변환 이후의 번역 품질 비교·숫자 보존·앱 저장과 캐시는 별도 확인 대상이며, 변환 명령만으로 앱 설정은 바뀌지 않는다.
 
-전체 학습·추론 도구 검증: `npm run test:model`. 현재 Python 검사 48개를 실행한다.
+전체 학습·추론 도구 검증: `npm run test:model`. 현재 Python 검사 97개를 실행한다.
 
 ## 학습된 모델 사용과 앱 등록
 
@@ -80,6 +80,34 @@ npm.cmd run register:model -- --run-id finance-v3
 `register:model`은 같은 모델·런타임·예측 해시의 통과 결과를 다시 확인하고 `.training/deployed/manifest.json`만 등록한다. 실패하면 등록할 수 없다. 등록에 성공한 후에도 앱에서 쓰려면 `.env.local`의 `TRANSLATION_PROVIDER=finetuned`를 명시하고 웹·worker를 재시작한 뒤 실제 HTML/PDF 번역·저장·캐시를 검증해야 한다. 이 단계는 이번 실행에서 수행하지 않았다. 현재 Argos의 실제 브라우저 검증 18개는 통과했다. Argos로 돌아갈 때는 `TRANSLATION_PROVIDER=argos`로 설정하고 재시작한다. 제공자·모델별 캐시가 분리되어 기존 번역과 검수 이력은 보존된다.
 
 ## 데이터 출처와 분할
+
+### 금융 용어 90% 후속 실험
+
+새 `train_v5.py`는 v4의 dev 선택 FP32 모델에서 이어 학습하는 독립 경로다. 기존 `train.py`와 소비한 시험은 보존한다. 새 54개 기준 용어 카탈로그·문맥 예문·분리된 dev/test를 쓰며, 절대 용어 90%와 숫자·일반 문장 유지 및 일반 문맥의 금지 금융 표현 0개를 요구한다. 자료 준비·학습·최종 평가·앱 적용을 구분하며 [v5 보고서와 실제 실행 명령](../../content/training/FINANCE_V5_REPORT.md)을 따른다. 기존 npm 학습 별칭은 v5로 자동 전환하지 않는다.
+
+실제 v5 최종 시험은 용어 93.64%로 고정 기준을 통과했지만 익명 도우미 대조에서 의미 오류 50/140행이 남아 앱 기본으로 선택하지 않았다. 동결한 `infer_v5.py`의 저장 형식 호환성 제한은 그대로 기록하고, `scripts/model-comparison/infer_quality_v5.py`에서 별도 완료모델 검증기를 통해 같은 FP32 추론 경로를 제공한다. 학습·모델 파일을 고쳐 이미 완료한 실행 정체성을 다시 만들지 않는다.
+
+### 후속 도우미 번역 실험
+
+사용자의 추가 요청에 따라 저장된 실제 영문 자료를 도우미가 번역하는 `finance-v4-teacher` 실험을 분리했다. 사람 검수 자료는 없으며, 기존 짧은 독자 작성 문장과 실제 자료 번역을 구분한다. 원문·번역 데이터는 `.training/datasets/finance-v4/`에만 보관한다. `prepare_v4_sources.py --data-dir <절대 DATA_DIR>`는 고정 문서 버전을 읽기 전용으로 추출하며 기존 데이터가 있으면 덮어쓰지 않는다. 재현 시 해당 버전의 DB·원본과 별도 학습 데이터 보관본이 필요하다.
+
+R01/R05는 학습, R02는 개발, B01은 최종 시험으로 분리한다. 도우미 작성 일반 문장을 추가하고 이전 **train만** 재사용한다. 기존 dev/test는 읽어 새 정답을 만들거나 학습시키지 않는다. `assemble_v4_dataset.py`가 원문 메타데이터·숫자·단위/수식 주석·문서 분리를 확인하고 각 파일의 해시를 남긴다. 최종 분할 누수 및 길이 검사는 기존 학습 CLI로 수행한다.
+
+새 평가 도구의 검사와 실행 순서는 다음과 같다. 모든 학습 단계에는 같은 데이터 경로와 설정을 사용한다. `freeze`는 학습 및 dev 선택 완료 후, 최종 `evaluate` 전 실행해야 한다.
+
+```powershell
+.venv-training/Scripts/python.exe -X utf8 -m unittest discover -s scripts/model-training -p "test_*.py"
+.venv-training/Scripts/python.exe -X utf8 scripts/model-training/evaluate_v4.py freeze --run-id finance-v4-teacher --previous-run-id finance-v3
+.venv-training/Scripts/python.exe -X utf8 scripts/model-training/evaluate_v4.py compare --run-id finance-v4-teacher --split dev
+# 고정한 인자로 train.py evaluate 실행 후:
+.venv-training/Scripts/python.exe -X utf8 scripts/model-training/evaluate_v4.py compare --run-id finance-v4-teacher --split test
+```
+
+추가 비교는 기반·새 후보의 기존 예측을 재사용하고 v3만 같은 조건으로 생성한다. 익명 대조 양식의 의미·부정·누락·추가·수량·수식은 별도 대조 대상이며, 자동 지표로 의미 정확도를 만들어 내지 않는다. 실제 실행 설정과 결과는 [v4 보고서](../../content/training/FINANCE_V4_REPORT.md)에 기록한다.
+
+다의어 주의사항은 금융·일반 문맥을 나누는 별도 `probe_word_sense.py` 진단으로 확인한다. 정상 최종 비교 완료와 동결 파일을 먼저 검증하고 모델명을 가린 검토 양식을 만든다. 이 진단으로 기존 모델을 다시 조정하거나 앱을 자동 등록하지 않는다. 명령과 16개 사례의 해시는 v4 보고서에 있다.
+
+### 초기 실험
 
 `content/training/train.jsonl`은 학습, `dev.jsonl`은 체크포인트 선택, `evaluation.jsonl`은 최종 비교용이다. 초기 데이터는 다모다란 자료의 금융 개념과 프로젝트 용어 표기를 참고해 도우미가 별도로 작성한 문장쌍이다. 원문 번역문 모음이나 사용자가 검수한 데이터라고 표시하지 않는다. 각 행은 출처 유형, 분할, 금융/일반 영역과 평가할 용어를 포함한다.
 

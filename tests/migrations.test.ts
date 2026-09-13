@@ -6,7 +6,7 @@ import path from 'node:path';
 import Database from 'better-sqlite3';
 const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'damodaran-migration-'));
 Object.assign(process.env,{DATA_DIR:temporary,NODE_ENV:'test',APP_ROOT:process.cwd()});
-const {db,openDb,setupDatabase,closeDb,hash,now}=await import('../lib/db');
+const {db,openDb,setupDatabase,closeDb,hash,now,LATEST_SCHEMA_VERSION}=await import('../lib/db');
 const {backup,restore}=await import('../lib/backup');
 test('v1 migration keeps personal records, supports the pre-migration backup and is idempotent',async()=>{
   const file=path.join(temporary,'library.sqlite'),old=new Database(file);
@@ -20,7 +20,7 @@ test('v1 migration keeps personal records, supports the pre-migration backup and
   assert.throws(()=>db(),/DB 스키마/);
   const previous=openDb();let saved;try{saved=await backup(previous);}finally{previous.close();}
   setupDatabase();setupDatabase();
-  assert.equal((db().prepare('SELECT MAX(version) version FROM schema_migrations').get() as {version:number}).version,2);
+  assert.equal((db().prepare('SELECT MAX(version) version FROM schema_migrations').get() as {version:number}).version,LATEST_SCHEMA_VERSION);
   assert.equal((db().prepare('SELECT text FROM notes').get() as {text:string}).text,'사용자 메모 유지');
   assert.equal((db().prepare('SELECT COUNT(*) n FROM translation_reviews').get() as {n:number}).n,0);
   assert.equal((db().prepare('SELECT checksum FROM schema_migrations WHERE version=1').get() as {checksum:string}).checksum,hash(originalSql));

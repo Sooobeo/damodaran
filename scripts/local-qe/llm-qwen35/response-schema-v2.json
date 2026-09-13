@@ -1,0 +1,13 @@
+{
+  "type":"object","additionalProperties":false,"required":["semantic_issues","uncertainties"],
+  "properties":{
+    "semantic_issues":{"type":"array","items":{"type":"object","additionalProperties":false,
+      "required":["kind","severity","source_quote","translation_quote","reason"],"properties":{
+        "kind":{"type":"string","enum":["mistranslation","omission","addition"]},
+        "severity":{"type":"string","enum":["critical","major","minor"]},
+        "source_quote":{"type":"string"},"translation_quote":{"type":"string"},"reason":{"type":"string","minLength":1}}}},
+    "uncertainties":{"type":"array","items":{"type":"object","additionalProperties":false,
+      "required":["source_quote","translation_quote","reason"],"properties":{
+        "source_quote":{"type":"string"},"translation_quote":{"type":"string"},"reason":{"type":"string","minLength":1}}}}
+  }
+}

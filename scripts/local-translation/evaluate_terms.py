@@ -61,6 +61,29 @@ SENTENCES = {
 }
 
 
+def replay_exact_sample(sample: dict, rules: list[dict]) -> dict:
+    """Run whole-label guards using the saved, unchanged sentence translations."""
+    sentences = sample["sentences"]
+    if "".join(item["source"] for item in sentences) != sample["source"]:
+        raise ValueError("Cached sentence sources do not match the sample")
+
+    def source_sentences(text: str) -> list[str]:
+        if text != sample["source"]:
+            raise ValueError("Exact-label replay requested an uncached source span")
+        return [item["source"] for item in sentences]
+
+    def translate_plain(text: str) -> str:
+        matches = {item["plainMT"] for item in sentences if item["source"] == text}
+        if len(matches) != 1:
+            raise ValueError("Exact-label replay has no unique cached translation")
+        return next(iter(matches))
+
+    replay = LocalTranslator.__new__(LocalTranslator)
+    replay.source_sentences = source_sentences
+    replay.translate_plain = translate_plain
+    return replay.translate_segment_result(sample["source"], rules)
+
+
 def main():
     sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
     started = time.monotonic()
@@ -104,9 +127,9 @@ def main():
     artifact["baselineGeneratedAt"] = previous["generatedAt"] if cached else artifact["generatedAt"]
     for sample in samples:
         if any(rule["mode"] == "exact" and sample["source"] == rule["source"] for rule in rules):
-            # A whole-cell rule needs no model. Use the public exact-match path.
-            exact_translator = translator or LocalTranslator.__new__(LocalTranslator)
-            result = exact_translator.translate_segment_result(sample["source"], rules)
+            # Ambiguous labels now fall back to MT. Replay the original baseline
+            # for that path instead of loading a model or translating it again.
+            result = replay_exact_sample(sample, rules)
         else:
             results = [correct_sentence_terms(item["source"], item["plainMT"], rules) for item in sample["sentences"]]
             result = {"translatedText": "".join(item["translatedText"] for item in results),

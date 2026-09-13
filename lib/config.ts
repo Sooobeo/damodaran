@@ -13,7 +13,7 @@ const positive = (fallback:number) => z.coerce.number().int().positive().default
 const schema = z.object({
   APP_HOST:z.literal('127.0.0.1').default('127.0.0.1'), APP_PORT:positive(3000).pipe(z.number().max(65535)),
   DATA_DIR:z.string().default('./data'), OPENAI_API_KEY:z.string().default(''),
-  TRANSLATION_PROVIDER:z.enum(['argos','finetuned','openai']).default('argos'),TRANSLATION_MODEL:z.string().default(''),
+  TRANSLATION_PROVIDER:z.enum(['argos','finetuned','hymt','openai']).default('argos'),TRANSLATION_MODEL:z.string().default(''),
   EXTRA_SOURCE_HOSTS:z.string().default('').refine(value=>value.split(',').map(v=>v.trim()).filter(Boolean).every(host=>host==='people.stern.nyu.edu'),'지원하는 추가 NYU 호스트만 등록할 수 있습니다.'),
   MAX_SOURCE_CHARS_PER_JOB:positive(20000),MAX_SOURCE_CHARS_PER_DAY:positive(100000),
   MAX_DOWNLOAD_BYTES:positive(52428800),MAX_PDF_PAGES:positive(1000),WORKER_CONCURRENCY:z.coerce.number().refine(n=>n===1).default(1)

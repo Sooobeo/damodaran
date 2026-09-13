@@ -75,7 +75,12 @@ export function restore(source:string,target:string){
   try{restored.pragma('foreign_keys=ON');assertDatabase(restored);
     const copiedRefs=references(restored);matchReferences(copiedRefs,manifest.files);
     for(const ref of copiedRefs)verifyFile(within(to,ref.path),ref);
-    restored.transaction(()=>{restored.prepare("UPDATE job_items SET status='cancelled',next_attempt_at=NULL,error_code='RESTORED',error_message='백업에서 복원된 작업입니다.' WHERE status IN ('queued','running')").run();restored.prepare("UPDATE jobs SET status='cancelled',lease_owner=NULL,lease_until=NULL,next_attempt_at=NULL,cancel_requested_at=?,error_code='RESTORED',error_message='필요한 작업만 다시 실행하세요.',updated_at=? WHERE status IN ('queued','running')").run(now(),now());restored.prepare("UPDATE usage_records SET reservation_status='released',outcome='restored_before_send' WHERE reservation_status='reserved'").run();})();
+    restored.transaction(()=>{
+      restored.prepare("UPDATE job_items SET status='cancelled',next_attempt_at=NULL,error_code='RESTORED',error_message='백업에서 복원된 작업입니다.' WHERE status IN ('queued','running')").run();
+      restored.prepare("UPDATE jobs SET status='cancelled',lease_owner=NULL,lease_until=NULL,next_attempt_at=NULL,cancel_requested_at=?,error_code='RESTORED',error_message='필요한 작업만 다시 실행하세요.',updated_at=? WHERE status IN ('queued','running')").run(now(),now());
+      if(restored.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='translation_quality_assessments'").get())restored.prepare("UPDATE translation_quality_assessments SET status='cancelled',message='백업에서 복원된 의미 검사입니다. 필요한 번역만 다시 검사하세요.',completed_at=? WHERE status IN ('queued','running')").run(now());
+      restored.prepare("UPDATE usage_records SET reservation_status='released',outcome='restored_before_send' WHERE reservation_status='reserved'").run();
+    })();
   }finally{restored.close();}
   return {path:to,fileCount:manifest.files.length,workerStarted:false};
 }

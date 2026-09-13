@@ -26,7 +26,19 @@ export function validateSourceUrl(value:string):URL {
 }
 export function isPublicAddress(address:string):boolean {
   const ip=address.toLowerCase().replace(/^::ffff:/,'');
-  if(isIP(ip)===4){const [a,b]=ip.split('.').map(Number);return !(a===0||a===10||a===127||a>=224||(a===100&&b>=64&&b<=127)||(a===169&&b===254)||(a===172&&b>=16&&b<=31)||(a===192&&(b===168||b===0))||(a===198&&(b===18||b===19)));}
+  if(isIP(ip)===4){const [a,b,c]=ip.split('.').map(Number);return !(a===0||a===10||a===127||a>=224||(a===100&&b>=64&&b<=127)||(a===169&&b===254)||(a===172&&b>=16&&b<=31)||(a===192&&(b===168||b===0))||(a===198&&(b===18||b===19||(b===51&&c===100)))||(a===203&&b===0&&c===113));}
+  if(isIP(ip)===6&&!ip.includes('%')){
+    // RFC 6052 sections 2.1-2.3: only 64:ff9b::/96 embeds IPv4 in its last
+    // 32 bits here. Section 3.1 forbids non-global embedded destinations.
+    // https://www.rfc-editor.org/rfc/rfc6052.html#section-2.1
+    // https://www.iana.org/assignments/iana-ipv6-special-registry/
+    const hex=ip.replace(/(?:\d+\.){3}\d+$/,dotted=>{const [a,b,c,d]=dotted.split('.').map(Number);return ((a<<8)|b).toString(16)+':'+((c<<8)|d).toString(16);});
+    const [head,tail]=hex.split('::'),left=head?head.split(':'):[],right=tail?tail.split(':'):[];
+    const words=(tail===undefined?left:[...left,...Array(8-left.length-right.length).fill('0'),...right]).map(word=>parseInt(word,16));
+    if(words[0]===0x64&&words[1]===0xff9b&&words.slice(2,6).every(word=>word===0)){
+      return isPublicAddress([words[6]>>>8,words[6]&255,words[7]>>>8,words[7]&255].join('.'));
+    }
+  }
   // Public IPv6 unicast only; this excludes loopback, mapped, ULA, link-local and multicast.
   return isIP(ip)===6&&/^[23][0-9a-f]{0,3}:/.test(ip)&&!ip.startsWith('2001:db8:');
 }
@@ -83,13 +95,21 @@ export function storeOriginal(bytes:Buffer,kind:FileKind,folder:'originals'|'der
   return {fileHash,relative};
 }
 export const EXTRACTOR_VERSION='structured-v2';
-export const extractionConfigHash=()=>hash(JSON.stringify({maxPdfPages:config.MAX_PDF_PAGES,blockChars:6000,extractor:EXTRACTOR_VERSION}));
+export const PDF_EXTRACTOR_V1='pdf-paragraphs-v1';
+export const PDF_EXTRACTOR_VERSION='pdf-paragraphs-v2';
+export const extractorVersionFor=(format:string)=>format==='pdf'?PDF_EXTRACTOR_VERSION:EXTRACTOR_VERSION;
+export function extractionConfigHash(format?:string,storedExtractorVersion?:string) {
+  const extractor=storedExtractorVersion??(format?extractorVersionFor(format):EXTRACTOR_VERSION);
+  if(![EXTRACTOR_VERSION,PDF_EXTRACTOR_V1,PDF_EXTRACTOR_VERSION].includes(extractor))throw new PipelineError('UNSUPPORTED_EXTRACTOR','저장된 추출기 버전을 지원하지 않습니다.');
+  // Preserve the original field order and values for both legacy identities.
+  return hash(JSON.stringify({maxPdfPages:config.MAX_PDF_PAGES,blockChars:6000,extractor}));
+}
 export function uploadOriginal(bytes:Buffer,filename:string):{resourceId:string;versionId:string} {
   if(!bytes.length||bytes.length>config.MAX_DOWNLOAD_BYTES)throw new PipelineError('FILE_TOO_LARGE','PDF가 비어 있거나 업로드 크기 제한을 넘었습니다.');
   if(sniffFile(bytes,'',filename)!=='pdf')throw new PipelineError('UNSUPPORTED_FORMAT','업로드는 PDF 파일만 지원합니다.');
   const saved=storeOriginal(bytes,'pdf'),resourceId=id(),versionId=id(),stamp=now();const safeName=path.basename(filename.replace(/\\/g,'/')).slice(0,200)||'업로드.pdf';
   db().transaction(()=>{
     db().prepare(`INSERT INTO resources(id,source_type,original_filename,title_en,title_ko,summary_ko,kind,format,source_status,created_at) VALUES(?,'upload',?,?,?,'사용자가 업로드한 개인 PDF','파일','pdf','queued',?)`).run(resourceId,safeName,safeName,safeName,stamp);
-    db().prepare(`INSERT INTO source_versions(id,resource_id,file_hash,original_path,mime,format,byte_size,imported_at,extractor_version,extraction_config_hash,extraction_status) VALUES(?,?,?,?,?,'pdf',?,?,?,?, 'queued')`).run(versionId,resourceId,saved.fileHash,saved.relative,mimeFor('pdf'),bytes.length,stamp,EXTRACTOR_VERSION,extractionConfigHash());
+    db().prepare(`INSERT INTO source_versions(id,resource_id,file_hash,original_path,mime,format,byte_size,imported_at,extractor_version,extraction_config_hash,extraction_status) VALUES(?,?,?,?,?,'pdf',?,?,?,?, 'queued')`).run(versionId,resourceId,saved.fileHash,saved.relative,mimeFor('pdf'),bytes.length,stamp,PDF_EXTRACTOR_VERSION,extractionConfigHash('pdf'));
   })();return {resourceId,versionId};
 }

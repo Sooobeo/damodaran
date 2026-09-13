@@ -1,0 +1,88 @@
+{
+  "version": "linguistic-dev-20260910-v1",
+  "status": "frozen",
+  "humanReviewed": false,
+  "sourceType": "assistant_authored_unreviewed",
+  "dataset": {
+    "file": "linguistic-dev-20260910.jsonl",
+    "sha256": "b8a2b91802e36d96654631a9965566f774e050ea4139ca7270d9f84d2a916848",
+    "count": 18,
+    "ids": [
+      "LDEV26-001",
+      "LDEV26-002",
+      "LDEV26-003",
+      "LDEV26-004",
+      "LDEV26-005",
+      "LDEV26-006",
+      "LDEV26-007",
+      "LDEV26-008",
+      "LDEV26-009",
+      "LDEV26-010",
+      "LDEV26-011",
+      "LDEV26-012",
+      "LDEV26-013",
+      "LDEV26-014",
+      "LDEV26-015",
+      "LDEV26-016",
+      "LDEV26-017",
+      "LDEV26-018"
+    ]
+  },
+  "purpose": "Development screen for source-grounded linguistic comparison; not a final holdout or human gold reference.",
+  "trainingUseAllowed": false,
+  "modelOutputsViewedDuringAuthoring": false,
+  "modelPromptAllowedFields": [
+    "source",
+    "context"
+  ],
+  "allSourcesSelfContained": true,
+  "firstStageSuggestedIds": [
+    "LDEV26-001",
+    "LDEV26-004",
+    "LDEV26-005",
+    "LDEV26-007",
+    "LDEV26-014",
+    "LDEV26-015"
+  ],
+  "reviewStatus": "assistant_reviewed_not_human_reviewed",
+  "leakageStatus": "checked_no_cross_dataset_overlap",
+  "reviewFiles": [
+    {
+      "file": "linguistic-dev-20260910-author-review.json",
+      "sha256": "3d25535aca006b8f6512364a672c10128b94f0ef56e457ffc7222bfad105a74d"
+    },
+    {
+      "file": "linguistic-dev-20260910-second-review.json",
+      "sha256": "ebfcca3440b3d017d71c6a78e9ba53fb9cc9cab7d1a457d62b9eb5cdc1a365eb"
+    }
+  ],
+  "canonicalCatalog": {
+    "file": ".training/datasets/finance-v5/term-catalog.json",
+    "sha256": "d4af6a9fed8c6dba4c528abc52c64c19621c5fac98fd2bdb09e035769963de67",
+    "fullCatalogCount": 54,
+    "scoringScope": "Only source-grounded complete catalog matches annotated in this screen; no >=90% certification."
+  },
+  "coverage": {
+    "domains": {
+      "finance": 16,
+      "general": 2
+    },
+    "minimalContrastPairs": 6,
+    "paragraphs": 6,
+    "externalContextRequiredRows": 0,
+    "canonicalCatalogIds": [
+      "FT04",
+      "FT05",
+      "G14",
+      "G17",
+      "G22",
+      "G23",
+      "G29",
+      "G30",
+      "G31",
+      "G44"
+    ],
+    "canonicalTermCheckCount": 12
+  },
+  "selectionUse": "First-stage subset is a resource triage screen; use all 18 rows to inspect both sides of every contrast. No final holdout has been authored."
+}

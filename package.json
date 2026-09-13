@@ -27,6 +27,9 @@
     "restore": "tsx scripts/restore.ts",
     "test": "tsx --test tests/*.test.ts",
     "test:browser": "tsx tests/browser.e2e.ts",
+    "test:quality": "tsx --test tests/quality*.test.ts",
+    "test:quality:ui": "tsx tests/quality-ui.e2e.ts",
+    "verify:quality:rules": "tsx scripts/verify-quality-rules.ts",
     "test:smoke": "tsx scripts/smoke-browser.ts",
     "typecheck": "tsc --noEmit"
   },

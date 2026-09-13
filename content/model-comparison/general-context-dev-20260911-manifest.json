@@ -1,0 +1,636 @@
+{
+  "version": "general-context-dev-20260911-v1",
+  "createdAtUtc": "2026-09-10T17:15:38.216379+00:00",
+  "frozenAtUtc": "2026-09-10T17:15:38.216379+00:00",
+  "datasetFile": "general-context-dev-20260911.jsonl",
+  "datasetSha256": "4d63cbbd7299835849cdf750813e7c18a051ae98149a8ec51b73d5e8057cdfd4",
+  "sourceCount": 16,
+  "domains": {
+    "general": 12,
+    "general_context_polysemy": 4
+  },
+  "selectedIds": [
+    "GCTX26-001",
+    "GCTX26-002",
+    "GCTX26-003",
+    "GCTX26-004",
+    "GCTX26-005",
+    "GCTX26-006",
+    "GCTX26-007",
+    "GCTX26-008",
+    "GCTX26-009",
+    "GCTX26-010",
+    "GCTX26-011",
+    "GCTX26-012",
+    "GCTX26-013",
+    "GCTX26-014",
+    "GCTX26-015",
+    "GCTX26-016"
+  ],
+  "provenance": "assistant-authored-development",
+  "humanReviewed": false,
+  "split": "development",
+  "trainingUseAllowed": false,
+  "finalHoldout": false,
+  "purposeKo": "새 일반 번역 및 이웃 문맥 보존의 개발용 관측. 독립 최종 시험·학습용 정답·앱 승격 기준이 아니다.",
+  "referencePolicyKo": "referenceKo는 가능한 충실한 표현의 보조 예시다. 의미가 맞는 어휘·구문·종결 문체 차이를 허용하며 참조 문자열 일치로 채점하지 않는다. checks는 원문에 근거한 관계이지 새 합격선이 아니다.",
+  "sourceConstructionKo": "기존 문장에 숫자나 이름만 바꾸는 방식으로 만들지 않고 16개 상황을 독립 작성했다. 기존 train/dev/test의 원문 내용은 작성용으로 출력하지 않고 작성 후 기계 중복 검사에만 사용했다.",
+  "authorExposure": {
+    "reviewerId": "blind_round2",
+    "priorBlindLinguisticReviewParticipation": true,
+    "priorComparisonSourcesAndAnonymousOutputsPreviouslyViewed": true,
+    "newCandidateOutputTextViewedBeforeFreeze": false,
+    "existingOutputFilesReadByDuplicateScanner": true,
+    "existingOutputTextShownByDuplicateScanner": false,
+    "existingReadingOutputFilesIncludedInMechanicalExactReferenceCheck": true,
+    "noteKo": "작성자는 앞서 익명 개발 문장 비교에 참여했다. 이번 기계 검사에서는 기존 출력의 한국어 텍스트를 새 참조와 완전 일치 비교만 했고 그 내용을 출력·의미 검토하지 않았다. 새 후보 출력은 작성·감사·동결 전에 관측하지 않았다."
+  },
+  "coverage": {
+    "subjectAndRecipient": [
+      "GCTX26-001",
+      "GCTX26-005",
+      "GCTX26-012"
+    ],
+    "conditionAndNegation": [
+      "GCTX26-002",
+      "GCTX26-003",
+      "GCTX26-004",
+      "GCTX26-006",
+      "GCTX26-009",
+      "GCTX26-011"
+    ],
+    "pronounAndDiscourse": [
+      "GCTX26-005",
+      "GCTX26-008",
+      "GCTX26-009",
+      "GCTX26-012",
+      "GCTX26-013",
+      "GCTX26-014",
+      "GCTX26-015",
+      "GCTX26-016"
+    ],
+    "permissionVersusObligation": [
+      "GCTX26-002",
+      "GCTX26-009",
+      "GCTX26-011"
+    ],
+    "relativeVersusPercentagePoints": [
+      "GCTX26-007"
+    ],
+    "timeOrder": [
+      "GCTX26-004",
+      "GCTX26-008",
+      "GCTX26-012"
+    ],
+    "qualitativeComparison": [
+      "GCTX26-010"
+    ],
+    "generalPolysemy": {
+      "interest": "GCTX26-013",
+      "capital": "GCTX26-014",
+      "equity": "GCTX26-015",
+      "bond": "GCTX26-016"
+    }
+  },
+  "sourceAudit": {
+    "version": "general-context-source-self-audit-v1",
+    "reviewerType": "assistant",
+    "reviewerId": "blind_round2",
+    "humanReviewed": false,
+    "independentOfAuthor": false,
+    "completed": true,
+    "newCandidateOutputsViewed": false,
+    "datasetModifiedAfterCandidateOutputs": false,
+    "findings": [
+      {
+        "id": "GCTX26-001",
+        "sourceSha256": "654106902fc80f49f0a8f2ac45247dd790f8eda26e5f4e413e6397e318e353e0",
+        "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "wholeRowExclusionRecommended": false,
+        "noteKo": "식물 나눔의 실제 전달 순서를 새로 작성했다. 이웃은 Luis의 이웃이며 최종 수취를 Luis의 소유로 바꾸지 않는다."
+      },
+      {
+        "id": "GCTX26-002",
+        "sourceSha256": "ec99eea9700050515513b933f36abb39f6b03454eafa5fcdca1f8b76204a605d",
+        "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "wholeRowExclusionRecommended": false,
+        "noteKo": "가마 이용 안내의 허용과 가동별 서명 의무를 구분한다. may를 반드시 출입하라는 뜻으로 읽지 않는다."
+      },
+      {
+        "id": "GCTX26-003",
+        "sourceSha256": "1825cad91a1fdcebf5729e546a7a9d275b87bee74d5f8bdef0641c16e23f4df0",
+        "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "wholeRowExclusionRecommended": false,
+        "noteKo": "금요일까지 재개방되지 않을 때의 안내다. should는 현장 안내 문체이며 법적 강제·처벌까지 요구하지 않는다."
+      },
+      {
+        "id": "GCTX26-004",
+        "sourceSha256": "ad3f2b89efc4cc24065d6f533291b876870faba66228d078af3d7b1de5608eb2",
+        "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "wholeRowExclusionRecommended": false,
+        "noteKo": "반죽 휴지→밀기→냉각의 절차가 자연스럽다. 휴지를 잠·수면으로 강제하지 않으며 냉각 시간 수치는 미지정이다."
+      },
+      {
+        "id": "GCTX26-005",
+        "sourceSha256": "f97124d6887a54e6568bab0e49896d4e09ddb6a45bd021732318dfacc1e064eb",
+        "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "wholeRowExclusionRecommended": false,
+        "noteKo": "borrowed chair는 Oskar가 빌린 의자, 즉 Lena가 빌려준 의자다. 한국어에서 관점에 맞춰 빌려준 의자라고 해도 맞다."
+      },
+      {
+        "id": "GCTX26-006",
+        "sourceSha256": "ced9f33fad514f587482547de7b50fc552b8d1261210bdc3d5ed03a028fb9c86",
+        "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "wholeRowExclusionRecommended": false,
+        "noteKo": "모든 지도 검사와 접힌 지도에 필요한 커버의 범위를 구분한다. sleeves의 커버·보호집 등 자연스러운 표현을 허용한다."
+      },
+      {
+        "id": "GCTX26-007",
+        "sourceSha256": "be44f30685d8c01f7a5085ae448cc4062da034a6bbf3ffe022466c781e5f4ebf",
+        "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "wholeRowExclusionRecommended": false,
+        "noteKo": "12→15의 차이 3퍼센트포인트 및 3/12=25%를 직접 확인했다. 동일 변화를 두 방식으로 설명하는 실제 원문 수치를 참조 계산의 강제와 구분한다."
+      },
+      {
+        "id": "GCTX26-008",
+        "sourceSha256": "38f7356ec0ab190a9d986661065bce84996996f535f99d34625ae9dcb0a9001c",
+        "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "wholeRowExclusionRecommended": false,
+        "noteKo": "화요일 수신과 다음 주 발효 사이의 목요일에는 구 시간표를 따른다. 임의의 달력 날짜·시간을 요구하지 않는다."
+      },
+      {
+        "id": "GCTX26-009",
+        "sourceSha256": "4a7ff75f7c65d6d0edc0d28b793772ffe722691057d06b6f8192d16358675751",
+        "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "wholeRowExclusionRecommended": false,
+        "noteKo": "could help와 confirmed의 차이는 실제 근무 확정 여부다. volunteer column은 지원 또는 자원봉사자 칸으로 자연스럽게 표현할 수 있다."
+      },
+      {
+        "id": "GCTX26-010",
+        "sourceSha256": "a6d5bbaa99bd6ce7168b1452c9ae0b9866df819196317d315cd8493c4f81ed19",
+        "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "wholeRowExclusionRecommended": false,
+        "noteKo": "쟁반/단지의 물의 양과 너비 비교가 명시되어 있다. 표시선을 만수위로 추가 가정하지 않고 높이·입구 하나만으로 양이나 용량을 판단하지 않는 설명을 따른다."
+      },
+      {
+        "id": "GCTX26-011",
+        "sourceSha256": "8525d42e7aa2002fd6957a1bd82d02c578f279ac0a5656c7e1ba419e23745ff9",
+        "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "wholeRowExclusionRecommended": false,
+        "noteKo": "대여 허용, 보증금 불요, 반납 의무가 함께 성립한다. different model은 판매 모델의 차이이지 판매점에서 물건이 품절이라는 뜻이 아니다."
+      },
+      {
+        "id": "GCTX26-012",
+        "sourceSha256": "2b6ee0dab108f3c0f92758e07a90128c0a89f00df6a9442ab15d141a75915c6b",
+        "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "wholeRowExclusionRecommended": false,
+        "noteKo": "기존 전구는 교체하지 않았으며 보관한 케이블과 반환한 램프를 구분한다. owner의 성별은 미지정이다."
+      },
+      {
+        "id": "GCTX26-013",
+        "sourceSha256": "d4c954b2ce6c02d2d9d5cfacd808fb73a63c9e2b6a36be821b72dcd2b90f50e9",
+        "contextSha256": "5a92b8c613a526f070c9b5854f740a734e69bccb528080ba6b9d85a7ef13709d",
+        "wholeRowExclusionRecommended": false,
+        "noteKo": "문맥이 도예 강좌 관심과 Mara라는 선행자를 제공한다. 한국어에서 이름을 반복하지 않고 그녀·방문객들의 관심으로 옮겨도 의미가 맞으면 허용한다."
+      },
+      {
+        "id": "GCTX26-014",
+        "sourceSha256": "11134fccd74bdd0f576239601f10e1ed2532353dcdb9a3e34834b50f8829c0ba",
+        "contextSha256": "5cbbf981e2971901c5371d9aa2f14fdf76a386b937a2bcdbc6ca7ed1b2ccd0c7",
+        "wholeRowExclusionRecommended": false,
+        "noteKo": "문맥의 소문자 m이 capital의 대문자 의미와 it의 선행자를 정한다. 원문에 없는 다른 알파벳으로 변경하지 않는다."
+      },
+      {
+        "id": "GCTX26-015",
+        "sourceSha256": "bfd70ba815584e870779395fb5359315a3298bd72e8aae635874d8ede5a29000",
+        "contextSha256": "db302ecba33380b8b16020500d9ec3501f3d964d1d2b271e7c22069242e2c556",
+        "wholeRowExclusionRecommended": false,
+        "noteKo": "equity는 이용 기회의 공정성·형평성이며 exactly the same hours와 구별된다. 특정 평등 이론이나 의무 배분 비율까지 추가하지 않는다."
+      },
+      {
+        "id": "GCTX26-016",
+        "sourceSha256": "b89920b78b998c2692c26ec18c24e91640321b655cd943d06023c3262fe2f0dc",
+        "contextSha256": "52c9b9cd8162196de1581c12d529b0dc99f8632c5c805b23e3616bddc1ea8677",
+        "wholeRowExclusionRecommended": false,
+        "noteKo": "bond는 공동 작업으로 가까워진 친척 사이 유대다. aunt의 친가/외가와 연령은 미지정이므로 한국어 친족어의 불가피한 선택을 유일 정답으로 강요하지 않는다."
+      }
+    ],
+    "limitationsKo": "작성자의 원문·참조 자기 점검이다. 독립 도우미 검수나 사람 검수로 표시하지 않으며 모호한 표현에 대한 다른 충실한 한국어 번역을 허용한다."
+  },
+  "leakageScreen": {
+    "version": "general-context-development-leakage-screen-v1",
+    "sourceAndContextFieldsOnlyForEnglishNearDuplicateScreen": true,
+    "priorTranslationsOnlyComparedForExactReferenceDuplication": true,
+    "priorTranslationTextEmitted": false,
+    "corpusFiles": [
+      {
+        "path": ".training/comparisons/finance-quality-20260910/argos-app/predictions.jsonl",
+        "sha256": "8e39f5efa6cab92a10e3b8ea0e26e5b938212f6d8433202f11dfeb0f51e6a94c",
+        "records": 24
+      },
+      {
+        "path": ".training/comparisons/finance-quality-20260910/hymt-contextual/predictions.jsonl",
+        "sha256": "1d4659264775cb2e6c44ed5d75d9b934386269263691c1e4e344fa2d49995158",
+        "records": 24
+      },
+      {
+        "path": ".training/comparisons/finance-quality-20260910/hymt-raw/predictions.jsonl",
+        "sha256": "d818ffff5f04154aef81d3d3b70286a68c2d1ecc861b16d54dbe3e8c928128f4",
+        "records": 24
+      },
+      {
+        "path": ".training/comparisons/finance-quality-20260910/hymt-raw-startup-failure-1/predictions.jsonl",
+        "sha256": "799568dfa9e377f77fe64b49027a7e082112e43f655b4e752f6d16e5002dbf88",
+        "records": 24
+      },
+      {
+        "path": ".training/comparisons/finance-quality-20260910/marian-v5/predictions.jsonl",
+        "sha256": "79862215ca751845669bd62365ce9fdc826a18da4b0291567741ff692862f1eb",
+        "records": 24
+      },
+      {
+        "path": ".training/comparisons/linguistic-dev-20260910/hy7-baseline/predictions.jsonl",
+        "sha256": "8a252e7a7f2bd1957925f1b421f923d94ad4b7d1d01fb6148c4c7524865eef60",
+        "records": 18
+      },
+      {
+        "path": ".training/comparisons/linguistic-dev-20260910/hymt30-paging-v4/predictions.jsonl",
+        "sha256": "3b354d337cff371183f5d8f5a7d5af221407a796e48fa6becb1ec50ee3d421ec",
+        "records": 18
+      },
+      {
+        "path": ".training/comparisons/linguistic-dev-20260910/hymt30-smoke-paging-v3/predictions.jsonl",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "records": 0
+      },
+      {
+        "path": ".training/comparisons/linguistic-dev-20260910/hymt30-smoke-paging-v4/predictions.jsonl",
+        "sha256": "083700d84839549f1f2a079867bfd36f0e3bd1983aa9aea85b77b0e31521a6f5",
+        "records": 2
+      },
+      {
+        "path": ".training/comparisons/linguistic-dev-20260910/translategemma-12b-eog-diagnostic/predictions.jsonl",
+        "sha256": "197ecf75e541aa76af19f85862698b7923d471c526c7579773ccad486f4ba5d2",
+        "records": 2
+      },
+      {
+        "path": ".training/comparisons/linguistic-dev-20260910/translategemma-12b-smoke-cpu4/predictions.jsonl",
+        "sha256": "197ecf75e541aa76af19f85862698b7923d471c526c7579773ccad486f4ba5d2",
+        "records": 2
+      },
+      {
+        "path": ".training/comparisons/linguistic-dev-20260910/translategemma-12b-smoke-cpu4-v2/predictions.jsonl",
+        "sha256": "c66de1ab63e8308ca387cde85a4d35ee5f12d4388958f14dacbe3b0c46171a87",
+        "records": 2
+      },
+      {
+        "path": ".training/comparisons/linguistic-dev-20260910/translategemma-12b-v2/predictions.jsonl",
+        "sha256": "cc869c21fe3e4c3af4b25bf8c92a56bb73d19882be75bb96fde417a956f103e1",
+        "records": 18
+      },
+      {
+        "path": ".training/comparisons/linguistic-dev-20260910/translategemma-27b-smoke-paging-v3/predictions.jsonl",
+        "sha256": "21afb2803045a86fba1b590b72bdb1656ca48d8778cc4156b00c4b4a5c954c41",
+        "records": 2
+      },
+      {
+        "path": ".training/comparisons/real-reading-check-20260910/hy7-baseline/predictions.jsonl",
+        "sha256": "5340d976a0406263e046fd97507ddca4ac084cec5f820b685d060558daa66b3c",
+        "records": 6
+      },
+      {
+        "path": ".training/comparisons/real-reading-check-20260910/hymt30-paging-v4/predictions.jsonl",
+        "sha256": "81c145a5d32aedbf14a1d270d40e1418a871a53bba6ee38f3f72f2647a107a23",
+        "records": 6
+      },
+      {
+        "path": ".training/comparisons/real-reading-check-20260910/translategemma-12b-v2/predictions.jsonl",
+        "sha256": "f4e1f62707863f63ba2657d03e5446a0d2f881f36e6604ddfdbf292f7428304c",
+        "records": 6
+      },
+      {
+        "path": ".training/comparisons/runtime-optimization-20260910/cpu-4-smoke-1/predictions.jsonl",
+        "sha256": "4cd15142a12907c652de60e3bafcf4270c80e2b37885c22ce1ef099f6bf1e8ed",
+        "records": 3
+      },
+      {
+        "path": ".training/comparisons/runtime-optimization-20260910/sycl-4-smoke-2-no-mmap/predictions.jsonl",
+        "sha256": "edc3e34db6cf770c7c1bfceef7629fbc3932db86f29ec75ad340ef33fc3fe3ee",
+        "records": 3
+      },
+      {
+        "path": ".training/datasets/finance-v4/authored-test.jsonl",
+        "sha256": "8ca07340f27728077b5170005b5b33c430395146aaaa7c73ffcbfaacb777e6e3",
+        "records": 28
+      },
+      {
+        "path": ".training/datasets/finance-v4/dev-sources.jsonl",
+        "sha256": "93c300b5b2655869668e11806161c60948802c44ca504d419aa2fd817cdc312d",
+        "records": 36
+      },
+      {
+        "path": ".training/datasets/finance-v4/dev.jsonl",
+        "sha256": "16ecde5ad5115d7d5dca67fd7d1f9451e596987537b54b10d2bc577e2451fb36",
+        "records": 48
+      },
+      {
+        "path": ".training/datasets/finance-v4/polysemy-probe.jsonl",
+        "sha256": "1c6814325e6cd7f4f3f84162c625049dc8ba6c5b422b5b1a3117dc7c2a842252",
+        "records": 16
+      },
+      {
+        "path": ".training/datasets/finance-v4/teacher-dev.jsonl",
+        "sha256": "af95466a7b40cfd1c947cb65eaa9829388b480cf6065540fdd3317c4812a4658",
+        "records": 36
+      },
+      {
+        "path": ".training/datasets/finance-v4/teacher-test.jsonl",
+        "sha256": "fc887878bb9188e5f1892746ddc9f244e0ffbfa3d33a7180c4f64989a0b22659",
+        "records": 14
+      },
+      {
+        "path": ".training/datasets/finance-v4/teacher-train.jsonl",
+        "sha256": "fb3442523cca096d7775620a220ecc6de69d49fd34a0e51e498b9bf43ac98771",
+        "records": 195
+      },
+      {
+        "path": ".training/datasets/finance-v4/test-sources.jsonl",
+        "sha256": "aa92bccf009b58ed74e50b42a8187928ce4ba3f6f9bcf0bc673f8fa4feae062a",
+        "records": 14
+      },
+      {
+        "path": ".training/datasets/finance-v4/test.jsonl",
+        "sha256": "b0ed0de7d3a56d422a113d8cc0317f5d52e04877ebb2742309f3f45211e162ed",
+        "records": 42
+      },
+      {
+        "path": ".training/datasets/finance-v4/train-sources.jsonl",
+        "sha256": "df876407147d1d30776a569259325e955fe7cc63c78b3a8399ce2d16c3cf81e4",
+        "records": 196
+      },
+      {
+        "path": ".training/datasets/finance-v4/train.jsonl",
+        "sha256": "4cb6a18b165af96e746b7e000404e0cd7aa9ec9dd97872dd5911863475c0fbd7",
+        "records": 435
+      },
+      {
+        "path": ".training/datasets/finance-v5/dev-candidate.jsonl",
+        "sha256": "3dd6456e81bb44e713c8082201aea8dd4d3f1f985f8e87d41d3ddddecfeb1d9f",
+        "records": 140
+      },
+      {
+        "path": ".training/datasets/finance-v5/dev.jsonl",
+        "sha256": "6f42a31d85c7a5eaf03dd65bbeb2d169318cfc39acce4dae8d20b6e523eb2398",
+        "records": 140
+      },
+      {
+        "path": ".training/datasets/finance-v5/test-candidate.jsonl",
+        "sha256": "a84f87e891dbce6a9a485644189e7fe787a4985a03ae9eb8cb4ec57872f81cb1",
+        "records": 140
+      },
+      {
+        "path": ".training/datasets/finance-v5/test.jsonl",
+        "sha256": "5c94c92530f31eb240d57634d54e4006a8d3918ce2b8edff3daec7e3a41878a1",
+        "records": 140
+      },
+      {
+        "path": ".training/datasets/finance-v5/train-a-candidate.jsonl",
+        "sha256": "d532d119f779ad6e0b74bae2e4b3284940af2958083a76db03af5460d9371100",
+        "records": 364
+      },
+      {
+        "path": ".training/datasets/finance-v5/train-b-candidate.jsonl",
+        "sha256": "b443a891b225cd1e06724985043fab4a56864db9225bfe5e8669f0ac1f9926c3",
+        "records": 364
+      },
+      {
+        "path": ".training/datasets/finance-v5/train.jsonl",
+        "sha256": "0b1395d3050a09a1951b1ddc48f2be47f7732a91789e8c1beb87869ec0a0a7f3",
+        "records": 1152
+      },
+      {
+        "path": "content/model-comparison/finance-probe-20260909.jsonl",
+        "sha256": "7ccafce31068b98f5f4bcc32ead765da74e5947fbc730c39cc4e6bb19e35a76d",
+        "records": 12
+      },
+      {
+        "path": "content/model-comparison/linguistic-dev-20260910.jsonl",
+        "sha256": "b8a2b91802e36d96654631a9965566f774e050ea4139ca7270d9f84d2a916848",
+        "records": 18
+      },
+      {
+        "path": "content/model-comparison/real-reading-check-20260910/assistant-reference.jsonl",
+        "sha256": "14ba0102578b660026fef9a094bbdfbaecc3767a861e20ab7585ed225406baef",
+        "records": 6
+      },
+      {
+        "path": "content/model-comparison/real-reading-check-20260910/sources.jsonl",
+        "sha256": "becd55204f1533adf68c0512638f17db676d4848a175367c841ed71fca34f8d0",
+        "records": 6
+      },
+      {
+        "path": "content/training/dev.jsonl",
+        "sha256": "8c94b2a249b90cda542cc206f9605aee9779b301aa789f308dd11722c877fe36",
+        "records": 40
+      },
+      {
+        "path": "content/training/evaluation.jsonl",
+        "sha256": "85d82f670f077e74ebc817583b555f5b4aae07046282170190e35a8468cbbd23",
+        "records": 60
+      },
+      {
+        "path": "content/training/train.jsonl",
+        "sha256": "57a33cb6cb691b0c31fa6ab7a45e4dc8b52298bd7c77a5ded4ac744ad7e03cfc",
+        "records": 200
+      }
+    ],
+    "parsedFileCount": 44,
+    "sourceRecordCountBeforeDeduplication": 6892,
+    "uniqueSourceOrContextCount": 1716,
+    "priorTargetRecordCount": 6884,
+    "uniquePriorTargetCount": 2088,
+    "sourceFindings": [],
+    "internalFindings": [],
+    "exactReferenceMatches": [],
+    "nearestByRow": [
+      {
+        "id": "GCTX26-001",
+        "maxTokenSequenceRatio": 0.262295,
+        "nearest": {
+          "path": ".training/datasets/finance-v5/train.jsonl",
+          "id": "V5-TRAIN-A-330",
+          "variant": "source",
+          "fiveGramContainment": 0
+        }
+      },
+      {
+        "id": "GCTX26-002",
+        "maxTokenSequenceRatio": 0.243243,
+        "nearest": {
+          "path": "content/model-comparison/linguistic-dev-20260910.jsonl",
+          "id": "LDEV26-004",
+          "variant": "source",
+          "fiveGramContainment": 0
+        }
+      },
+      {
+        "id": "GCTX26-003",
+        "maxTokenSequenceRatio": 0.222222,
+        "nearest": {
+          "path": ".training/datasets/finance-v5/train.jsonl",
+          "id": "V4-GTRAIN-32",
+          "variant": "source",
+          "fiveGramContainment": 0
+        }
+      },
+      {
+        "id": "GCTX26-004",
+        "maxTokenSequenceRatio": 0.177215,
+        "nearest": {
+          "path": ".training/datasets/finance-v5/test.jsonl",
+          "id": "V5-TEST-076",
+          "variant": "source",
+          "fiveGramContainment": 0
+        }
+      },
+      {
+        "id": "GCTX26-005",
+        "maxTokenSequenceRatio": 0.205128,
+        "nearest": {
+          "path": ".training/datasets/finance-v4/test.jsonl",
+          "id": "V4-TEST-AUTH-023",
+          "variant": "source",
+          "fiveGramContainment": 0
+        }
+      },
+      {
+        "id": "GCTX26-006",
+        "maxTokenSequenceRatio": 0.208955,
+        "nearest": {
+          "path": ".training/datasets/finance-v5/train.jsonl",
+          "id": "V5-TRAIN-B-345",
+          "variant": "source",
+          "fiveGramContainment": 0
+        }
+      },
+      {
+        "id": "GCTX26-007",
+        "maxTokenSequenceRatio": 0.311688,
+        "nearest": {
+          "path": ".training/datasets/finance-v4/test.jsonl",
+          "id": "V4-TEST-AUTH-006",
+          "variant": "source",
+          "fiveGramContainment": 0
+        }
+      },
+      {
+        "id": "GCTX26-008",
+        "maxTokenSequenceRatio": 0.2,
+        "nearest": {
+          "path": ".training/datasets/finance-v5/train.jsonl",
+          "id": "V4-GTRAIN-38",
+          "variant": "source",
+          "fiveGramContainment": 0
+        }
+      },
+      {
+        "id": "GCTX26-009",
+        "maxTokenSequenceRatio": 0.225806,
+        "nearest": {
+          "path": ".training/datasets/finance-v5/train.jsonl",
+          "id": "V5-TRAIN-B-169",
+          "variant": "source",
+          "fiveGramContainment": 0
+        }
+      },
+      {
+        "id": "GCTX26-010",
+        "maxTokenSequenceRatio": 0.236842,
+        "nearest": {
+          "path": ".training/datasets/finance-v5/train.jsonl",
+          "id": "V4-GTRAIN-31",
+          "variant": "source",
+          "fiveGramContainment": 0.023256
+        }
+      },
+      {
+        "id": "GCTX26-011",
+        "maxTokenSequenceRatio": 0.215385,
+        "nearest": {
+          "path": ".training/datasets/finance-v5/train.jsonl",
+          "id": "V5-TRAIN-B-351",
+          "variant": "source",
+          "fiveGramContainment": 0
+        }
+      },
+      {
+        "id": "GCTX26-012",
+        "maxTokenSequenceRatio": 0.236842,
+        "nearest": {
+          "path": ".training/datasets/finance-v5/test.jsonl",
+          "id": "V5-TEST-114",
+          "variant": "source",
+          "fiveGramContainment": 0
+        }
+      },
+      {
+        "id": "GCTX26-013",
+        "maxTokenSequenceRatio": 0.3125,
+        "nearest": {
+          "path": "content/training/train.jsonl",
+          "id": "train-general-39",
+          "variant": "source",
+          "fiveGramContainment": 0
+        }
+      },
+      {
+        "id": "GCTX26-014",
+        "maxTokenSequenceRatio": 0.333333,
+        "nearest": {
+          "path": "content/training/evaluation.jsonl",
+          "id": "TEST-G16",
+          "variant": "source",
+          "fiveGramContainment": 0
+        }
+      },
+      {
+        "id": "GCTX26-015",
+        "maxTokenSequenceRatio": 0.291667,
+        "nearest": {
+          "path": ".training/datasets/finance-v5/train.jsonl",
+          "id": "V5-TRAIN-A-337",
+          "variant": "source",
+          "fiveGramContainment": 0
+        }
+      },
+      {
+        "id": "GCTX26-016",
+        "maxTokenSequenceRatio": 0.244898,
+        "nearest": {
+          "path": ".training/datasets/finance-v5/train.jsonl",
+          "id": "V5-TRAIN-A-212",
+          "variant": "source",
+          "fiveGramContainment": 0
+        }
+      }
+    ],
+    "parseErrors": [],
+    "criteria": {
+      "numericNormalization": "replace digit sequences including decimal/thousands separators; lowercase; tokenize English/Korean words; ignore punctuation",
+      "nearTokenSequenceRatio": 0.85,
+      "nearFiveGramContainment": 0.8,
+      "minimumTokensForContainment": 12,
+      "sequenceComparisonLengthRatioFloor": 0.5,
+      "lowerLengthRatioStillComparedWhenContainmentAtLeast": 0.5,
+      "noSemanticGuarantee": true
+    }
+  },
+  "freezePolicyKo": "새 후보 실행 전 원문·문맥·참조·checks와 이 manifest를 함께 동결한다. 후보 결과에 맞춰 현재 파일을 수정하지 않으며 수정이 필요하면 별도 버전·새 파일을 만든다. train으로 자동 이동·추가하지 않는다.",
+  "limitationsKo": [
+    "작은 도우미 작성 개발 자료이며 일반 언어 전체나 자연 자료의 최저 품질을 대표하지 않는다.",
+    "문맥 사용 네 항목은 모두 비금융 의미의 다의어다. 금융 의미의 같은 단어를 함께 시험한 균형 데이터로 주장하지 않는다.",
+    "기계 중복 검사는 숫자 정규화·어휘열·5-gram 경고이며 의미적 근접중복을 완전히 배제하지 못한다.",
+    "기존 한국어 출력에는 새 참조의 완전 중복만 확인했다. 모든 표현의 의미 유사도를 측정한 검사가 아니다.",
+    "원문 감사는 작성자 자기 점검이며 독립 감사 또는 사람 검수는 아니다."
+  ]
+}

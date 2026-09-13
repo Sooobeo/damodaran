@@ -1,16 +1,19 @@
 import fs from 'node:fs';
 import { config, dataPath } from '../config';
 import { db, hash, id, json, now } from '../db';
-import { downloadSource, EXTRACTOR_VERSION, extractionConfigHash, mimeFor, PipelineError, sniffFile, storeOriginal, validateSourceUrl } from '../sources';
+import { downloadSource, extractorVersionFor, extractionConfigHash, mimeFor, PipelineError, sniffFile, storeOriginal, validateSourceUrl } from '../sources';
 import { extractHtml, extractPdf, type ExtractedDocument } from '../extraction';
 import { translationSnapshot, translateSnapshot, type TranslationSnapshot } from '../translation';
 import { assertTranslationAvailable, isLocalTranslationProvider } from '../translation/runtime';
 import { reuseReviewedTranslation } from '../translation/memory';
+import { enqueueQualityAssessment, assessQuality, storeQualityAssessment, type QualitySnapshot } from '../quality';
+import { closeQualityEvaluator } from '../quality/runtime';
+import { closeLocalTranslator } from '../translation/local';
 
 type JobRow={id:string;type:string;status:string;scope_json:string;cancel_requested_at:string|null;lease_owner:string|null;lease_until:string|null;error_message:string|null;attempts:number};
 type ItemRow={id:string;job_id:string;unit_key:string;work_key:string;block_id:string|null;status:string;scope_json:string;attempts:number};
 type ResourceRow={id:string;canonical_url:string|null;source_type:string;title_en:string;title_ko:string;kind:string;format:string};
-type VersionRow={id:string;resource_id:string;original_path:string;format:string;final_url:string|null;mime:string;extraction_status:string};
+type VersionRow={id:string;resource_id:string;original_path:string;format:string;final_url:string|null;mime:string;extraction_status:string;extractor_version:string};
 export type PublicJob={id:string;type:string;status:string;total:number;completed:number;failed:number;needsReview:number;remaining:number;cancelled:number;errorMessage:string|null;resourceId:string|null};
 export function getJob(jobId:string):PublicJob {
   const row=db().prepare('SELECT * FROM jobs WHERE id=?').get(jobId) as JobRow|undefined;if(!row)throw new PipelineError('NOT_FOUND','작업을 찾을 수 없습니다.');
@@ -59,6 +62,7 @@ export function cancelJob(jobId:string):PublicJob {
     db().prepare(`UPDATE jobs SET cancel_requested_at=?,updated_at=? WHERE id=?`).run(now(),now(),jobId);db().prepare(`UPDATE job_items SET status='cancelled' WHERE job_id=? AND status='queued'`).run(jobId);
     db().prepare(`UPDATE usage_records SET reservation_status='released',outcome='cancelled_before_send' WHERE job_id=? AND reservation_status='reserved'`).run(jobId);
     if(row.status==='queued')db().prepare(`UPDATE jobs SET status='cancelled',lease_owner=NULL,lease_until=NULL WHERE id=?`).run(jobId);
+    db().prepare(`UPDATE translation_quality_assessments SET status='cancelled',message='의미 검사를 취소했습니다.',completed_at=? WHERE job_id=? AND status='queued'`).run(now(),jobId);
   }).immediate();return getJob(jobId);
 }
 export function retryJob(jobId:string):PublicJob {
@@ -68,6 +72,7 @@ export function retryJob(jobId:string):PublicJob {
     for(const item of items){const other=db().prepare(`SELECT id FROM job_items WHERE work_key=? AND status IN ('queued','running') AND id<>?`).get(item.work_key,item.id);if(other)throw new PipelineError('CONFLICT','같은 문단의 다른 작업이 진행 중입니다. 해당 작업을 먼저 확인하세요.');}
     if(!items.length)return;
     for(const item of items)db().prepare(`UPDATE job_items SET status='queued',attempts=0,next_attempt_at=NULL,error_code=NULL,error_message=NULL WHERE id=?`).run(item.id);
+    if(row.type==='quality')db().prepare(`UPDATE translation_quality_assessments SET status='queued',message='',completed_at=NULL WHERE job_id=? AND status IN ('failed','cancelled')`).run(jobId);
     db().prepare(`UPDATE jobs SET status='queued',cancel_requested_at=NULL,next_attempt_at=NULL,lease_owner=NULL,lease_until=NULL,error_code=NULL,error_message=NULL,updated_at=? WHERE id=?`).run(now(),jobId);
   }).immediate();return getJob(jobId);
 }
@@ -101,6 +106,8 @@ async function processTranslation(job:JobRow,item:ItemRow,owner:string){
   if(reviewed){db().prepare(`UPDATE job_items SET status='completed',result_id=? WHERE id=?`).run(reviewed.id,item.id);return;}
   const cached=db().prepare(`SELECT id FROM translations WHERE cache_key=? AND validation_status='passed' AND generation_status='ready'`).get(snapshot.cacheKey) as {id:string}|undefined;
   if(cached){db().prepare(`UPDATE job_items SET status='completed',result_id=? WHERE id=?`).run(cached.id,item.id);return;}
+  // An earlier evaluator close failure must prevent loading another model.
+  await closeQualityEvaluator();assertLease(job.id,owner);
   if(process.env.NODE_ENV!=='test')assertTranslationAvailable(snapshot);
   if(snapshot.text.length>config.MAX_SOURCE_CHARS_PER_JOB)throw new PipelineError('TEXT_LIMIT','작업 분량 제한을 넘었습니다.');
   const attemptId=reserveUsage(job.id,item,snapshot);
@@ -117,6 +124,7 @@ async function processTranslation(job:JobRow,item:ItemRow,owner:string){
       db().prepare(`UPDATE job_items SET status=?,result_id=?,error_code=?,error_message=? WHERE id=?`).run(needsReview?'needs_review':'completed',translationId,needsReview?'VALIDATION_FAILED':null,needsReview?result.warnings.join(' '):null,item.id);
       db().prepare(`UPDATE usage_records SET reservation_status=?,provider_request_id=?,input_tokens=?,output_tokens=?,outcome=? WHERE attempt_id=?`).run(isLocalTranslationProvider(snapshot.provider)?'reported':result.usage.inputTokens===null?'unknown':'reported',result.usage.requestId,result.usage.inputTokens,result.usage.outputTokens,validity,attemptId);
       if(needsReview)db().prepare('UPDATE jobs SET error_message=? WHERE id=?').run('일부 번역의 숫자·수식·용어 검토가 필요합니다.',job.id);
+      if(!acceptedReview&&!isCancelled(job.id)){try{enqueueQualityAssessment(translationId,snapshot.context);}catch{db().prepare(`UPDATE translations SET usage_json=json_set(COALESCE(usage_json,'{}'),'$.qualityWarning',?) WHERE id=?`).run('의미 검사 예약에 실패했습니다. 번역은 저장했으며 다시 검사할 수 있습니다.',translationId);}}
     }).immediate();
   }catch(error){const usage=(error as {providerUsage?:{inputTokens:number|null;outputTokens:number|null;requestId:string|null}}).providerUsage;
     if(usage)db().prepare(`UPDATE usage_records SET reservation_status=?,input_tokens=?,output_tokens=?,provider_request_id=?,outcome=? WHERE attempt_id=?`).run(isLocalTranslationProvider(snapshot.provider)?'reported':usage.inputTokens===null?'unknown':'reported',usage.inputTokens,usage.outputTokens,usage.requestId,errorDetails(error).code,attemptId);
@@ -137,7 +145,7 @@ function recordDiscoveredLinks(resource:ResourceRow,doc:ExtractedDocument){
 }
 async function extractVersion(version:VersionRow,job:JobRow,owner:string,contentType?:string){
   const bytes=fs.readFileSync(dataPath(version.original_path));let doc:ExtractedDocument;
-  if(version.format==='pdf')doc=await extractPdf(bytes);else if(version.format==='html')doc=extractHtml(bytes,version.final_url!,contentType||version.mime);else doc={title:null,blocks:[],links:[],images:[],pageCount:null,warnings:[],status:'ready'};
+  if(version.format==='pdf')doc=await extractPdf(bytes,version.extractor_version);else if(version.format==='html')doc=extractHtml(bytes,version.final_url!,contentType||version.mime);else doc={title:null,blocks:[],links:[],images:[],pageCount:null,warnings:[],status:'ready'};
   const assets:Array<{id:string;url:string;path:string|null;hash:string|null;mime:string|null;status:string}>=[];
   if(new Set(doc.images.map(i=>i.url)).size>60)doc.warnings.push('이미지가 많아 처음 60개만 로컬에 가져왔습니다. 나머지는 원문 링크에서 확인하세요.');
   for(const image of [...new Map(doc.images.map(i=>[i.url,i])).values()].slice(0,60)){
@@ -164,9 +172,9 @@ async function processImport(job:JobRow,item:ItemRow,owner:string){
   else{
     const resource=db().prepare('SELECT * FROM resources WHERE id=?').get(scope.resourceId) as ResourceRow;const result=await downloadSource(resource.canonical_url!);if(isCancelled(job.id))throw new PipelineError('CANCELLED','가져오기를 취소했습니다.');
     const kind=sniffFile(result.bytes,result.contentType,result.finalUrl);if(!['html','pdf','xls','xlsx'].includes(kind))throw new PipelineError('UNSUPPORTED_FORMAT','이 자료는 HTML·PDF·Excel 형식이 아닙니다.');
-    const saved=storeOriginal(result.bytes,kind),cfg=extractionConfigHash();
-    version=db().prepare('SELECT * FROM source_versions WHERE resource_id=? AND file_hash=? AND extractor_version=? AND extraction_config_hash=?').get(resource.id,saved.fileHash,EXTRACTOR_VERSION,cfg) as VersionRow;
-    if(!version){const versionId=id();db().transaction(()=>{assertLease(job.id,owner);db().prepare(`INSERT INTO source_versions(id,resource_id,file_hash,original_path,final_url,mime,format,byte_size,imported_at,fetched_at,http_last_modified,etag,declared_version,extractor_version,extraction_config_hash,extraction_status) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'queued')`).run(versionId,resource.id,saved.fileHash,saved.relative,result.finalUrl,mimeFor(kind),kind,result.bytes.length,now(),now(),result.lastModified,result.etag,kind==='pdf'?'버전 확인 필요':null,EXTRACTOR_VERSION,cfg);}).immediate();version=db().prepare('SELECT * FROM source_versions WHERE id=?').get(versionId) as VersionRow;}
+    const saved=storeOriginal(result.bytes,kind),cfg=extractionConfigHash(kind),extractorVersion=extractorVersionFor(kind);
+    version=db().prepare('SELECT * FROM source_versions WHERE resource_id=? AND file_hash=? AND extractor_version=? AND extraction_config_hash=?').get(resource.id,saved.fileHash,extractorVersion,cfg) as VersionRow;
+    if(!version){const versionId=id();db().transaction(()=>{assertLease(job.id,owner);db().prepare(`INSERT INTO source_versions(id,resource_id,file_hash,original_path,final_url,mime,format,byte_size,imported_at,fetched_at,http_last_modified,etag,declared_version,extractor_version,extraction_config_hash,extraction_status) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'queued')`).run(versionId,resource.id,saved.fileHash,saved.relative,result.finalUrl,mimeFor(kind),kind,result.bytes.length,now(),now(),result.lastModified,result.etag,kind==='pdf'?'버전 확인 필요':null,extractorVersion,cfg);}).immediate();version=db().prepare('SELECT * FROM source_versions WHERE id=?').get(versionId) as VersionRow;}
     item.scope_json=JSON.stringify({...scope,versionId:version.id,httpStatus:result.status,finalUrl:result.finalUrl,checkedAt:now()});db().prepare('UPDATE job_items SET scope_json=? WHERE id=?').run(item.scope_json,item.id);
     if(!['ready','partial','ocr_needed'].includes(version.extraction_status))await extractVersion(version,job,owner,result.contentType);
   }
@@ -178,23 +186,34 @@ export async function runOnce():Promise<boolean>{
   const owner=id(),stamp=now(),until=new Date(Date.now()+60000).toISOString();
   const job=db().transaction(()=>{
     const expired=db().prepare(`SELECT id FROM jobs WHERE status='running' AND (lease_until IS NULL OR lease_until<?)`).all(stamp) as {id:string}[];
-    for(const old of expired){db().prepare(`UPDATE job_items SET status='queued',error_code='INTERRUPTED',error_message='이전 실행이 중단되어 남은 부분부터 재개합니다.' WHERE job_id=? AND status='running'`).run(old.id);db().prepare(`UPDATE usage_records SET reservation_status=CASE WHEN reservation_status='reserved' THEN 'released' ELSE 'unknown' END,outcome='interrupted' WHERE job_id=? AND reservation_status IN ('reserved','sent')`).run(old.id);db().prepare(`UPDATE jobs SET status='queued',lease_owner=NULL,lease_until=NULL WHERE id=?`).run(old.id);}
-    const next=db().prepare(`SELECT * FROM jobs WHERE status='queued' AND (next_attempt_at IS NULL OR next_attempt_at<=?) ORDER BY created_at LIMIT 1`).get(stamp) as JobRow|undefined;if(!next)return null;
+    for(const old of expired){db().prepare(`UPDATE job_items SET status='queued',error_code='INTERRUPTED',error_message='이전 실행이 중단되어 남은 부분부터 재개합니다.' WHERE job_id=? AND status='running'`).run(old.id);db().prepare(`UPDATE translation_quality_assessments SET status='queued',message='이전 의미 검사가 중단되어 남은 부분부터 재개합니다.',completed_at=NULL WHERE job_id=? AND status='running'`).run(old.id);db().prepare(`UPDATE usage_records SET reservation_status=CASE WHEN reservation_status='reserved' THEN 'released' ELSE 'unknown' END,outcome='interrupted' WHERE job_id=? AND reservation_status IN ('reserved','sent')`).run(old.id);db().prepare(`UPDATE jobs SET status='queued',lease_owner=NULL,lease_until=NULL WHERE id=?`).run(old.id);}
+    const next=db().prepare(`SELECT * FROM jobs WHERE status='queued' AND (next_attempt_at IS NULL OR next_attempt_at<=?) ORDER BY CASE WHEN type='quality' THEN 1 ELSE 0 END,created_at LIMIT 1`).get(stamp) as JobRow|undefined;if(!next)return null;
     db().prepare(`UPDATE jobs SET status='running',lease_owner=?,lease_until=?,attempts=attempts+1,updated_at=? WHERE id=?`).run(owner,until,stamp,next.id);return {...next,lease_owner:owner,lease_until:until};
   }).immediate();if(!job)return false;
   const heartbeat=setInterval(()=>{try{db().prepare(`UPDATE jobs SET lease_until=?,updated_at=? WHERE id=? AND lease_owner=? AND status='running'`).run(new Date(Date.now()+60000).toISOString(),now(),job.id,owner);}catch{/* Claim/save checks remain authoritative. */}},10000);heartbeat.unref();
   try{
     const pending=db().prepare(`SELECT * FROM job_items WHERE job_id=? AND status='queued' AND (next_attempt_at IS NULL OR next_attempt_at<=?) ORDER BY rowid`).all(job.id,now()) as ItemRow[];
     for(const item of pending){
-      assertLease(job.id,owner);if(isCancelled(job.id)){db().prepare(`UPDATE job_items SET status='cancelled' WHERE job_id=? AND status='queued'`).run(job.id);break;}
+      assertLease(job.id,owner);if(isCancelled(job.id)){db().transaction(()=>{assertLease(job.id,owner);db().prepare(`UPDATE job_items SET status='cancelled' WHERE job_id=? AND status='queued'`).run(job.id);db().prepare(`UPDATE translation_quality_assessments SET status='cancelled',message='의미 검사를 취소했습니다.',completed_at=? WHERE job_id=? AND status IN ('queued','running')`).run(now(),job.id);}).immediate();break;}
       db().prepare(`UPDATE job_items SET status='running',attempts=attempts+1 WHERE id=?`).run(item.id);item.attempts++;
-      try{if(job.type==='translation')await processTranslation(job,item,owner);else await processImport(job,item,owner);}
+      try{if(job.type==='translation')await processTranslation(job,item,owner);else if(job.type==='quality'){
+        const snapshot=json<QualitySnapshot>(item.scope_json,{} as QualitySnapshot);
+        if(!snapshot.assessmentId||!snapshot.translationId||!snapshot.sourceHash)throw new PipelineError('INVALID_JOB','의미 검사 작업이 올바르지 않습니다.');
+        await closeLocalTranslator();assertLease(job.id,owner);
+        db().prepare(`UPDATE translation_quality_assessments SET status='running' WHERE id=? AND job_id=?`).run(snapshot.assessmentId,job.id);
+        let result=await assessQuality(snapshot);
+        db().transaction(()=>{assertLease(job.id,owner);if(isCancelled(job.id))result={...result,status:'cancelled',risk:'unknown',message:'의미 검사를 취소했습니다.'};
+          const saved=storeQualityAssessment(snapshot,result);
+          db().prepare(`UPDATE job_items SET status=?,result_id=?,error_code=?,error_message=? WHERE id=?`).run(saved.status==='cancelled'?'cancelled':saved.status==='failed'?'failed':'completed',snapshot.assessmentId,saved.status==='failed'?'QE_FAILED':null,saved.status==='failed'?saved.message:null,item.id);
+        }).immediate();
+      }else if(job.type==='import'||job.type==='extract')await processImport(job,item,owner);else throw new PipelineError('INVALID_JOB','지원하지 않는 작업입니다.');}
       catch(error){const detail=errorDetails(error);if(detail.code==='LEASE_LOST')throw detail;
         db().transaction(()=>{assertLease(job.id,owner);const retry=detail.retryable&&item.attempts<3&&!isCancelled(job.id);const state=detail.code==='CANCELLED'||isCancelled(job.id)?'cancelled':retry?'queued':'failed';db().prepare(`UPDATE job_items SET status=?,next_attempt_at=?,error_code=?,error_message=? WHERE id=?`).run(state,retry?new Date(Date.now()+1000*2**item.attempts).toISOString():null,detail.code,detail.message,item.id);db().prepare('UPDATE jobs SET error_code=?,error_message=? WHERE id=?').run(detail.code,detail.message,job.id);
-          if(job.type!=='translation'){const scope=json<{resourceId:string;versionId?:string}>(item.scope_json,{} as never);db().prepare(`UPDATE resources SET source_status='failed' WHERE id=?`).run(scope.resourceId);if(scope.versionId)db().prepare(`UPDATE source_versions SET extraction_status='failed' WHERE id=? AND extraction_status='queued'`).run(scope.versionId);}
+          if(job.type==='quality')db().prepare(`UPDATE translation_quality_assessments SET status=?,message=?,completed_at=? WHERE job_id=? AND id=?`).run(state==='cancelled'?'cancelled':state==='queued'?'queued':'failed',detail.message,now(),job.id,json<QualitySnapshot>(item.scope_json,{} as QualitySnapshot).assessmentId);
+          if(job.type==='import'||job.type==='extract'){const scope=json<{resourceId:string;versionId?:string}>(item.scope_json,{} as never);db().prepare(`UPDATE resources SET source_status='failed' WHERE id=?`).run(scope.resourceId);if(scope.versionId)db().prepare(`UPDATE source_versions SET extraction_status='failed' WHERE id=? AND extraction_status='queued'`).run(scope.versionId);}
         }).immediate();
       }
     }
     db().transaction(()=>summarize(job.id,owner)).immediate();return true;
-  }finally{clearInterval(heartbeat);}
+  }finally{clearInterval(heartbeat);if(job.type==='quality')await closeQualityEvaluator();}
 }

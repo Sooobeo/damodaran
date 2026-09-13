@@ -1,0 +1,82 @@
+{
+  "version": "qwen35-cpu-6g-4threads-4k-dev8-v4",
+  "contextTokens": 4096,
+  "outputReservedTokens": 2048,
+  "threads": 4,
+  "batchThreads": 4,
+  "batchSize": 128,
+  "physicalBatchSize": 128,
+  "parallelSlots": 1,
+  "priorityClass": "BelowNormal",
+  "nativePriority": -1,
+  "poll": 0,
+  "pollBatch": 0,
+  "cachePrompt": true,
+  "contextCheckpoints": 3,
+  "cacheRamMiB": 0,
+  "messageDelimiters": [
+    {
+      "role": "system",
+      "delimiter": "<|im_start|>system\n"
+    },
+    {
+      "role": "user",
+      "delimiter": "<|im_start|>user\n"
+    },
+    {
+      "role": "assistant",
+      "delimiter": "<|im_start|>assistant\n"
+    }
+  ],
+  "maximumChildWorkingSetBytes": 6442450944,
+  "maximumChildPrivateBytes": 6442450944,
+  "minimumStartAvailablePhysicalBytes": 9663676416,
+  "minimumStartAvailableCommitBytes": 9663676416,
+  "outputMappingVersion": "qwen-material-warning-policy-v3",
+  "mappingFiles": [
+    {
+      "path": "scripts/local-qe/qwen-material-warning-policy-v3.json",
+      "sha256": "964593f6d8af8c5b819871922eee82227e6a75ec22042f5f869e263c647929ba"
+    },
+    {
+      "path": "scripts/local-qe/material_warning_v3.py",
+      "sha256": "c1e8209c8ecc5e4c6ffdb3563c27bc2a6d1eb27de08b652fb6362a3e1bfc9cd7"
+    }
+  ],
+  "memoryEstimate": {
+    "attentionKvMiB": 128,
+    "threeRecurrentCheckpointCoreMiB": 150.75,
+    "overheadUnknown": true,
+    "measurementRequired": true
+  },
+  "status": "prepared_audit_missing_execution_binding_pending",
+  "tokenBudgetAudit": {
+    "path": ".translation/qe/llm-candidates/qwen35-9b/token-budget-v2/attempt-001/summary.json",
+    "sha256": "edcb3d10afb484fe8e26ba8dbc598570ae80f35368a3294a0b1c3af86a3c20fd"
+  },
+  "existingFilesModified": false,
+  "singleModelSlotApprovalRequired": true,
+  "sameSeedGuaranteesSameBytes": false,
+  "enableThinking": false,
+  "contractVersion": "qwen35-meaning-v2",
+  "promptSha256": "3227a46ec7f9f5d4669a783dc5938df3c3f57720be16dc993eb8dce2c97b5ae7",
+  "schemaSha256": "a6785ded870ca55af1408c97db558ecfb23bb074d81e81b2546b5b17b0419cd7",
+  "minimumRunningSystemHeadroomBytes": 1073741824,
+  "executionBinding": "required_external_receipt",
+  "expectedCount": 8,
+  "inputSha256": "55e52db41f16e35998eab1f3835f60aafc7e1a875a38b1d32a00dd5ec49e68ce",
+  "nativeTemplateParity": "pending_actual_v5_apply_template",
+  "workingSetApiMaximumBytes": 6375342080,
+  "workingSetIsAggregateOrPrivateHardCap": false,
+  "singleDiagnosticAttemptOnly": true,
+  "automaticRetries": false,
+  "independentHoldout": false,
+  "allEightCorrectIsAcceptance": false,
+  "priorObservedPeakWorkingSetBytes": 5622362112,
+  "priorEvidencePath": ".training/verifications/qwen-v4-6g-resource-feasibility-20260911.json",
+  "priorEvidenceSha256": "e449e0bd3739b307d1a5ea25b63a43cef64b043e41190a6c6fc2d625855c3e26",
+  "experimentHypothesis": "A single dev8 pilot may fit; new prompt and memory cap change together, so effects cannot be separated.",
+  "guaranteesNoOutOfMemory": false,
+  "qualityUnchangedClaim": false,
+  "adoptionClaim": false
+}

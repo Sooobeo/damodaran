@@ -36,6 +36,17 @@ test('consistent backup restores notes, positions and byte-identical source in a
 });
 test('settings schemas and path traversal are rejected',()=>{assert.throws(()=>s.saveSettings({fontSize:200}));assert.throws(()=>s.saveSettings({OPENAI_API_KEY:'forbidden'}));assert.throws(()=>dataPath('../outside'));assert.throws(()=>dataPath('C:\\outside'));});
 
+test('backup preserves completed quality history and restore cancels pending quality without starting a worker',async()=>{
+  const stamp=now(),sourceHash=hash('Test fixture'),translationHash=hash('시험 번역');
+  db().prepare(`INSERT INTO translations(id,block_id,cache_key,text_ko,provider,model,prompt_version,glossary_version,context_hash,validation_status,created_at) VALUES('storage-translation','test-block','storage-cache','시험 번역','argos','test','test','test',?,'passed',?)`).run(hash('context'),stamp);
+  db().prepare(`INSERT INTO jobs(id,type,dedupe_key,status,scope_json,created_at,updated_at) VALUES('storage-quality-job','quality','storage-quality','queued','{}',?,?)`).run(stamp,stamp);
+  for(const status of ['completed','queued'])db().prepare(`INSERT INTO translation_quality_assessments(id,translation_id,block_id,source_version_id,source_hash,translation_hash,context_hash,cache_key,model_identity,calibration_version,rules_version,status,risk,job_id,created_at) VALUES(?,'storage-translation','test-block','test-v1',?,?,?,?, 'test','test','test',?,'unknown','storage-quality-job',?)`).run('storage-quality-'+status,sourceHash,translationHash,hash('context'),status,status,stamp);
+  const result=await backup(),target=path.join(os.tmpdir(),'study-quality-restored-'+crypto.randomUUID());
+  assert.equal(restore(result.path,target).workerStarted,false);
+  const copied=new Database(path.join(target,'library.sqlite'));
+  try{assert.deepEqual(copied.prepare('SELECT status FROM translation_quality_assessments ORDER BY id').all(),[{status:'completed'},{status:'cancelled'}]);assert.equal((copied.prepare("SELECT status FROM jobs WHERE id='storage-quality-job'").get() as {status:string}).status,'cancelled');assert.equal((db().prepare("SELECT status FROM translation_quality_assessments WHERE id='storage-quality-queued'").get() as {status:string}).status,'queued');}finally{copied.close();}
+});
+
 test('backup rejects same-size corrupted originals instead of blessing their new hash',async()=>{
   const original=dataPath('originals/test-source.html'),bytes=fs.readFileSync(original);
   const completed=()=>fs.readdirSync(path.join(DATA_DIR,'backups')).filter(name=>!name.endsWith('.partial')).sort();

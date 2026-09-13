@@ -3,11 +3,15 @@
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, ArrowUpRight, Bookmark, BookOpen, Check, ChevronLeft, ChevronRight, Download, ExternalLink, Languages, List, NotebookPen, PanelRightClose, PanelRightOpen, Pencil, Search, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Bookmark, BookOpen, Check, ChevronLeft, ChevronRight, ExternalLink, HardDriveDownload, Languages, List, LoaderCircle, NotebookPen, PanelRightClose, PanelRightOpen, Pencil, Search, X } from 'lucide-react';
 import type { Block, BlocksResult, LanguageMode, Position, ResourceDetail, Term, Translation } from '@/lib/client-types';
 import { api, dateLabel, label, useRoom } from './ui-context';
 import { Empty, ErrorPanel, JobCard, Loading } from './common';
 import PdfPage from './pdf-page';
+import QualityStatus from './quality-status';
+import { hasReviewRisk, isReviewedTranslation, qualityRanges, QualityText, reviewFindings, visibleQuality } from './quality-markup';
+import { validSpan } from '@/lib/quality/rules';
+import type { QualityFinding } from '@/lib/quality/types';
 
 type ReaderLocation = { versionId: string; page: number; anchor?: string; cursor?: string; mode: LanguageMode; offset: number };
 
@@ -18,9 +22,11 @@ export default function Reader({ resourceId }: { resourceId: string }) {
   const [mode, setMode] = useState<LanguageMode>(data.settings.languageMode); const [panel, setPanel] = useState<'notes' | 'terms' | 'outline' | null>('notes');
   const [selectedIds, setSelectedIds] = useState<string[]>([]); const [activeBlock, setActiveBlock] = useState<string | null>(null);
   const [noteText, setNoteText] = useState(''); const [saving, setSaving] = useState(false); const [translationBusy, setTranslationBusy] = useState(false);
+  const [translationRequest, setTranslationRequest] = useState<{ versionId: string; blockIds: string[]; jobIds: string[] } | null>(null);
   const [selectedTerm, setSelectedTerm] = useState<Term | null>(null); const [termQuery, setTermQuery] = useState(''); const [saveState, setSaveState] = useState('');
   const [pageEnd, setPageEnd] = useState(1); const [pageInput, setPageInput] = useState('1');
   const positionReady = useRef(false); const locationRef = useRef<ReaderLocation | null>(null); const scrollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const reviewSequence = useRef(0);
   const dataRef = useRef(data); dataRef.current = data;
   const originalUrl = payload ? `/api/resources/${resourceId}/original?versionId=${payload.version.id}` : '';
   const isPdf = (payload?.version.format || detail?.resource.format || '').toLowerCase() === 'pdf';
@@ -78,8 +84,26 @@ export default function Reader({ resourceId }: { resourceId: string }) {
   const jobSignature = data.jobs.filter(j => j.resourceId === resourceId).map(j => `${j.id}:${j.status}:${j.completed}:${j.needsReview}`).join('|');
   useEffect(() => {
     if (!locationRef.current || !jobSignature) return; const loc = locationRef.current;
-    fetchBlocks(loc, isPdf).then(setPayload).catch(() => {});
+    let alive = true; const startedReviewSequence = reviewSequence.current;
+    fetchBlocks(loc, isPdf).then(result => { if (alive && locationRef.current === loc && reviewSequence.current === startedReviewSequence) setPayload(result); }).catch(() => {});
+    return () => { alive = false; };
   }, [jobSignature, fetchBlocks, isPdf]);
+  const pendingQuality = payload?.blocks.some(block => {
+    const quality = visibleQuality(block.translation);
+    return quality?.status === 'queued' || quality?.status === 'running';
+  }) || false;
+  useEffect(() => {
+    if (!pendingQuality) return;
+    let alive = true, inFlight = false;
+    const timer = setInterval(async () => {
+      if (inFlight || !locationRef.current) return;
+      const loc = locationRef.current, startedReviewSequence = reviewSequence.current; inFlight = true;
+      try { const result = await fetchBlocks(loc, isPdf); if (alive && locationRef.current === loc && reviewSequence.current === startedReviewSequence) setPayload(result); }
+      catch { /* Keep the saved translation and its last known assessment state. */ }
+      finally { inFlight = false; }
+    }, 1500);
+    return () => { alive = false; clearInterval(timer); };
+  }, [pendingQuality, fetchBlocks, isPdf]);
 
   const savePosition = useCallback(async (blockId: string | null, offset = 0) => {
     const loc = locationRef.current; if (!loc || !positionReady.current) return;
@@ -108,9 +132,21 @@ export default function Reader({ resourceId }: { resourceId: string }) {
   }
   function changeMode(next: LanguageMode) { setMode(next); if (locationRef.current) { locationRef.current.mode = next; void savePosition(activeBlock); const query = new URLSearchParams({ versionId: locationRef.current.versionId, mode: next }); if (isPdf) query.set('page', String(locationRef.current.page)); if (activeBlock) query.set('blockId', activeBlock); if (params.get('moduleSlug')) query.set('moduleSlug', params.get('moduleSlug')!); router.replace(`/reader/${resourceId}?${query}`, { scroll: false }); } }
   async function translate(pages = false) {
-    if (!payload || !location) return;
+    if (!payload || !location || translationBusy || translationInProgress) return;
     if (!data.translationStatus.configured) { notify(data.translationStatus.statusMessage, true); return; }
-    setTranslationBusy(true); await run(async () => { const result = await api<{ jobIds: string[]; cached: number }>('/api/translations', 'POST', { sourceVersionId: payload.version.id, ...(pages ? { pageRange: [location.page, pageEnd] } : { blockIds: selectedIds }) }); await refresh(); setPayload(await fetchBlocks(location, isPdf)); notify(result.jobIds.length ? `번역 작업 ${result.jobIds.length}개에 연결했습니다. 처리 상태를 확인해 주세요.` : '이미 저장한 유효한 번역을 불러왔습니다.'); }); setTranslationBusy(false);
+    const loc = locationRef.current!;
+    const request = { versionId: payload.version.id, blockIds: pages ? payload.blocks.filter(b => b.type !== 'image' && b.text.trim()).map(b => b.id) : [...selectedIds], jobIds: [] as string[] };
+    setTranslationRequest(request); setTranslationBusy(true);
+    try {
+      await run(async () => {
+        const result = await api<{ jobIds: string[]; cached: number }>('/api/translations', 'POST', { sourceVersionId: request.versionId, ...(pages ? { pageRange: [loc.page, pageEnd] } : { blockIds: request.blockIds }) });
+        setTranslationRequest({ ...request, jobIds: result.jobIds });
+        await refresh();
+        const next = await fetchBlocks(loc, isPdf);
+        if (locationRef.current === loc) setPayload(next);
+        if (!result.jobIds.length) notify('이미 저장한 유효한 번역을 불러왔습니다.');
+      });
+    } finally { setTranslationBusy(false); }
   }
   async function saveNote() {
     if (!payload || !location || !noteText.trim()) return; setSaving(true);
@@ -125,6 +161,7 @@ export default function Reader({ resourceId }: { resourceId: string }) {
   function showTerm(term: Term) { setSelectedTerm(term); setPanel('terms'); }
   function selectBlock(block: Block) { setActiveBlock(block.id); void savePosition(block.id); }
   function applyReviewedTranslation(blockId: string, translation: Translation) {
+    reviewSequence.current++;
     setPayload(current => current ? { ...current, blocks: current.blocks.map(block => block.id === blockId ? { ...block, translation } : block) } : current);
     refresh().catch(() => {});
   }
@@ -148,10 +185,16 @@ export default function Reader({ resourceId }: { resourceId: string }) {
   const eligibleBlocks = payload.blocks.filter(b => b.type !== "image" && b.text.trim());
   const translated = eligibleBlocks.filter(b => b.translation?.current && b.translation.validationStatus !== 'needs_review').length;
   const outline = payload.blocks.filter(b => /heading|title/.test(b.type));
+  const requestOnVersion = translationRequest?.versionId === payload.version.id ? translationRequest : null;
+  const jobsById = new Map(data.jobs.map(job => [job.id, job]));
+  const isActiveJob = (id: string) => { const job = jobsById.get(id); return job ? job.type === 'translation' && ['queued', 'running'].includes(job.status) : payload.blocks.some(block => block.activeJobId === id); };
+  const translationJobIds = new Set([...payload.blocks.flatMap(block => block.activeJobId ? [block.activeJobId] : []), ...(requestOnVersion?.jobIds || [])]);
+  const translationInProgress = (translationBusy && !!requestOnVersion) || [...translationJobIds].some(isActiveJob);
+  const isBlockTranslating = (block: Block) => !!(translationBusy && requestOnVersion?.blockIds.includes(block.id)) || !!(block.activeJobId && isActiveJob(block.activeJobId));
   return <div className={`reader ${panel ? 'has-panel' : ''}`} style={{ '--reading-font-size': `${data.settings.fontSize}px` } as React.CSSProperties}>
-    <div className="reader-heading"><Link href={`/resources/${resourceId}`} className="back-link"><ArrowLeft size={15}/>자료 정보</Link><div className="row-between"><div><span className="eyebrow">{label(resource.format.toLowerCase())} · {resource.author || (resource.url ? 'ASWATH DAMODARAN' : '원저자 미확인 · 사용자 PDF')}</span><h1>{resource.titleKo}</h1><p>{resource.titleEn}</p></div><a className="icon-button" href={originalUrl} download aria-label="보관한 원본 다운로드"><Download size={19}/></a></div></div>
-    <div className="reader-toolbar"><div className="mode-switch" aria-label="읽기 모드">{(['ko', 'en', 'parallel'] as const).map(m => <button key={m} onClick={() => changeMode(m)} className={mode === m ? 'active' : ''} aria-pressed={mode === m}>{m === 'ko' ? '한국어' : m === 'en' ? '원문' : '나란히'}</button>)}</div><div className="reader-toolbar-right"><span className="muted translation-count">{translated}/{eligibleBlocks.length} 문단 번역</span><button className="icon-button" aria-label="현재 위치 북마크" onClick={bookmark}><Bookmark size={18}/></button><button className="icon-button" aria-label={panel ? '옆 패널 접기' : '용어·메모 패널 열기'} onClick={() => setPanel(panel ? null : 'notes')}>{panel ? <PanelRightClose size={19}/> : <PanelRightOpen size={19}/>}</button></div></div>
-    {isPdf && <div className="pdf-navigation"><div className="page-picker"><button className="icon-button" disabled={location.page <= 1} aria-label="이전 PDF 페이지" onClick={() => changePage(location.page - 1)}><ChevronLeft size={18}/></button><form onSubmit={e => { e.preventDefault(); const value = Number(pageInput); if (Number.isInteger(value) && value >= 1 && value <= (payload.version.pageCount || 1)) changePage(value); else notify('PDF 페이지 범위 안의 정수를 입력해 주세요.', true); }}><input aria-label="PDF 페이지 번호" value={pageInput} onChange={e => setPageInput(e.target.value)} inputMode="numeric"/><span>/ {payload.version.pageCount || payload.pageCount}페이지</span></form><button className="icon-button" disabled={location.page >= (payload.version.pageCount || 1)} aria-label="다음 PDF 페이지" onClick={() => changePage(location.page + 1)}><ChevronRight size={18}/></button></div><div className="page-translate"><label htmlFor="page-end">현재 페이지부터</label><input id="page-end" type="number" min={location.page} max={payload.version.pageCount || 1} value={pageEnd} onChange={e => setPageEnd(Number(e.target.value))}/><span>페이지까지</span><button className="button small primary" disabled={translationBusy || !data.translationStatus.configured || pageEnd < location.page || pageEnd > (payload.version.pageCount || 1)} onClick={() => translate(true)}><Languages size={15}/>번역</button></div></div>}
+    <div className="reader-heading"><Link href={`/resources/${resourceId}`} className="back-link"><ArrowLeft size={15}/>자료 정보</Link><div className="row-between"><div><span className="eyebrow">{label(resource.format.toLowerCase())} · {resource.author || (resource.url ? 'ASWATH DAMODARAN' : '원저자 미확인 · 사용자 PDF')}</span><h1>{resource.titleKo}</h1><p>{resource.titleEn}</p></div><a className="icon-button" href={originalUrl} download aria-label="보관본을 내 파일로 다운로드" title="보관본 다운로드"><HardDriveDownload size={19}/></a></div></div>
+    <div className="reader-toolbar"><div className="mode-switch" aria-label="읽기 모드">{(['ko', 'en', 'parallel'] as const).map(m => <button key={m} onClick={() => changeMode(m)} className={mode === m ? 'active' : ''} aria-pressed={mode === m}>{m === 'ko' ? '한국어' : m === 'en' ? '원문' : '나란히'}</button>)}</div><div className="reader-toolbar-right"><span className="muted translation-count">{translationInProgress && <LoaderCircle size={15} className="spin" aria-hidden="true"/>}{translated}/{eligibleBlocks.length} 문단 번역</span><button className="icon-button" aria-label="현재 위치 북마크" onClick={bookmark}><Bookmark size={18}/></button><button className="icon-button" aria-label={panel ? '옆 패널 접기' : '용어·메모 패널 열기'} onClick={() => setPanel(panel ? null : 'notes')}>{panel ? <PanelRightClose size={19}/> : <PanelRightOpen size={19}/>}</button></div></div>
+    {isPdf && <div className="pdf-navigation"><div className="page-picker"><button className="icon-button" disabled={location.page <= 1} aria-label="이전 PDF 페이지" onClick={() => changePage(location.page - 1)}><ChevronLeft size={18}/></button><form onSubmit={e => { e.preventDefault(); const value = Number(pageInput); if (Number.isInteger(value) && value >= 1 && value <= (payload.version.pageCount || 1)) changePage(value); else notify('PDF 페이지 범위 안의 정수를 입력해 주세요.', true); }}><input aria-label="PDF 페이지 번호" value={pageInput} onChange={e => setPageInput(e.target.value)} inputMode="numeric"/><span>/ {payload.version.pageCount || payload.pageCount}페이지</span></form><button className="icon-button" disabled={location.page >= (payload.version.pageCount || 1)} aria-label="다음 PDF 페이지" onClick={() => changePage(location.page + 1)}><ChevronRight size={18}/></button></div><div className="page-translate"><label htmlFor="page-end">현재 페이지부터</label><input id="page-end" type="number" min={location.page} max={payload.version.pageCount || 1} value={pageEnd} onChange={e => setPageEnd(Number(e.target.value))}/><span>페이지까지</span><button className="button small primary" aria-busy={translationInProgress} disabled={translationInProgress || !data.translationStatus.configured || pageEnd < location.page || pageEnd > (payload.version.pageCount || 1)} onClick={() => translate(true)}>{translationInProgress ? <LoaderCircle size={15} className="spin" aria-hidden="true"/> : <Languages size={15}/>} {translationInProgress ? '번역 중…' : '번역'}</button></div></div>}
     {(data.translationStatus.local || !data.translationStatus.configured) && <div className="translation-setup-note"><Languages size={17}/><span>{data.translationStatus.local && <strong>무료 번역 · 이 PC에서 처리 </strong>}{data.translationStatus.statusMessage}</span><Link href="/settings">{data.translationStatus.configured ? '번역 정보' : '설정 안내'} <ArrowUpRight size={14}/></Link></div>}
     {['needs_ocr', 'ocr_required', 'ocr_needed', 'partial', 'failed'].includes(payload.version.extractionStatus) && <div className="info-note"><BookOpen size={18}/><p>{label(payload.version.extractionStatus)} · 추출이 불확실한 내용은 원본과 함께 확인하세요. 스캔 이미지의 OCR은 지원하지 않습니다.</p></div>}
     <div className="reader-body"><div className="reading-column">{loading && <Loading/>}<div className="document-version">버전 {payload.version.id.slice(0, 8)} · {dateLabel(payload.version.importedAt)} 가져옴 <span>{saveState}</span></div>
@@ -161,8 +204,8 @@ export default function Reader({ resourceId }: { resourceId: string }) {
         {payload.blocks.length > 0 && <div className="document-column-labels"><span>{mode === 'ko' ? '한국어 · 기계 번역' : 'ENGLISH · 원문'}</span>{mode === 'parallel' && <span>한국어 · 기계 번역</span>}</div>}
         {payload.blocks.map(block => <section id={`block-${block.id}`} data-source-block={block.id} key={block.id} className={`source-block ${activeBlock === block.id ? 'active-block' : ''} ${selectedIds.includes(block.id) ? 'selected-block' : ''}`} onClick={() => selectBlock(block)}>
           <div className="block-select"><input type="checkbox" aria-label={`${block.order + 1}번째 문단 번역 선택`} checked={selectedIds.includes(block.id)} disabled={block.type === "image" || !block.text.trim()} onChange={e => { setSelectedIds(ids => e.target.checked ? [...ids, block.id] : ids.filter(id => id !== block.id)); setActiveBlock(block.id); }}/><span>{String(block.order + 1).padStart(2, '0')}</span></div>
-          {(mode === 'en' || mode === 'parallel') && <div lang="en" className="original-block"><BlockContent block={block} onTerm={showTerm}/></div>}
-          {(mode === 'ko' || mode === 'parallel') && <div lang="ko" className="translated-block">{block.type === "image" ? <BlockContent block={block} onTerm={showTerm}/> : block.translation ? <TranslationContent block={block} translation={block.translation} onTerm={showTerm} onReviewed={translation => applyReviewedTranslation(block.id, translation)} onReload={() => reloadTranslation(block.id)}/> : <div className="untranslated"><Languages size={20}/><p>{block.activeJobId ? '번역 작업이 진행 중입니다.' : '아직 번역하지 않은 문단'}</p><button className="text-link" disabled={!data.translationStatus.configured || translationBusy} onClick={() => { setSelectedIds(ids => ids.includes(block.id) ? ids : [...ids, block.id]); }}>번역할 문단에 선택 <Check size={13}/></button>{mode === 'ko' && <details><summary>원문 펼쳐보기</summary><div lang="en"><BlockContent block={block} onTerm={showTerm}/></div></details>}</div>}</div>}
+          {(mode === 'en' || mode === 'parallel') && <div lang="en" className="original-block"><BlockContent block={block} onTerm={showTerm} findings={mode === 'parallel' ? reviewFindings(visibleQuality(block.translation)) : []} qualitySide="source"/></div>}
+          {(mode === 'ko' || mode === 'parallel') && <div lang="ko" className="translated-block">{isBlockTranslating(block) && <div className="translation-block-status"><LoaderCircle size={17} className="spin" aria-hidden="true"/><span>번역 중…</span></div>}{block.type === "image" ? <BlockContent block={block} onTerm={showTerm}/> : block.translation ? <TranslationContent block={block} translation={block.translation} onTerm={showTerm} onReviewed={translation => applyReviewedTranslation(block.id, translation)} onReload={() => reloadTranslation(block.id)}/> : <div className="untranslated">{!isBlockTranslating(block) && <Languages size={20}/>}<p>{isBlockTranslating(block) ? '한국어 번역을 준비하고 있습니다.' : '아직 번역하지 않은 문단'}</p><button className="text-link" disabled={!data.translationStatus.configured || translationBusy} onClick={() => { setSelectedIds(ids => ids.includes(block.id) ? ids : [...ids, block.id]); }}>번역할 문단에 선택 <Check size={13}/></button>{mode === 'ko' && <details><summary>원문 펼쳐보기</summary><div lang="en"><BlockContent block={block} onTerm={showTerm}/></div></details>}</div>}</div>}
           {block.warnings?.length > 0 && <div className="block-warnings">원문 확인 필요 · {block.warnings.join(' · ')}</div>}
         </section>)}
       </div>{payload.blocks.length === 0 && <Empty title={isPdf ? '이 페이지에서 읽을 텍스트를 찾지 못했습니다' : '추출된 본문이 없습니다'} description={isPdf ? '스캔이나 도표 중심 페이지일 수 있습니다. 원본 페이지를 확인해 주세요.' : '자료 상세에서 원본과 가져오기 상태를 확인해 주세요.'}/>}
@@ -176,18 +219,25 @@ export default function Reader({ resourceId }: { resourceId: string }) {
       {panel === 'outline' && <div className="panel-inner"><h3>현재 구간의 목차</h3>{outline.length ? <div className="outline-list">{outline.map(b => <button key={b.id} onClick={() => { setActiveBlock(b.id); window.document.getElementById(`block-${b.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}>{b.text}</button>)}</div> : <p className="muted">이 구간에는 별도 제목이 없습니다. 문단 순서대로 읽어보세요.</p>}<Link href={`/resources/${resourceId}`} className="text-link">연결 자료와 해답 보기 <ArrowUpRight size={14}/></Link></div>}
       {currentJobs.length > 0 && <div className="panel-inner jobs-in-reader">{currentJobs.map(j => <JobCard key={j.id} job={j}/>)}</div>}
     </aside>}
-    </div>{selectedIds.length > 0 && <div className="translation-selection"><div><Languages size={20}/><span><strong>{selectedIds.length}개 문단 선택</strong><small>{payload.blocks.filter(b => selectedIds.includes(b.id)).reduce((sum, b) => sum + b.text.length, 0).toLocaleString()}자 · {data.translationStatus.local ? '무료 · 이 PC에서 번역' : '선택한 원문만 번역'}</small></span></div><div><button className="text-link" onClick={() => setSelectedIds([])}>선택 해제</button><button className="button primary" disabled={translationBusy || !data.translationStatus.configured} onClick={() => translate()}>{translationBusy ? '요청 중…' : '한국어로 번역'}<ArrowRight size={16}/></button></div></div>}
+    </div>{(selectedIds.length > 0 || translationInProgress) && <div className="translation-selection"><div role="status" aria-live="polite">{translationInProgress ? <LoaderCircle size={20} className="spin" aria-hidden="true"/> : <Languages size={20}/>}<span><strong>{translationInProgress ? '한국어로 번역하고 있습니다' : `${selectedIds.length}개 문단 선택`}</strong><small>{translationInProgress ? '완료되면 번역문이 자동으로 표시됩니다.' : `${payload.blocks.filter(b => selectedIds.includes(b.id)).reduce((sum, b) => sum + b.text.length, 0).toLocaleString()}자 · ${data.translationStatus.local ? '무료 · 이 PC에서 번역' : '선택한 원문만 번역'}`}</small></span></div><div><button className="text-link" onClick={() => setSelectedIds([])}>선택 해제</button><button className="button primary" aria-busy={translationInProgress} disabled={translationInProgress || !selectedIds.length || !data.translationStatus.configured} onClick={() => translate()}>{translationInProgress ? <LoaderCircle size={16} className="spin" aria-hidden="true"/> : <ArrowRight size={16}/>} {translationInProgress ? '번역 중…' : '한국어로 번역'}</button></div></div>}
   </div>;
 }
 
 function TranslationContent({ block, translation, onTerm, onReviewed, onReload }: { block: Block; translation: Translation; onTerm: (term: Term) => void; onReviewed: (translation: Translation) => void; onReload: () => Promise<Translation> }) {
-  const { notify } = useRoom();
+  const { notify, refresh } = useRoom();
   const [editing, setEditing] = useState(false); const [draft, setDraft] = useState(''); const [saving, setSaving] = useState(false); const [checking, setChecking] = useState(false); const [error, setError] = useState(''); const [status, setStatus] = useState('');
   const [editBase, setEditBase] = useState<{ translationId: string; expectedReviewId: string | null } | null>(null);
   const savingRef = useRef(false); const editButton = useRef<HTMLButtonElement>(null); const input = useRef<HTMLTextAreaElement>(null);
   const isTable = block.type === 'table' || Array.isArray(block.structure?.rows) || translation.structure != null;
-  const reviewed = ['user_reviewed', 'reviewed', 'approved'].includes(translation.reviewStatus);
+  const reviewed = isReviewedTranslation(translation);
+  const quality = visibleQuality(translation), findings = reviewFindings(quality);
+  const broadRisk = hasReviewRisk(quality) && (isTable || !findings.length || findings.some(finding => !finding.target || !validSpan(translation.textKo, finding.target)));
   const fieldId = `translation-edit-${block.id}`; const helpId = `${fieldId}-help`; const errorId = `${fieldId}-error`;
+  function openEditor() { setDraft(translation.textKo); setEditBase({ translationId: translation.id, expectedReviewId: translation.reviewId ?? null }); setError(''); setStatus(''); setEditing(true); requestAnimationFrame(() => input.current?.focus()); }
+  async function requestQuality() {
+    await api('/api/translations/quality', 'POST', { translationId: translation.id });
+    await onReload(); await refresh();
+  }
   function closeEditor() { if (savingRef.current) return; setEditing(false); setError(''); requestAnimationFrame(() => editButton.current?.focus()); }
   async function saveReview() {
     if (savingRef.current || !draft.trim() || !editBase) return;
@@ -211,7 +261,10 @@ function TranslationContent({ block, translation, onTerm, onReviewed, onReload }
   }
   return <>
     <div className="translation-badges"><span>{reviewed ? '사용자 검수 완료' : '기계 번역 · 사용자 미검수'}</span>{translation.origin === 'memory' && <span>검수 번역 재사용</span>}<span>{translation.validationStatus === 'needs_review' ? '자동 검사: 검토 필요' : `자동 검사: ${['passed', 'valid'].includes(translation.validationStatus) ? '통과' : label(translation.validationStatus)}`}</span>{!translation.current && <span className="warning-label">설정 변경 · 이전 번역</span>}</div>
-    <BlockContent block={{ ...block, text: translation.textKo, structure: translation.structure || null, type: block.type === 'table' ? 'table' : /heading|title/.test(block.type) ? 'heading' : 'paragraph' }} onTerm={onTerm}/>
+    <div className={`translation-reading-text${broadRisk ? ' quality-paragraph-review' : ''}`}>
+      <BlockContent block={{ ...block, text: translation.textKo, structure: translation.structure || null, type: block.type === 'table' ? 'table' : /heading|title/.test(block.type) ? 'heading' : 'paragraph' }} onTerm={onTerm} findings={isTable ? [] : findings}/>
+    </div>
+    <QualityStatus key={translation.id} translation={translation} source={block.text} blockOrder={block.order} structured={isTable} onRequest={requestQuality} onEdit={isTable || editing ? undefined : openEditor}/>
     {isTable ? <p className="small-notice">표 등 구조가 있는 번역은 아직 수정할 수 없습니다. 텍스트 문단을 수정할 수 있습니다.</p> : <div className="translation-review" onClick={event => event.stopPropagation()}>
       {editing ? <form className="translation-editor" style={{ marginTop: 16 }} onSubmit={event => { event.preventDefault(); void saveReview(); }} aria-busy={saving || checking}>
         <label htmlFor={fieldId} className="field-label">{block.order + 1}번째 문단 번역 수정</label>
@@ -220,20 +273,22 @@ function TranslationContent({ block, translation, onTerm, onReviewed, onReload }
         {error && <div><p id={errorId} role="alert" className="inline-error">{error}</p><button type="button" className="text-link" disabled={saving || checking} onClick={() => void compareLatest()}>{checking ? '불러오는 중…' : '최신 번역과 비교'}</button><p className="small-notice">작성 중인 내용은 유지합니다. 최신 저장본을 확인한 뒤 다시 저장할 수 있습니다.</p></div>}
         {status && <p role="status" className="small-notice">{status}</p>}
         <div className="row-gap" style={{ marginTop: 12, flexWrap: 'wrap' }}><button type="submit" className="button primary small" disabled={saving || checking || !draft.trim()}><Check size={14}/>{saving ? '저장 중…' : '검수 완료로 저장'}</button><button type="button" className="button secondary small" disabled={saving || checking} onClick={closeEditor}>취소</button></div>
-      </form> : <button ref={editButton} type="button" className="text-link" style={{ marginTop: 12 }} onClick={() => { setDraft(translation.textKo); setEditBase({ translationId: translation.id, expectedReviewId: translation.reviewId ?? null }); setError(''); setStatus(''); setEditing(true); requestAnimationFrame(() => input.current?.focus()); }}><Pencil size={13}/>번역 수정</button>}
+      </form> : <button ref={editButton} type="button" className="text-link" style={{ marginTop: 12 }} onClick={openEditor}><Pencil size={13}/>번역 수정</button>}
     </div>}
   </>;
 }
 
-function GlossaryText({ text, onTerm }: { text: string; onTerm: (term: Term) => void }) {
+function GlossaryText({ text, onTerm, findings = [], qualitySide = 'target' }: { text: string; onTerm: (term: Term) => void; findings?: QualityFinding[]; qualitySide?: 'source' | 'target' }) {
   const { data } = useRoom();
   const dictionary = useMemo(() => { const map = new Map<string, Term>(); for (const term of data.glossary) for (const name of [term.termKo, term.termEn, term.acronym || '']) { if (name.length >= 2) map.set(name.toLowerCase(), term); } return map; }, [data.glossary]);
   const pattern = useMemo(() => new RegExp(`(${[...dictionary.keys()].sort((a, b) => b.length - a.length).map(s => /^[a-z0-9 ]+$/i.test(s) ? `\\b${s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b` : s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi'), [dictionary]);
-  if (!dictionary.size) return <>{text}</>;
-  return <>{text.split(pattern).map((chunk, i) => dictionary.has(chunk.toLowerCase()) ? <button key={i} className="term-link" onClick={e => { e.stopPropagation(); onTerm(dictionary.get(chunk.toLowerCase())!); }} title={`${dictionary.get(chunk.toLowerCase())!.termKo} 뜻 보기`}>{chunk}</button> : chunk)}</>;
+  const ranges = useMemo(() => qualityRanges(text, findings, qualitySide), [text, findings, qualitySide]);
+  if (!dictionary.size) return <QualityText text={text} ranges={ranges}/>;
+  let offset = 0;
+  return <>{text.split(pattern).map((chunk, i) => { const start = offset; offset += chunk.length; const content = <QualityText text={chunk} offset={start} ranges={ranges}/>; return dictionary.has(chunk.toLowerCase()) ? <button key={i} className="term-link" onClick={e => { e.stopPropagation(); onTerm(dictionary.get(chunk.toLowerCase())!); }} title={`${dictionary.get(chunk.toLowerCase())!.termKo} 뜻 보기`}>{content}</button> : <span key={i}>{content}</span>; })}</>;
 }
 
-function BlockContent({ block, onTerm }: { block: Block; onTerm: (term: Term) => void }) {
+function BlockContent({ block, onTerm, findings = [], qualitySide = 'target' }: { block: Block; onTerm: (term: Term) => void; findings?: QualityFinding[]; qualitySide?: 'source' | 'target' }) {
   const structure = block.structure || {};
   if (block.type === 'image') {
     const assetId = typeof structure.assetId === 'string' ? structure.assetId : null;
@@ -243,7 +298,7 @@ function BlockContent({ block, onTerm }: { block: Block; onTerm: (term: Term) =>
     type Cell = { text: string; colSpan?: number; rowSpan?: number; header?: boolean };
     return <div className="source-table-scroll"><table><tbody>{(structure.rows as { cells: Cell[] }[]).map((row, i) => <tr key={i}>{row.cells.map((cell, j) => cell.header ? <th key={j} colSpan={cell.colSpan} rowSpan={cell.rowSpan}><GlossaryText text={cell.text} onTerm={onTerm}/></th> : <td key={j} colSpan={cell.colSpan} rowSpan={cell.rowSpan}><GlossaryText text={cell.text} onTerm={onTerm}/></td>)}</tr>)}</tbody></table></div>;
   }
-  const content = <GlossaryText text={block.text} onTerm={onTerm}/>;
+  const content = <GlossaryText text={block.text} onTerm={onTerm} findings={findings} qualitySide={qualitySide}/>;
   const links = Array.isArray(structure.links) ? (structure.links as { text: string; url: string }[]).filter(l => /^https?:\/\//.test(l.url)) : [];
   return <>{/heading|title/.test(block.type) ? <h3>{content}</h3> : block.type === 'list' || block.type === 'list_item' ? <div className="source-list">• {content}</div> : <p>{content}</p>}{links.length > 0 && <div className="source-links">{links.map((link, i) => <a href={link.url} target="_blank" rel="noreferrer" key={i}>{link.text || '원문 링크'} <ExternalLink size={12}/></a>)}</div>}</>;
 }

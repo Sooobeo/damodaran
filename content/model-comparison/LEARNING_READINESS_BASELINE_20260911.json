@@ -1,0 +1,476 @@
+{
+  "schemaVersion": 1,
+  "artifactType": "learning_readiness_policy",
+  "policyId": "learning-readiness-20260911-v1",
+  "date": "2026-09-11",
+  "language": "ko",
+  "status": "policy_defined_not_finally_evaluated",
+  "companionMarkdown": "LEARNING_READINESS_BASELINE_20260911.md",
+  "definitionKo": "baseline은 모델 이름이나 점수가 아니라 평가 집합·원문 명제·허용 오류·판정 절차로 정의한 최소 수용 기준이다.",
+  "scope": {
+    "product": "English-to-Korean parallel financial learning reader",
+    "unit": "source learning unit with sufficient context",
+    "perModelConfiguration": true,
+    "aggregateDifferentModels": false,
+    "tableMeaningSupportClaimed": false
+  },
+  "authority": {
+    "kind": "product_acceptance_policy",
+    "universalAcademicSafetyThreshold": false,
+    "rationaleKo": "사용자의 높은 정확성 선호, 학습 오개념 비용, 빨간 경고를 잘못 신뢰하는 비용을 고려한 향후 수용 정책. 모든 항목 95%가 보편 정답이라는 주장은 아니다.",
+    "historicalPoliciesChanged": false,
+    "thisArtifactChangesRuntimeRegistration": false,
+    "frozenArtifactsChanged": false
+  },
+  "evidenceStatus": {
+    "policyAuthorType": "assistant",
+    "humanReviewed": false,
+    "humanLearningExperiment": "not_conducted",
+    "freshFinalEvaluation": "planned_not_conducted",
+    "modelAcceptanceResults": []
+  },
+  "severity": {
+    "critical": {
+      "maxObservedErrors": 0,
+      "definitionKo": "핵심 학습 단위가 목적에 맞지 않게 되거나 중대한 잘못된 적용을 낳는 오류. 유형명만이 아니라 실제 문맥·결론·영향으로 판정한다."
+    },
+    "major": {
+      "maxObservedErrors": 0,
+      "definitionKo": "중요한 의미 손실·변경으로 이해·신뢰·사용에 지장을 주는 오역·누락·추가."
+    },
+    "minor": {
+      "allowed": true,
+      "definitionKo": "의미·핵심 이해를 보존하는 경미한 표현 차이. 누적 영향이 이해를 방해하면 재판정한다."
+    },
+    "neutral": {
+      "isError": false,
+      "definitionKo": "뜻이 맞는 동의 표현 또는 단순 평가자 선호 차이."
+    },
+    "unresolved": {
+      "action": "hold",
+      "excludeFromDenominator": false,
+      "mayDeclarePass": false
+    },
+    "namedSentinelsRetroactivelyAllCritical": false
+  },
+  "translationGates": {
+    "allRequiredGatesMustPass": true,
+    "completion": {
+      "minimumRate": 1,
+      "numerator": "fully_generated_integrity_checked_and_semantically_reviewed_units",
+      "denominator": "all_preregistered_units_per_dataset_and_configuration",
+      "maximumUnresolved": 0
+    },
+    "criticalErrors": {
+      "maximumCount": 0,
+      "reportErrorCountAndAffectedUnitCount": true
+    },
+    "majorErrors": {
+      "maximumCount": 0,
+      "reportErrorCountAndAffectedUnitCount": true
+    },
+    "corePropositions": {
+      "minimumRate": 1,
+      "numerator": "preserved_preregistered_core_propositions_and_relations",
+      "denominator": "all_preregistered_core_propositions_and_relations"
+    },
+    "terminology": {
+      "minimumRate": 0.95,
+      "numerator": "correct_sense_and_acceptable_Korean_expression_occurrences",
+      "denominator": "all_preregistered_contextual_term_occurrences",
+      "synonymsAllowed": true,
+      "sourceSenseFirst": true,
+      "reportUniqueTermsAndAnnotationCoverage": true,
+      "smallAnnotatedSampleRepresentsAllTerminology": false,
+      "doesNotOverrideMajorZero": true
+    },
+    "questionAnswerability": {
+      "minimumRate": 0.95,
+      "numerator": "questions_answerable_correctly_from_candidate_Korean_and_declared_Korean_context_only",
+      "denominator": "all_preregistered_semantic_questions",
+      "modelSeesQuestions": false,
+      "answererSeesEnglishOrReference": false,
+      "sourceGroundedGrading": true,
+      "paraphrasesAllowed": true,
+      "doesNotOverrideMajorZero": true
+    },
+    "coreQuestionAnswerability": {
+      "minimumRate": 1,
+      "numerator": "correctly_answerable_core_calculation_condition_and_concept_questions",
+      "denominator": "all_preregistered_core_calculation_condition_and_concept_questions"
+    },
+    "zeroDenominatorPolicy": {
+      "default": "not_evaluated",
+      "predeclaredNonApplicable": "not_applicable",
+      "mandatoryNotEvaluatedBlocksAcceptance": true
+    },
+    "useUnroundedRatios": true,
+    "changeDenominatorAfterSeeingOutput": false,
+    "questionDefectFoundAfterOutput": {
+      "action": "hold_preserve_original_denominator_and_reason",
+      "newVersionRequiredForRevisedEvaluation": true
+    }
+  },
+  "reviewProtocol": {
+    "sourceFirstPropositions": true,
+    "allowSourceAmbiguityAndValidKoreanReordering": true,
+    "dimensions": [
+      "agent_recipient_direction",
+      "negation_quantifier_scope",
+      "necessary_sufficient_conditions",
+      "modality_certainty",
+      "numbers_units_periods_operations",
+      "contextual_term_sense",
+      "coreference_attribution_time",
+      "omission_addition"
+    ],
+    "generationReviewerSeparationRecorded": true,
+    "assistantConsensusIsHumanReview": false,
+    "disagreementAction": "hold_until_evidence_based_adjudication",
+    "questionReviewType": "assistant_answerability_review",
+    "humanLearningEffects": {
+      "status": "not_measured",
+      "futureControls": [
+        "prior_knowledge",
+        "reviewed_Korean_control",
+        "immediate_comprehension",
+        "delayed_retention_and_transfer",
+        "translation_attributable_misconceptions"
+      ]
+    }
+  },
+  "warningGates": {
+    "version": "future-learning-warning-20260911-v1",
+    "kind": "future_product_policy",
+    "classificationUnit": "one_source_unit_translation_output",
+    "positiveTruth": "at_least_one_adjudicated_major_or_critical_meaning_error",
+    "predictedPositive": "red_or_orange_risk_warning",
+    "paragraphRecall": {
+      "minimumRate": 0.95,
+      "formula": "TP/(TP+FN)",
+      "missingResultOnPositiveCountsAsFalseNegative": true
+    },
+    "warningPrecision": {
+      "minimumRate": 0.95,
+      "formula": "TP/(TP+FP)"
+    },
+    "namedSentinels": {
+      "requiredCount": 6,
+      "minimumDetected": 6,
+      "cases": [
+        {
+          "sourceId": "LDEV26-008",
+          "kind": "equity_word_sense",
+          "errorOutputCount": 2
+        },
+        {
+          "sourceId": "REAL26-004",
+          "kind": "treasury_bill_maturity",
+          "errorOutputCount": 2
+        },
+        {
+          "sourceId": "REAL26-005",
+          "kind": "division_direction",
+          "errorOutputCount": 1
+        },
+        {
+          "sourceId": "REAL26-006",
+          "kind": "perpetual_growth_condition",
+          "errorOutputCount": 1
+        }
+      ],
+      "identitySource": "frozen_QE_input_and_adjudicated_label_manifest"
+    },
+    "redSpanSemanticPrecision": {
+      "minimumRate": 0.95,
+      "numerator": "presented_unique_red_Korean_spans_correct_in_location_cause_and_extent",
+      "denominator": "all_presented_unique_red_Korean_spans",
+      "overlapAloneSuffices": false,
+      "excessNormalTextSuffices": false,
+      "boundaryRubricMustBePreregistered": true,
+      "zeroPresentedSpans": "not_evaluated",
+      "paragraphPassImpliesSpanPass": false
+    },
+    "offsetTechnicalValidity": {
+      "minimumRate": 1,
+      "unit": "all_submitted_source_or_target_spans_including_rejected_spans",
+      "encoding": "UTF-16_code_units",
+      "checks": [
+        "in_bounds_start_end",
+        "exact_substring",
+        "no_surrogate_split"
+      ],
+      "impliesSemanticCorrectness": false,
+      "renderingRequiresValidation": true,
+      "rejectedSpansRemainInDenominator": true
+    },
+    "missingLocalization": {
+      "render": "orange_whole_paragraph",
+      "inventOffsets": false,
+      "sourceRendering": "actual_linked_whole_sentence",
+      "claimsPreciseBilingualPhraseAlignment": false
+    },
+    "mustReport": [
+      "TP",
+      "FP",
+      "FN",
+      "TN",
+      "warning_rate",
+      "attempted_count",
+      "completed_count",
+      "unassessed_count_and_reasons",
+      "conditional_success_only_metrics_separately",
+      "error_type_and_severity_misses",
+      "error_instance_detection_coverage",
+      "red_span_coverage",
+      "orange_warning_count",
+      "span_abstention_reasons",
+      "raw_counts_and_confidence_intervals",
+      "sampling_assumptions",
+      "model_length_document_distribution"
+    ],
+    "unassessedIsCorrect": false,
+    "normalAndChallengeSetsSeparated": true,
+    "zeroDenominatorResult": "not_evaluated",
+    "requiredGroups": {
+      "minimumRecall": 0.95,
+      "minimumPrecision": 0.95,
+      "dimensions": [
+        "overall",
+        "translation_model_configuration",
+        "source_dataset",
+        "observed_translation_model_configuration_x_source_dataset"
+      ],
+      "zeroPositiveCount": "not_evaluated",
+      "zeroWarningCount": "not_evaluated",
+      "missingRequiredGroupEvidence": "hold"
+    },
+    "newRegistrationPolicy": {
+      "id": "product-qe-95-v2",
+      "path": "scripts/local-qe/policy-product-95-v2.json",
+      "appliesTo": "new_registration",
+      "historicalDevelopmentGateAndArtifactsPreserved": true,
+      "aggregateOnlyProductV1Preserved": true,
+      "implementationStatusSource": "scripts/local-qe/README.md",
+      "thisArtifactImplementsRegistration": false,
+      "paragraphGateImpliesRedSpanGate": false
+    },
+    "historicalGate": {
+      "unchanged": true,
+      "sourcePath": "scripts/local-qe/README.md",
+      "minimumMajorRecall": 0.85,
+      "minimumWarningPrecision": 0.6,
+      "maximumWarningRate": 0.5,
+      "minimumNamedSentinels": 6
+    },
+    "historicalCandidateResult": {
+      "sourcePath": "scripts/local-qe/README.md",
+      "candidate": "Unbabel/wmt20-comet-qe-da",
+      "diagnosticWarnings": 45,
+      "totalOutputs": 48,
+      "majorTruePositives": 14,
+      "majorPositiveOutputs": 14,
+      "status": "failed_historical_gate_not_registered",
+      "newGateRetroactivelyApplied": false
+    }
+  },
+  "datasets": {
+    "regression": [
+      {
+        "id": "dev18",
+        "sourcePath": "content/model-comparison/linguistic-dev-20260910.jsonl",
+        "unitCount": 18,
+        "criticalMaximum": 0,
+        "majorMaximum": 0,
+        "independentFinalTest": false
+      },
+      {
+        "id": "reading6",
+        "sourcePath": "content/model-comparison/real-reading-check-20260910/dataset-manifest.json",
+        "unitCount": 6,
+        "sourceDocumentCount": 1,
+        "criticalMaximum": 0,
+        "majorMaximum": 0,
+        "independentFinalTest": false
+      },
+      {
+        "id": "general16",
+        "sourcePath": "content/model-comparison/general-context-dev-20260911-manifest.json",
+        "unitCount": 16,
+        "criticalMaximum": 0,
+        "majorMaximum": 0,
+        "independentFinalTest": false
+      }
+    ],
+    "regressionsReportedSeparately": true,
+    "qeDevelopment": {
+      "id": "QE48",
+      "sourcePath": "scripts/local-qe/README.md",
+      "translationOutputCount": 48,
+      "sharedSourceUnitCount": 24,
+      "modelsPerSource": 2,
+      "majorPositiveOutputs": 14,
+      "reviewerType": "assistant",
+      "humanReviewed": false,
+      "independentFinalTest": false,
+      "postHocSplitBecomesFreshHoldout": false
+    },
+    "freshFinal": {
+      "id": "fresh60_with_semantic_questions",
+      "status": "planned_not_conducted",
+      "minimumNewFinancialUnits": 60,
+      "datasetConstructed": false,
+      "semanticQuestionsConstructed": false,
+      "modelAndConfigurationFrozenBeforeFinalUse": true,
+      "inputsPropositionsQuestionsRubricFrozenBeforeOutputs": true,
+      "sourceDocumentAndContextGrouping": true,
+      "reportDocumentsUnitsDomainsLengths": true,
+      "plannedDimensions": [
+        "concept_definition",
+        "causal_or_comparative_relations",
+        "conditions_and_negation",
+        "calculation_and_quantities",
+        "cross_sentence_relations"
+      ]
+    },
+    "futureQESplit": {
+      "status": "planned_not_conducted",
+      "groupKey": "source_document_context_and_near_duplicate_group",
+      "sameSourceDifferentModelsSamePartition": true,
+      "thresholdChosenOnCalibrationOnly": true,
+      "holdoutFreshAfterThresholdFreeze": true,
+      "namedSentinelsCountTowardFreshHoldout": false,
+      "translationFresh60AutomaticallyValidatesDetection": false
+    },
+    "testAfterTuningBecomesDevelopment": true,
+    "poolModelsRegressionsOrQuestionsToInflateIndependentN": false
+  },
+  "statistics": {
+    "confidenceLevel": 0.95,
+    "side": "one_sided",
+    "zeroErrorUpperFormula": "1 - 0.05^(1/n)",
+    "approximation": "3/n",
+    "assumptions": [
+      "independent_identically_distributed_Bernoulli_trials",
+      "representative_sampling_from_target_distribution",
+      "adequate_correct_error_adjudication"
+    ],
+    "zeroErrorExamples": [
+      {
+        "n": 6,
+        "errors": 0,
+        "upperErrorRate": 0.39303776899708276
+      },
+      {
+        "n": 18,
+        "errors": 0,
+        "upperErrorRate": 0.1533175539572782
+      },
+      {
+        "n": 24,
+        "errors": 0,
+        "upperErrorRate": 0.11734615615494881
+      },
+      {
+        "n": 60,
+        "errors": 0,
+        "upperErrorRate": 0.04870291331009746
+      }
+    ],
+    "perfectRecallExample": {
+      "positiveCount": 14,
+      "detectedCount": 14,
+      "lowerRecall": 0.8073638243498646
+    },
+    "claimsZeroPopulationError": false,
+    "confidenceLevelEqualsPerformanceThreshold": false,
+    "notGeneralizableWhenAssumptionsUnverified": true,
+    "clusteredDocumentParagraphsIndependentByDefault": false
+  },
+  "requiredResultFields": [
+    "policy_id",
+    "dataset_and_input_hashes",
+    "source_context_proposition_question_hashes",
+    "model_revision_weights_quantization",
+    "runtime_prompt_glossary_identity",
+    "generation_and_review_completion_counts",
+    "severity_errors_and_holds",
+    "terminology_question_numerators_denominators",
+    "warning_confusion_matrix_coverage_span_results",
+    "reviewer_type_evidence_adjudication",
+    "human_review_status",
+    "human_learning_evidence_status"
+  ],
+  "sourceCheckedAt": "2026-09-11",
+  "sources": [
+    {
+      "id": "mqm",
+      "title": "The MQM Scoring Models",
+      "authors": [
+        "MQM Council"
+      ],
+      "year": null,
+      "url": "https://www.themqm.org/mqm-pillars/the-mqm-scoring-models/",
+      "kind": "official_framework",
+      "supportsKo": "목적에 따른 severity·평가 유형·표집·수용선 설계",
+      "limitationKo": "금융 한국어 학습의 합격률 실험이 아니다."
+    },
+    {
+      "id": "scarton_specia_2016",
+      "title": "A Reading Comprehension Corpus for Machine Translation Evaluation",
+      "authors": [
+        "Carolina Scarton",
+        "Lucia Specia"
+      ],
+      "year": 2016,
+      "url": "https://aclanthology.org/L16-1579/",
+      "kind": "primary_experimental_paper",
+      "supportsKo": "번역만으로 서술형 이해 질문을 답하는 평가 및 통제 자료",
+      "limitationKo": "독일어→영어·일반 문서 연구이며 질문·응답자 차이가 있다. 우리 95%나 실제 학습 효과의 검증이 아니다."
+    },
+    {
+      "id": "butler_dennis_marsh_2012",
+      "title": "Inferring facts from fiction: reading correct and incorrect information affects memory for related information",
+      "authors": [
+        "Andrew C. Butler",
+        "Nancy A. Dennis",
+        "Elizabeth J. Marsh"
+      ],
+      "year": 2012,
+      "url": "https://pubmed.ncbi.nlm.nih.gov/22640369/",
+      "doi": "10.1080/09658211.2012.682067",
+      "kind": "primary_experimental_paper",
+      "supportsKo": "읽은 오류가 관련된 잘못된 추론과 기억에도 영향을 줄 수 있다.",
+      "limitationKo": "영어 허구 이야기·일반 지식 실험이며 금융 번역 오류율로 환산할 수 없다."
+    },
+    {
+      "id": "bliss_gilson_deaton_1995",
+      "title": "Human probability matching behaviour in response to alarms of varying reliability",
+      "authors": [
+        "James P. Bliss",
+        "Richard D. Gilson",
+        "John E. Deaton"
+      ],
+      "year": 1995,
+      "url": "https://pubmed.ncbi.nlm.nih.gov/7498189/",
+      "doi": "10.1080/00140139508925269",
+      "kind": "primary_experimental_paper",
+      "supportsKo": "138명 대학생의 모사 경고 과제에서 경고 신뢰도에 따라 반응 빈도가 달라졌다.",
+      "limitationKo": "교육용 reader나 95/95의 최적성을 검증한 연구가 아니다."
+    },
+    {
+      "id": "hanley_lippman_hand_1983",
+      "title": "If Nothing Goes Wrong, Is Everything All Right? Interpreting Zero Numerators",
+      "authors": [
+        "James A. Hanley",
+        "Abby Lippman-Hand"
+      ],
+      "year": 1983,
+      "url": "https://jhanley.biostat.mcgill.ca/c607/ch08/zero_numerator.pdf",
+      "doi": "10.1001/jama.1983.03330370053031",
+      "kind": "primary_statistical_paper",
+      "supportsKo": "오류 0건도 위험 0을 뜻하지 않으며 작은 표본의 상한을 함께 해석해야 한다.",
+      "limitationKo": "표집 대표성·독립성·정답 판정의 정확성을 보장하지 않는다."
+    }
+  ]
+}

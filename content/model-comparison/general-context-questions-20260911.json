@@ -1,0 +1,1035 @@
+{
+  "schemaVersion": 1,
+  "version": "general-context-questions-20260911-v1",
+  "status": "frozen_source_grounded_questions_not_evaluated",
+  "language": "ko",
+  "datasetPath": "content/model-comparison/general-context-dev-20260911.jsonl",
+  "datasetSha256": "4d63cbbd7299835849cdf750813e7c18a051ae98149a8ec51b73d5e8057cdfd4",
+  "policyId": "learning-readiness-20260911-v1",
+  "purposeKo": "일반 문맥 개발 집합의 한국어 번역만으로 명제·관계를 이해할 수 있는지 묻는 사전 질문지. 모델 수용이나 인간 학습 효과를 단독 인증하지 않는다.",
+  "provenance": {
+    "authorType": "assistant",
+    "authorId": "handoff_state_check",
+    "humanReviewed": false,
+    "independentTest": false,
+    "finalHoldout": false,
+    "trainingUseAllowed": false,
+    "candidateOutputTextViewedDuringAuthoring": false,
+    "candidateOutputTextViewedDuringQuestionAudit": false,
+    "candidateOutputAvailabilityAtAssignment": "parent_reported_not_yet_generated",
+    "referenceKoTextViewed": false,
+    "datasetChecksViewed": false,
+    "datasetManifestSourceAuditViewed": true,
+    "sourceContextFirst": true,
+    "priorExposureNoteKo": "작성자는 다른 고정 번역과 실제 Hy7 앱 출력을 검토한 적이 있다. 이 general16의 새 후보 출력은 열람하지 않았다. 원문·영어 문맥을 먼저 읽었고 기존 dataset manifest의 작성자 원문 점검 메모도 보았다. referenceKo와 checks의 값은 질문 작성에 열람·사용하지 않았다.",
+    "questionReview": "assistant_self_audit_not_independent_or_human"
+  },
+  "contextPolicy": {
+    "id": "shared-korean-learner-context-v1",
+    "allowedForIds": [
+      "GCTX26-013",
+      "GCTX26-014",
+      "GCTX26-015",
+      "GCTX26-016"
+    ],
+    "sameContextForProfiles": [
+      "raw",
+      "contextual"
+    ],
+    "contextForOtherIds": "",
+    "translationModelInputsChanged": false,
+    "interpretationKo": "한국어 답변자는 두 생성 프로필 모두에서 같은 사전 한국어 학습 문맥을 받는다. 문맥4개에서 측정하는 것은 번역+명시된 학습 문맥의 답변가능성이다. raw 생성 모델에 영어 문맥을 추가하는 설정 변경은 아니다.",
+    "noAnswerLeakageRuleKo": "학습 문맥은 원래 context의 번역만 담는다. 대상 source의 예약·수정·배분·관계 변화 등의 결과를 문맥에 보충하지 않는다. 각 질문은 target에만 있는 필수 사실을 포함하며 문맥만으로 완전 정답이 성립하지 않도록 점검한다.",
+    "noContextRepairRuleKo": "문맥으로 잘못된 번역을 상식적으로 고쳐 읽은 경우를 번역의 의미 보존으로 세지 않는다. 질문 답변과 별개로 원문 중심 major/critical 0건 gate를 확인한다."
+  },
+  "administration": {
+    "answererVisibleFields": [
+      "itemId",
+      "questionId",
+      "questionKo",
+      "candidateTranslationKo",
+      "learningContextKo"
+    ],
+    "answererMustNotSee": [
+      "English source",
+      "English context",
+      "referenceKo",
+      "dataset checks",
+      "sampleAnswerKo",
+      "requiredFactsKo",
+      "acceptableVariationsKo",
+      "evidenceSourceQuotes",
+      "evidenceContextQuotes",
+      "other candidate outputs"
+    ],
+    "answerBeforeScoring": true,
+    "answererMustNotHavePreviouslyViewedThisSourceOrAnswerKey": true,
+    "freezeAnswersBeforeOpeningKey": true,
+    "answerFields": [
+      "answerKo",
+      "targetEvidenceQuotes",
+      "contextEvidenceQuotes",
+      "status: answered|insufficient_information|ambiguous",
+      "uncertaintyKo"
+    ],
+    "procedureKo": "정답을 보지 않은 별도 답변자가 해당 후보 번역과 공통 한국어 문맥만으로 답과 근거를 먼저 저장한다. 답변을 고정한 뒤 채점자가 원문 근거와 의미 요건을 대조한다. 이 질문지 작성자는 정답을 알고 있으므로 같은 문항의 번역만 답변자 역할을 맡지 않는다. 질문과 정답 전체가 든 이 JSON을 답변자에게 통째로 전달하지 않는다.",
+    "profileFairnessKo": "문항·한국어 문맥·답변 지시·채점 기준은 raw/contextual에 동일하다. 후보별 답변 세션을 분리해 다른 후보에서 빠진 정보를 가져오지 않는다. 모델·프로필을 합쳐 하나의 성능 분모로 만들지 않는다."
+  },
+  "scoring": {
+    "expectedItems": 16,
+    "questionsPerItem": 2,
+    "expectedQuestions": 32,
+    "criticalQuestions": 16,
+    "questionUnit": "one_question_all_required_semantic_facts",
+    "partialCreditForGate": false,
+    "synonymsAndNaturalKoreanSyntaxAllowed": true,
+    "sampleAnswersAreExhaustive": false,
+    "nameTransliterationVariantsAllowed": true,
+    "criticalQuestionDefinitionKo": "각 Q1은 사전 지정한 핵심 관계 문항이다. Q2는 부차·결합·조건 확인 문항이다. criticalQuestion=false가 해당 내용의 major 오류를 허용한다는 뜻은 아니다. 의미 오류 gate는 질문 점수와 별도다.",
+    "requiredAnswerabilityRatePerModelProfile": 0.95,
+    "minimumCorrectOf32": 31,
+    "requiredCriticalQuestionRate": 1.0,
+    "minimumCorrectCriticalOf16": 16,
+    "requiredCompletionRate": 1.0,
+    "maximumUnresolvedForPass": 0,
+    "reportSlices": [
+      "model_configuration_x_generation_profile",
+      "general_12_items",
+      "context_polysemy_4_items",
+      "critical_vs_secondary_questions"
+    ],
+    "aggregateDifferentModelsOrProfiles": false,
+    "zeroDenominator": "not_evaluated_not_one",
+    "unresolvedPolicyKo": "모호함·질문 결함·필요 정보 부족은 원래 분모를 보존한 채 보류로 기록한다. 정답을 억지로 추정하거나 해당 문항을 조용히 제외하지 않는다. target 누락으로 답할 수 없는 것과 source 자체가 모호한 것을 구분한다. 질문 결함을 고치면 새 버전·변경 사유로 남기며 관측 출력에 맞춰 이 파일을 수정하지 않는다.",
+    "contradictionRuleKo": "필수 사실을 일부 맞혔어도 답 안에 주체·부정·조건·수량 관계의 모순을 함께 제시하면 해당 질문은 통과하지 않는다. 정답 문자열 일치나 유일한 동의어 목록으로 채점하지 않는다.",
+    "notAFullLearningReadinessPassKo": "31/32와 핵심16/16만으로 용어 정확도, 문단의 모든 의미, 독립 시험, 인간 이해·기억·전이가 입증되지 않는다. 원문 중심 major/critical 0건 및 다른 필수 gate를 따로 확인한다."
+  },
+  "items": [
+    {
+      "id": "GCTX26-001",
+      "learningContextKo": "",
+      "ambiguityNotesKo": [
+        "Noor/Luis의 이름 표기 차이는 허용한다. his neighbor는 이 담화에서 씨앗을 전달받은 Luis의 이웃으로 읽는다. 이웃의 이름·성별은 요구하지 않는다."
+      ],
+      "questions": [
+        {
+          "id": "GCTX26-001-Q1",
+          "kind": "core_relation",
+          "criticalQuestion": true,
+          "questionKo": "루이스는 결국 씨앗을 어디에 두었고, 그 씨앗은 누구를 위한 것이었나요?",
+          "sampleAnswerKo": "루이스는 씨앗을 자기 이웃의 우편함에 두었다. 씨앗은 그 이웃을 위한 것이었으며 루이스가 가지려고 보관한 것이 아니다.",
+          "requiredFactsKo": [
+            "최종 위치는 이웃의 우편함이다.",
+            "의도된 수취자는 루이스의 이웃이다.",
+            "루이스가 씨앗을 자기 몫으로 보관한 것으로 바꾸지 않는다."
+          ],
+          "acceptableVariationsKo": [
+            "이웃에게 전달하려고 그 집 우편함에 넣었다처럼 목적·수취 관계가 같으면 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "Noor handed the last packet of basil seeds to Luis for his neighbor.",
+            "he did not keep the seeds; he left them in the neighbor's mailbox that evening."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "최종 우편함 전달과 보관하지 않았다는 사실은 대상 문장에만 있다."
+        },
+        {
+          "id": "GCTX26-001-Q2",
+          "kind": "supporting_sequence",
+          "criticalQuestion": false,
+          "questionKo": "씨앗을 처음 건넨 사람과 전달받은 사람은 각각 누구였고, 루이스가 우편함에 넣은 때는 언제였나요?",
+          "sampleAnswerKo": "누르가 루이스에게 건넸고, 루이스는 그날 저녁 우편함에 넣었다.",
+          "requiredFactsKo": [
+            "최초 전달 방향은 Noor에서 Luis다.",
+            "우편함에 둔 시점은 그날 저녁이다."
+          ],
+          "acceptableVariationsKo": [
+            "같은 날 저녁, 당일 저녁을 허용한다. 달력 날짜는 필요 없다."
+          ],
+          "evidenceSourceQuotes": [
+            "Noor handed the last packet of basil seeds to Luis",
+            "that evening"
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "전달 방향과 저녁이라는 시점은 대상 문장에만 있다."
+        }
+      ],
+      "sourceSha256": "654106902fc80f49f0a8f2ac45247dd790f8eda26e5f4e413e6397e318e353e0",
+      "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "learningContextKoSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "domain": "general"
+    },
+    {
+      "id": "GCTX26-002",
+      "learningContextKo": "",
+      "ambiguityNotesKo": [
+        "kiln의 가마·도자기 가마, firing의 소성·가마 가동을 허용한다. 현장 안내를 법적 제재·처벌로 확대하지 않는다."
+      ],
+      "questions": [
+        {
+          "id": "GCTX26-002-Q1",
+          "kind": "core_relation",
+          "criticalQuestion": true,
+          "questionKo": "회원이 가마실에 들어갈 수 있는 조건은 무엇이고, 그 안내가 회원에게 출입을 의무로 정하나요?",
+          "sampleAnswerKo": "훈련받은 감독자가 있는 동안 들어갈 수 있다는 허용이다. 그때 반드시 들어가야 한다는 의무는 아니다.",
+          "requiredFactsKo": [
+            "훈련받은 감독자의 현장 존재가 입실 허용 조건이다.",
+            "출입 가능과 출입 의무를 구별한다."
+          ],
+          "acceptableVariationsKo": [
+            "교육받은 책임자가 함께 있을 때 이용 가능하다는 표현을 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "Members may enter the kiln room while a trained supervisor is present."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "감독자 조건과 허용 양태는 대상 문장에만 있다."
+        },
+        {
+          "id": "GCTX26-002-Q2",
+          "kind": "supporting_condition",
+          "criticalQuestion": false,
+          "questionKo": "전에 방문했을 때 명부에 서명했다면, 새 소성을 시작하기 전에 다시 서명해야 하나요?",
+          "sampleAnswerKo": "그렇다. 앞선 방문의 서명은 새 소성 전에 다시 서명해야 하는 의무를 없애지 않는다.",
+          "requiredFactsKo": [
+            "새 소성마다 다시 이름을 써야 한다.",
+            "서명은 소성 시작 전이다.",
+            "이전 서명은 면제 사유가 아니다."
+          ],
+          "acceptableVariationsKo": [
+            "가동을 새로 시작할 때마다 기록부에 이름을 적는다는 표현을 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "Before starting a firing, they must write their names in the logbook.",
+            "Signing the book on an earlier visit does not remove the need to sign again for a new firing."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "반복 서명의 의무와 시점은 대상 문장에만 있다."
+        }
+      ],
+      "sourceSha256": "ec99eea9700050515513b933f36abb39f6b03454eafa5fcdca1f8b76204a605d",
+      "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "learningContextKoSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "domain": "general"
+    },
+    {
+      "id": "GCTX26-003",
+      "learningContextKo": "",
+      "ambiguityNotesKo": [
+        "should는 안내·권고 문체를 허용한다. 보행교의 실제 재개방 여부나 정확한 시각은 원문에 없다."
+      ],
+      "questions": [
+        {
+          "id": "GCTX26-003-Q1",
+          "kind": "core_relation",
+          "criticalQuestion": true,
+          "questionKo": "어떤 경우에 방문자센터로 가는 길을 바꾸라는 안내이며, 그때 어느 입구를 이용해야 하나요?",
+          "sampleAnswerKo": "금요일까지 보행교가 다시 열리지 않으면 과수원 문을 통해 방문자센터로 가라는 안내다.",
+          "requiredFactsKo": [
+            "금요일까지 재개방되지 않는 경우라는 부정 조건이다.",
+            "대체 접근은 과수원 입구를 통한다."
+          ],
+          "acceptableVariationsKo": [
+            "인도교·보행자 다리, 과수원 출입구를 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "Unless the footbridge reopens by Friday, walkers should reach the visitor center through the orchard gate."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "재개방의 부정 조건과 대체 입구는 대상 문장에만 있다."
+        },
+        {
+          "id": "GCTX26-003-Q2",
+          "kind": "supporting_combination",
+          "criticalQuestion": false,
+          "questionKo": "임시 접근로를 이용하게 되면 길의 길이와 방문자센터 운영시간은 각각 어떻게 되나요?",
+          "sampleAnswerKo": "가는 길은 더 길지만 센터의 운영시간은 평소와 같다. 센터가 문을 닫는다는 안내가 아니다.",
+          "requiredFactsKo": [
+            "임시 길은 더 길다.",
+            "센터는 평소 운영시간을 유지한다.",
+            "접근로 변경을 센터 폐쇄로 바꾸지 않는다."
+          ],
+          "acceptableVariationsKo": [
+            "우회 거리는 늘지만 정상 시간에 연다는 표현을 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "The temporary route is longer, but the center will keep its usual opening hours.",
+            "The notice announces a change of approach, not a closure."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "더 긴 길과 운영시간 유지의 결합은 대상 문장에만 있다."
+        }
+      ],
+      "sourceSha256": "1825cad91a1fdcebf5729e546a7a9d275b87bee74d5f8bdef0641c16e23f4df0",
+      "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "learningContextKoSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "domain": "general"
+    },
+    {
+      "id": "GCTX26-004",
+      "learningContextKo": "",
+      "ambiguityNotesKo": [
+        "rest는 반죽 휴지·쉬게 두기로 표현할 수 있다. 냉각 시간을 분 단위로 요구하지 않는다."
+      ],
+      "questions": [
+        {
+          "id": "GCTX26-004-Q1",
+          "kind": "core_relation",
+          "criticalQuestion": true,
+          "questionKo": "반죽을 펼쳐 미는 과정 전후에 어떤 단계를 어떤 순서로 해야 하나요?",
+          "sampleAnswerKo": "먼저 반죽을 쉬게 두고, 판처럼 민 다음, 찢어지지 않게 들어 올릴 만큼 단단해질 때까지 차게 둔다.",
+          "requiredFactsKo": [
+            "휴지 단계가 밀기보다 먼저다.",
+            "민 뒤에 냉각한다.",
+            "냉각의 끝 조건은 찢어지지 않게 들 수 있을 만큼 단단함이다."
+          ],
+          "acceptableVariationsKo": [
+            "반죽을 휴지시킨다, 냉장해 단단하게 한다처럼 절차와 끝 조건이 같으면 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "Let the dough rest before rolling it into a sheet.",
+            "Once it has been rolled, chill it until it feels firm enough to lift without tearing."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "순서와 냉각 종료 조건은 대상 문장에만 있다."
+        },
+        {
+          "id": "GCTX26-004-Q2",
+          "kind": "supporting_condition",
+          "criticalQuestion": false,
+          "questionKo": "밀가루를 더 넣으면 어떤 점은 나아질 수 있고, 어떤 단계까지 대신할 수는 없나요?",
+          "sampleAnswerKo": "표면이 덜 끈적해질 수는 있지만 반죽을 쉬게 두는 단계를 대신하지는 못한다.",
+          "requiredFactsKo": [
+            "덜 끈적이는 표면은 가능한 효과다.",
+            "밀가루 추가는 휴지를 대체하지 못한다."
+          ],
+          "acceptableVariationsKo": [
+            "달라붙는 정도를 줄일 수 있어도 휴지는 생략할 수 없다는 표현을 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "Adding flour may make the surface less sticky, but it cannot replace the resting step."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "가능한 효과와 대체 불가 조건은 대상 문장에만 있다."
+        }
+      ],
+      "sourceSha256": "ad3f2b89efc4cc24065d6f533291b876870faba66228d078af3d7b1de5608eb2",
+      "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "learningContextKoSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "domain": "general"
+    },
+    {
+      "id": "GCTX26-005",
+      "learningContextKo": "",
+      "ambiguityNotesKo": [
+        "borrowed chair는 Oskar가 빌린 Lena의 의자다. Lena 관점의 빌려준 의자도 맞다. 고무발이 느슨해졌다는 말을 완전히 떨어져 분실했다고 강제하지 않는다."
+      ],
+      "questions": [
+        {
+          "id": "GCTX26-005-Q1",
+          "kind": "core_relation",
+          "criticalQuestion": true,
+          "questionKo": "월요일에 오스카가 돌려준 것은 누구의 무엇이며, 처음 빌린 이유는 무엇인가요?",
+          "sampleAnswerKo": "레나의 접이식 의자를 돌려줬다. 오스카 자신의 의자가 수리 중이어서 빌렸던 것이다.",
+          "requiredFactsKo": [
+            "반환된 의자는 Lena 소유의 접이식 의자다.",
+            "빌린 사람은 Oskar다.",
+            "수리 중이던 것은 Oskar 자신의 의자다."
+          ],
+          "acceptableVariationsKo": [
+            "빌려 쓴 레나의 의자, 레나가 빌려준 접는 의자를 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "Lena lent Oskar her folding chair while his was being repaired.",
+            "He returned it on Monday"
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "의자 소유·대여 방향과 수리 대상은 대상 문장에만 있다."
+        },
+        {
+          "id": "GCTX26-005-Q2",
+          "kind": "supporting_sequence",
+          "criticalQuestion": false,
+          "questionKo": "돌려준 의자에 어떤 문제가 보고되었고, 레나는 교체 여부를 결정하기 전에 무엇을 했나요?",
+          "sampleAnswerKo": "고무발 하나가 느슨해졌다는 메모가 있었다. 레나는 그 고무발을 교체할지 결정하기 전에 돌려받은 의자를 확인했다.",
+          "requiredFactsKo": [
+            "문제는 고무발 하나가 느슨해진 것이다.",
+            "Lena가 먼저 돌려받은 의자를 확인했다.",
+            "아직 결정하려는 것은 고무발 교체 여부이며 의자 전체 교체가 아니다."
+          ],
+          "acceptableVariationsKo": [
+            "고무 받침이 헐거워짐, 고무발 상태를 확인한 뒤 바꿀지 판단함을 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "a note explaining that one rubber foot had come loose.",
+            "She checked the borrowed chair before deciding whether to replace the foot."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "고무발 문제와 확인 후 결정의 순서는 대상 문장에만 있다."
+        }
+      ],
+      "sourceSha256": "f97124d6887a54e6568bab0e49896d4e09ddb6a45bd021732318dfacc1e064eb",
+      "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "learningContextKoSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "domain": "general"
+    },
+    {
+      "id": "GCTX26-006",
+      "learningContextKo": "",
+      "ambiguityNotesKo": [
+        "보호집이 필요한 지도 범위와 가장자리가 찢어진 지도 범위를 동일시하지 않는다. 모든 접힌 지도의 가장자리가 찢어졌다고 추론하지 않는다."
+      ],
+      "questions": [
+        {
+          "id": "GCTX26-006-Q1",
+          "kind": "core_relation",
+          "criticalQuestion": true,
+          "questionKo": "사서가 가장자리를 확인한 지도와 새 보호집이 필요했던 지도의 범위는 각각 어떻게 달랐나요?",
+          "sampleAnswerKo": "돌아온 지도는 전부 가장자리를 검사했지만, 새 보호집이 필요했던 것은 접힌 지도들뿐이었다.",
+          "requiredFactsKo": [
+            "검사는 반환된 모든 지도를 대상으로 했다.",
+            "새 보호집 필요는 접힌 지도들에 한정된다."
+          ],
+          "acceptableVariationsKo": [
+            "커버·보호용 덮개·보호 슬리브를 허용하며 표현 하나를 강제하지 않는다."
+          ],
+          "evidenceSourceQuotes": [
+            "The librarian checked every returned map for torn edges, but only the folded ones needed new sleeves."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "모두 검사와 일부 종류만 보호집 필요의 범위 차이는 대상 문장에만 있다."
+        },
+        {
+          "id": "GCTX26-006-Q2",
+          "kind": "supporting_combination",
+          "criticalQuestion": false,
+          "questionKo": "가장자리가 온전한 평평한 지도는 어디로 갔고, 보호집은 무엇을 위한 것이었나요?",
+          "sampleAnswerKo": "지도는 바로 서랍으로 돌아갔다. 보호집은 종이를 보호하려는 것이지 지도의 보관 위치를 표시하는 라벨이 아니었다.",
+          "requiredFactsKo": [
+            "해당 지도는 서랍으로 바로 반환되었다.",
+            "보호집의 용도는 종이 보호다.",
+            "보관 위치를 알리는 라벨과 혼동하지 않는다."
+          ],
+          "acceptableVariationsKo": [
+            "종이를 손상에서 보호하는 커버라는 표현을 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "A flat map with intact edges went straight back into the drawer.",
+            "The sleeves protected the paper; they were not labels showing where each map belonged."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "반환 장소와 보호집의 기능은 대상 문장에만 있다."
+        }
+      ],
+      "sourceSha256": "ced9f33fad514f587482547de7b50fc552b8d1261210bdc3d5ed03a028fb9c86",
+      "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "learningContextKoSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "domain": "general"
+    },
+    {
+      "id": "GCTX26-007",
+      "learningContextKo": "",
+      "ambiguityNotesKo": [
+        "퍼센트포인트와 기준 비율 대비 퍼센트를 구별한다. 원문에 이미 제시된 수치이며 별도 착용시간·청취자 수는 추정하지 않는다."
+      ],
+      "questions": [
+        {
+          "id": "GCTX26-007-Q1",
+          "kind": "core_relation",
+          "criticalQuestion": true,
+          "questionKo": "헤드폰 이용 비율의 변화는 퍼센트포인트와 기존 비율 대비 증가율로 각각 얼마인가요?",
+          "sampleAnswerKo": "12%에서 15%가 되어 3퍼센트포인트 상승했고, 처음 12%를 기준으로는 25% 증가했다.",
+          "requiredFactsKo": [
+            "절대 비율 차이는 3퍼센트포인트다.",
+            "기존 비율을 기준으로 한 상대 증가율은 25%다.",
+            "두 단위를 뒤바꾸지 않는다."
+          ],
+          "acceptableVariationsKo": [
+            "3%p, 3 percentage points, 원래 비율의 4분의 1만큼 증가처럼 수치·기준이 같으면 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "the proportion of listeners using headphones rose from 12% to 15%.",
+            "The change was 3 percentage points, which was a 25% increase relative to the original share."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "두 수치와 서로 다른 분모·단위는 대상 문장에만 있다."
+        },
+        {
+          "id": "GCTX26-007-Q2",
+          "kind": "supporting_scope",
+          "criticalQuestion": false,
+          "questionKo": "이 설문이 헤드폰 이용에 관해 측정한 것과 측정하지 않은 것은 각각 무엇인가요?",
+          "sampleAnswerKo": "헤드폰을 사용하는 청취자의 비율을 조사했지만, 그들이 얼마나 오래 헤드폰을 착용했는지는 측정하지 않았다.",
+          "requiredFactsKo": [
+            "조사 대상은 헤드폰을 사용하는 청취자의 비율이다.",
+            "착용 지속시간은 측정하지 않았다."
+          ],
+          "acceptableVariationsKo": [
+            "이용자 비중과 착용시간의 구별을 허용한다. 시간 값이 제시되지 않았다는 답만으로 실제 미측정 사실을 대신하지 않는다."
+          ],
+          "evidenceSourceQuotes": [
+            "the proportion of listeners using headphones",
+            "The survey did not measure how long those listeners kept their headphones on."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "측정 범위와 시간 미측정 사실은 대상 문장에만 있다."
+        }
+      ],
+      "sourceSha256": "be44f30685d8c01f7a5085ae448cc4062da034a6bbf3ffe022466c781e5f4ebf",
+      "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "learningContextKoSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "domain": "general"
+    },
+    {
+      "id": "GCTX26-008",
+      "learningContextKo": "",
+      "ambiguityNotesKo": [
+        "화요일에 받은 주의 목요일과 그 다음 주를 구별하며 달력 날짜는 요구하지 않는다."
+      ],
+      "questions": [
+        {
+          "id": "GCTX26-008-Q1",
+          "kind": "core_relation",
+          "criticalQuestion": true,
+          "questionKo": "이번 목요일 연습에는 어느 시간표를 따라야 하며, 받은 개정 시간표는 언제부터 적용되나요?",
+          "sampleAnswerKo": "목요일에는 기존 시간표를 따라야 하고, 개정 시간표는 다음 주부터 적용된다.",
+          "requiredFactsKo": [
+            "해당 목요일에는 구 시간표를 따른다.",
+            "개정 시간표의 효력은 다음 주부터다."
+          ],
+          "acceptableVariationsKo": [
+            "원래 일정·이전 시간표, 이튿주부터 시행을 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "it would not take effect until the following week.",
+            "For Thursday's rehearsal, singers were still expected to follow the old timetable."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "현재 연습에 적용되는 일정과 발효 시점은 대상 문장에만 있다."
+        },
+        {
+          "id": "GCTX26-008-Q2",
+          "kind": "supporting_purpose",
+          "criticalQuestion": false,
+          "questionKo": "메일은 새 첨부파일을 어떻게 해 두라고 했으며 그 이유는 무엇인가요?",
+          "sampleAnswerKo": "나중에 쉽게 찾도록 새 첨부파일을 저장해 두라고 했다.",
+          "requiredFactsKo": [
+            "새 첨부파일을 저장한다.",
+            "목적은 나중에 쉽게 찾기 위함이다."
+          ],
+          "acceptableVariationsKo": [
+            "보관해 두어 이후 쉽게 찾아본다는 표현을 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "The email asked them to save the new attachment so it would be easy to find later."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "파일 처리 지시와 목적은 대상 문장에만 있다."
+        }
+      ],
+      "sourceSha256": "38f7356ec0ab190a9d986661065bce84996996f535f99d34625ae9dcb0a9001c",
+      "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "learningContextKoSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "domain": "general"
+    },
+    {
+      "id": "GCTX26-009",
+      "learningContextKo": "",
+      "ambiguityNotesKo": [
+        "도울 수 있다는 의사와 특정 근무 시간의 수락·참여 확정을 구별한다. 구체적인 시작 시각은 원문에 없다."
+      ],
+      "questions": [
+        {
+          "id": "GCTX26-009-Q1",
+          "kind": "core_relation",
+          "criticalQuestion": true,
+          "questionKo": "라비가 토요일에 도울 수 있다고 말한 뒤, 감독은 그의 이름을 어디에 두었나요? 참여가 확정된 상태인가요?",
+          "sampleAnswerKo": "자원봉사 지원자 칸에 적었고, 확정된 작업 인원 명단에는 아직 넣지 않았다.",
+          "requiredFactsKo": [
+            "이름은 자원봉사 지원 칸에 있다.",
+            "확정된 작업 인원으로 등록된 상태가 아니다."
+          ],
+          "acceptableVariationsKo": [
+            "자원봉사자란·지원 의사 명단을 허용하되 확정 명단과 구분해야 한다."
+          ],
+          "evidenceSourceQuotes": [
+            "The director wrote his name in the volunteer column, not in the list of confirmed crew members."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "이름이 기록된 범주와 미확정 상태는 대상 문장에만 있다."
+        },
+        {
+          "id": "GCTX26-009-Q2",
+          "kind": "supporting_condition",
+          "criticalQuestion": false,
+          "questionKo": "그 이름을 확정된 인원 명단으로 옮기려면 어떤 일이 먼저 일어나야 하나요?",
+          "sampleAnswerKo": "라비가 구체적으로 정해진 근무 시간대를 수락해야 한다.",
+          "requiredFactsKo": [
+            "라비 자신의 특정 근무 시간대 수락이 먼저 필요하다.",
+            "단순히 도울 수 있다고 말한 것만으로 옮기지 않는다."
+          ],
+          "acceptableVariationsKo": [
+            "특정 작업 교대·배정된 시간에 일하기로 확답함을 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "She would move it only after he accepted a specific shift."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "확정에 필요한 선행 조건은 대상 문장에만 있다."
+        }
+      ],
+      "sourceSha256": "4a7ff75f7c65d6d0edc0d28b793772ffe722691057d06b6f8192d16358675751",
+      "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "learningContextKoSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "domain": "general"
+    },
+    {
+      "id": "GCTX26-010",
+      "learningContextKo": "",
+      "ambiguityNotesKo": [
+        "표시선까지 든 물의 양과 단순 높이·입구 넓이를 구별한다. 구체적인 용량이나 단면 치수를 만들어 계산하지 않는다."
+      ],
+      "questions": [
+        {
+          "id": "GCTX26-010-Q1",
+          "kind": "core_relation",
+          "criticalQuestion": true,
+          "questionKo": "실제로 물이 더 적었던 것은 어느 용기이며, 입구가 더 넓었다는 사실만으로 그 용기의 용량이 더 크다고 할 수 있나요?",
+          "sampleAnswerKo": "얕은 쟁반에 물이 더 적었다. 입구가 넓어도 그것만으로 쟁반의 용량이 키 큰 단지보다 더 큰 것은 아니다.",
+          "requiredFactsKo": [
+            "얕은 쟁반의 물이 키 큰 단지보다 적다.",
+            "넓은 입구를 더 큰 용량으로 동일시하지 않는다."
+          ],
+          "acceptableVariationsKo": [
+            "얕은 트레이·받침 용기, 높은 병·단지를 허용하며 비교 방향을 보존해야 한다."
+          ],
+          "evidenceSourceQuotes": [
+            "The shallow tray held less water than the tall jar, although its rim was wider.",
+            "The wider opening did not make the tray the larger container by capacity."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "실제 물 양의 비교 방향과 입구/용량 구별은 대상 문장에만 있다."
+        },
+        {
+          "id": "GCTX26-010-Q2",
+          "kind": "supporting_condition",
+          "criticalQuestion": false,
+          "questionKo": "두 용기는 어떤 기준선까지 채웠으며, 용기 높이만 비교하는 것으로 물의 양을 비교할 수 있나요?",
+          "sampleAnswerKo": "둘 다 각 용기에 표시된 선까지 채웠다. 높이만 비교해서는 어느 쪽에 물이 더 많은지 알 수 없다.",
+          "requiredFactsKo": [
+            "둘 다 표시된 선까지 채웠다.",
+            "높이만으로 물의 양을 판별할 수 없다."
+          ],
+          "acceptableVariationsKo": [
+            "표시선·눈금선 표현은 허용하지만 두 표시선의 물리적 높이가 같다고 덧붙이지 않는다."
+          ],
+          "evidenceSourceQuotes": [
+            "Both were filled to the marked line, so comparing their heights alone would not reveal which contained more water."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "채운 기준과 높이 비교의 한계는 대상 문장에만 있다."
+        }
+      ],
+      "sourceSha256": "a6d5bbaa99bd6ce7168b1452c9ae0b9866df819196317d315cd8493c4f81ed19",
+      "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "learningContextKoSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "domain": "general"
+    },
+    {
+      "id": "GCTX26-011",
+      "learningContextKo": "",
+      "ambiguityNotesKo": [
+        "보증금이 없다는 사실을 모든 종류의 비용이 없다는 주장으로 넓히지 않는다. 망원경 대여·구매·반환을 구별한다."
+      ],
+      "questions": [
+        {
+          "id": "GCTX26-011-Q1",
+          "kind": "core_relation",
+          "criticalQuestion": true,
+          "questionKo": "망원경을 빌릴 때 보증금을 내지 않았다면 반환 의무도 없어지나요? 언제까지 돌려줘야 하나요?",
+          "sampleAnswerKo": "아니다. 보증금 없이 빌려도 버스에 타기 전에 돌려줘야 한다.",
+          "requiredFactsKo": [
+            "보증금 면제와 반환 의무는 별개다.",
+            "반환 시한은 버스 탑승 전이다."
+          ],
+          "acceptableVariationsKo": [
+            "승차하기 전에 반납해야 한다는 표현을 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "visitors could borrow binoculars from the guide without paying a deposit.",
+            "They still had to return them before boarding the bus."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "반환 의무와 시한은 대상 문장에만 있다."
+        },
+        {
+          "id": "GCTX26-011-Q2",
+          "kind": "supporting_combination",
+          "criticalQuestion": false,
+          "questionKo": "망원경을 사려는 방문객은 어디로 안내받았고, 그곳 물건은 빌린 망원경과 같은 모델인가요?",
+          "sampleAnswerKo": "가게로 안내받았고, 가게에서는 대여품과 다른 모델을 팔았다.",
+          "requiredFactsKo": [
+            "구매 희망자는 가게로 안내받았다.",
+            "판매 모델은 대여 모델과 다르다."
+          ],
+          "acceptableVariationsKo": [
+            "상점·매장, 다른 기종을 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "Anyone wishing to buy a pair was directed to the shop, which sold a different model."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "구매 장소와 기종 차이는 대상 문장에만 있다."
+        }
+      ],
+      "sourceSha256": "8525d42e7aa2002fd6957a1bd82d02c578f279ac0a5656c7e1ba419e23745ff9",
+      "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "learningContextKoSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "domain": "general"
+    },
+    {
+      "id": "GCTX26-012",
+      "learningContextKo": "",
+      "ambiguityNotesKo": [
+        "전등·램프와 전구·케이블을 구분한다. 일정하게 켜졌다는 시험 결과를 장기 고장 없음 보증으로 확대하지 않는다."
+      ],
+      "questions": [
+        {
+          "id": "GCTX26-012-Q1",
+          "kind": "core_relation",
+          "criticalQuestion": true,
+          "questionKo": "수리에서 실제로 교체한 것은 무엇이며, 전등을 시험할 때 전구와 점등 결과는 어땠나요?",
+          "sampleAnswerKo": "케이블을 교체했다. 원래 전구를 그대로 써서 시험했고 불은 안정적으로 켜졌다.",
+          "requiredFactsKo": [
+            "교체 대상은 케이블이다.",
+            "시험에는 기존 전구를 사용했다.",
+            "전등이 일정하게 켜졌다."
+          ],
+          "acceptableVariationsKo": [
+            "전선·연결선, 깜박이지 않고 안정적으로 점등을 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "The technician replaced the cable, then tested the lamp with its original bulb.",
+            "It lit steadily."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "교체 부품·유지 부품과 시험 결과는 대상 문장에만 있다."
+        },
+        {
+          "id": "GCTX26-012-Q2",
+          "kind": "supporting_purpose",
+          "criticalQuestion": false,
+          "questionKo": "기술자는 오래된 케이블과 전등을 각각 어떻게 처리했고, 소유자의 요청은 무엇이었나요?",
+          "sampleAnswerKo": "오래된 케이블은 살펴보려고 보관하고 전등은 주인에게 돌려줬다. 주인은 다른 전등으로 교환하는 대신 수리를 원했다.",
+          "requiredFactsKo": [
+            "오래된 케이블은 검사를 위해 보관했다.",
+            "전등은 소유자에게 반환했다.",
+            "소유자의 요청은 전등 전체 교체가 아닌 수리다."
+          ],
+          "acceptableVariationsKo": [
+            "점검하려고 남겨둠, 새 램프로 바꾸지 말고 고쳐달라는 요청을 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "She kept the old cable for inspection and returned the lamp to its owner",
+            "who had asked for a repair rather than a replacement lamp."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "물건별 처리와 수리 요청의 대비는 대상 문장에만 있다."
+        }
+      ],
+      "sourceSha256": "2b6ee0dab108f3c0f92758e07a90128c0a89f00df6a9442ab15d141a75915c6b",
+      "contextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "learningContextKoSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "domain": "general"
+    },
+    {
+      "id": "GCTX26-013",
+      "learningContextKo": "마라는 지역 박물관에서 워크숍을 기획하고 조정한다. 무료 도예 시연이 끝난 뒤 여러 방문객이 더 긴 강좌를 열 것인지 물었다.",
+      "contextTranslationNotesKo": [
+        "문맥에 없는 방의 크기·예약 또는 방문객별 확인 필요를 보충하지 않았다."
+      ],
+      "ambiguityNotesKo": [
+        "별도 confirmation이 구두 확답인지 신청서인지 비용 납부인지는 지정되지 않는다. 특정 방식이나 이미 예약을 마쳤다는 완료 상태를 정답 요건으로 강제하지 않는다."
+      ],
+      "questions": [
+        {
+          "id": "GCTX26-013-Q1",
+          "kind": "core_relation",
+          "criticalQuestion": true,
+          "questionKo": "마라에게 무엇이 어떤 공간 준비를 하도록 동기를 주었나요?",
+          "sampleAnswerKo": "방문객들이 보인 관심이나 호응 때문에 더 큰 방을 예약하려는 힘을 얻었다.",
+          "requiredFactsKo": [
+            "동기는 방문객들의 관심·호응이다.",
+            "그에 따른 공간 준비는 더 큰 방의 예약이다.",
+            "금융 이자 수입이나 방문객 전원의 확정 신청으로 바꾸지 않는다."
+          ],
+          "acceptableVariationsKo": [
+            "흥미, 관심을 보여 예약을 추진함, 호응에 고무됨을 허용한다. 예약 완료를 필수로 요구하지 않는다."
+          ],
+          "evidenceSourceQuotes": [
+            "The interest encouraged her to reserve a larger room"
+          ],
+          "evidenceContextQuotes": [
+            "several visitors asked whether she would organize a longer course."
+          ],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "문맥에는 방 예약이나 더 큰 공간 선택이 없다. 방문객 반응만 말하면 완전 정답이 아니다."
+        },
+        {
+          "id": "GCTX26-013-Q2",
+          "kind": "supporting_condition",
+          "criticalQuestion": false,
+          "questionKo": "마라는 각 방문객에게서 아직 별도로 무엇을 받아야 하나요?",
+          "sampleAnswerKo": "관심을 보였다는 사실과 별개로 방문객 한 명 한 명에게 확인이나 확답을 받아야 한다.",
+          "requiredFactsKo": [
+            "각 방문객의 개별 확인이 여전히 필요하다.",
+            "여러 사람의 관심만으로 확인 절차가 끝나지 않는다."
+          ],
+          "acceptableVariationsKo": [
+            "개인별 의사 확인·개별 확답·참여 의사 확인을 허용하되 원문에 없는 납부·계약 조건을 추가하지 않는다."
+          ],
+          "evidenceSourceQuotes": [
+            "but she still needed separate confirmation from each visitor."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "문맥은 방문객의 질문만 말하며 별도 확인 의무는 대상 문장에만 있다."
+        }
+      ],
+      "sourceSha256": "d4c954b2ce6c02d2d9d5cfacd808fb73a63c9e2b6a36be821b72dcd2b90f50e9",
+      "contextSha256": "5a92b8c613a526f070c9b5854f740a734e69bccb528080ba6b9d85a7ef13709d",
+      "learningContextKoSha256": "f6b03db8d4ee49027768cf2cf6610cd4c227a56a0a4b87d34cfd934e1b64b66e",
+      "domain": "general_context_polysemy"
+    },
+    {
+      "id": "GCTX26-014",
+      "learningContextKo": "아이린은 알파벳 카드 한 벌을 교정하고 있었다. 첫 라벨은 소문자 m으로 시작했지만 다른 라벨들은 모두 대문자로 시작했다.",
+      "contextTranslationNotesKo": [
+        "문맥의 오류 상태만 옮기고 실제 고친 방식·수정 범위·카드 순서 결과는 보충하지 않았다."
+      ],
+      "ambiguityNotesKo": [
+        "capital은 이 문맥의 대문자다. 정확히 M이라고 답해도 맞지만 대문자라는 종류와 나머지 유지가 전달되면 M 한 글자를 필수로 강제하지 않는다."
+      ],
+      "questions": [
+        {
+          "id": "GCTX26-014-Q1",
+          "kind": "core_relation",
+          "criticalQuestion": true,
+          "questionKo": "첫 라벨을 고칠 때 어떤 종류의 글자로 바꾸었으며, 같은 라벨의 나머지는 어떻게 했나요?",
+          "sampleAnswerKo": "첫 글자를 대문자로 바꾸고 라벨의 나머지 부분은 그대로 두었다.",
+          "requiredFactsKo": [
+            "교체한 글자는 대문자다.",
+            "라벨의 나머지는 바꾸지 않았다."
+          ],
+          "acceptableVariationsKo": [
+            "소문자 m을 대문자 M으로 바꿨다는 답을 허용한다. 자본·수도라는 의미는 허용하지 않는다."
+          ],
+          "evidenceSourceQuotes": [
+            "She replaced it with a capital and kept the rest of the label unchanged."
+          ],
+          "evidenceContextQuotes": [
+            "The first label began with a lowercase m"
+          ],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "문맥에는 교정 전 상태만 있다. 실제 교체와 나머지 유지의 결합은 대상 문장에만 있다."
+        },
+        {
+          "id": "GCTX26-014-Q2",
+          "kind": "supporting_scope",
+          "criticalQuestion": false,
+          "questionKo": "이번 수정은 어느 정도 범위에 영향을 주었고, 카드들이 놓인 순서까지 바뀌었나요?",
+          "sampleAnswerKo": "글자 하나만 수정했으며 카드들의 순서는 바꾸지 않았다.",
+          "requiredFactsKo": [
+            "변경 범위는 한 글자다.",
+            "카드 순서는 변경하지 않았다."
+          ],
+          "acceptableVariationsKo": [
+            "철자 한 자리의 수정, 배열 순서 유지라는 표현을 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "The correction affected one letter, not the order of the cards."
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "한 글자 수정과 카드 순서 불변은 문맥에서 말하지 않는다."
+        }
+      ],
+      "sourceSha256": "11134fccd74bdd0f576239601f10e1ed2532353dcdb9a3e34834b50f8829c0ba",
+      "contextSha256": "5cbbf981e2971901c5371d9aa2f14fdf76a386b937a2bcdbc6ca7ed1b2ccd0c7",
+      "learningContextKoSha256": "cd8a515642d4f8ebcf7c074fdbb73b8d8af5c555197527f68146f49af23e6cd3",
+      "domain": "general_context_polysemy"
+    },
+    {
+      "id": "GCTX26-015",
+      "learningContextKo": "지역 위원회가 연습실 이용 기회를 나누고 있었다. 어떤 모임은 다른 곳에서도 연습할 수 있었지만, 다른 모임은 공동 연습실 밖에는 적절한 공간이 없었다.",
+      "contextTranslationNotesKo": [
+        "원문 문맥의 여건 차이만 옮겼다. 형평성이라는 판단 원칙과 실제 일정 조정의 목적은 대상 문장에 남겨두었다."
+      ],
+      "ambiguityNotesKo": [
+        "시간 수치나 구체적 배정표는 원문에 없다. 형평성·공평함·여건을 고려한 공정성 등 의미가 같으면 허용한다. 정확히 같은 시간과 사정에 맞는 공정함의 대비가 핵심이다."
+      ],
+      "questions": [
+        {
+          "id": "GCTX26-015-Q1",
+          "kind": "core_relation",
+          "criticalQuestion": true,
+          "questionKo": "위원회는 무엇을 정확히 같게 하는 것보다 어떤 원칙을 더 중시했나요?",
+          "sampleAnswerKo": "모든 모임에 시간을 똑같이 주는 것보다 사정에 맞는 형평성과 공정한 이용 기회를 더 중시했다.",
+          "requiredFactsKo": [
+            "똑같이 주는 대상은 모임별 이용 시간이다.",
+            "그보다 중시한 것은 서로 다른 여건을 고려하는 형평성이다.",
+            "금융 지분·자기자본의 크기를 뜻하는 것으로 바꾸지 않는다."
+          ],
+          "acceptableVariationsKo": [
+            "공평한 배분, 실질적으로 공정하게 대우함을 허용한다. 특정 한국어 한 단어의 일치보다 대비 관계를 채점한다."
+          ],
+          "evidenceSourceQuotes": [
+            "Equity mattered more than giving every group exactly the same number of hours."
+          ],
+          "evidenceContextQuotes": [
+            "Some groups could practice elsewhere, while others had no suitable space outside the shared room."
+          ],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "문맥은 여건 차이만 말한다. 같은 시간보다 어떤 원칙을 택했는지는 대상 문장에만 있다."
+        },
+        {
+          "id": "GCTX26-015-Q2",
+          "kind": "supporting_combination",
+          "criticalQuestion": false,
+          "questionKo": "위원회가 취한 조치는 무엇이며, 그 조치는 어떤 모임의 어떤 활동을 가능하게 하려는 것이었나요?",
+          "sampleAnswerKo": "일정을 조정하여 다른 연습 공간의 선택지가 적은 모임도 계속 연습할 수 있게 하려는 것이다.",
+          "requiredFactsKo": [
+            "위원회가 취한 조치는 일정 조정이다.",
+            "그 목적은 다른 연습 공간의 대안이 적은 모임도 계속 연습할 수 있게 하는 것이다."
+          ],
+          "acceptableVariationsKo": [
+            "대체 장소가 없는 쪽의 연습 기회를 보장하도록 시간표를 조정했다는 표현을 허용한다. 모든 시간 독점이나 다른 모임의 배제를 추가하지 않는다."
+          ],
+          "evidenceSourceQuotes": [
+            "They adjusted the schedule so that the groups with fewer alternatives could still rehearse."
+          ],
+          "evidenceContextQuotes": [
+            "Some groups could practice elsewhere, while others had no suitable space outside the shared room."
+          ],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "문맥만으로는 일정 조정이라는 실제 조치와 그 목표를 알 수 없다. 여건 차이의 반복만으로는 정답이 아니다."
+        }
+      ],
+      "sourceSha256": "bfd70ba815584e870779395fb5359315a3298bd72e8aae635874d8ede5a29000",
+      "contextSha256": "db302ecba33380b8b16020500d9ec3501f3d964d1d2b271e7c22069242e2c556",
+      "learningContextKoSha256": "ccf4111f8171e0f1eb65b11fe4cf87ca14ba51bb7406911794e38472d4ef7cad",
+      "domain": "general_context_polysemy"
+    },
+    {
+      "id": "GCTX26-016",
+      "learningContextKo": "준은 아주머니뻘 친척과 함께 고깃배를 복원하며 가까워졌다. 최근 두 사람은 어떤 부품을 교체해야 하는지를 두고 의견이 엇갈렸다.",
+      "contextTranslationNotesKo": [
+        "aunt의 모계·부계·혼인 관계가 지정되지 않아 특정 친족 호칭으로 단정하지 않았다. 질문은 그 분류를 묻지 않는다. 다툼 뒤 관계 유지와 다른 날 작업의 결정은 문맥에 보충하지 않았다."
+      ],
+      "ambiguityNotesKo": [
+        "bond는 사람 사이 유대다. 잠시 다른 날 일하는 것을 공동 작업의 영구 중단이나 서로 다른 장소로 확대하지 않는다."
+      ],
+      "questions": [
+        {
+          "id": "GCTX26-016-Q1",
+          "kind": "core_relation",
+          "criticalQuestion": true,
+          "questionKo": "의견이 엇갈린 뒤 두 사람의 관계와 서로에 대한 마음은 어떻게 되었나요?",
+          "sampleAnswerKo": "의견 차이에도 둘의 유대는 이어졌고 서로에 대한 애정은 변하지 않았다.",
+          "requiredFactsKo": [
+            "의견 충돌 후에도 사람 사이 유대가 유지되었다.",
+            "서로에 대한 애정이 달라진 것은 아니다.",
+            "금융 채권의 존속으로 바꾸지 않는다."
+          ],
+          "acceptableVariationsKo": [
+            "정·친밀한 관계·정서적 연결이 남았다는 표현을 허용한다."
+          ],
+          "evidenceSourceQuotes": [
+            "The bond survived the disagreement",
+            "not their affection for one another."
+          ],
+          "evidenceContextQuotes": [
+            "Jun and his aunt had become close while restoring a fishing boat together."
+          ],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "문맥은 가까워진 과거와 최근 다툼만 말하며 그 뒤 유대·애정의 유지 여부는 대상 문장에만 있다."
+        },
+        {
+          "id": "GCTX26-016-Q2",
+          "kind": "supporting_combination",
+          "criticalQuestion": false,
+          "questionKo": "두 사람이 당분간 정한 일하는 방식은 무엇이며, 그 결정이 바꾼 것은 무엇인가요?",
+          "sampleAnswerKo": "잠시 서로 다른 날 작업하기로 했다. 바뀐 것은 일상적인 작업 일정이나 생활 방식이다.",
+          "requiredFactsKo": [
+            "당분간 다른 날에 일하기로 했다.",
+            "변화의 대상은 일상의 작업 방식·일정이다."
+          ],
+          "acceptableVariationsKo": [
+            "한동안 작업하는 요일을 달리함, 일상 패턴이 바뀜을 허용한다. 영구 결별·같은 날 다른 시간만으로 바꾸지 않는다."
+          ],
+          "evidenceSourceQuotes": [
+            "they decided to work on different days for a while.",
+            "That arrangement changed their routine"
+          ],
+          "evidenceContextQuotes": [],
+          "contextAloneCompleteAnswer": false,
+          "targetRequiredFactKo": "다른 날 일하기로 한 결정과 변화 범위는 문맥에 없다."
+        }
+      ],
+      "sourceSha256": "b89920b78b998c2692c26ec18c24e91640321b655cd943d06023c3262fe2f0dc",
+      "contextSha256": "52c9b9cd8162196de1581c12d529b0dc99f8632c5c805b23e3616bddc1ea8677",
+      "learningContextKoSha256": "1d96ef072d7b224db3e74bec5ac9ae9752315a9b5e83117359ec946e16315055",
+      "domain": "general_context_polysemy"
+    }
+  ],
+  "limitationsKo": [
+    "도우미 작성 개발 질문이며 독립 최종 시험이나 사람의 학습 효과 검증이 아니다.",
+    "같은 문항을 여러 모델·프로필에 적용해도 독립 원문 수는 16개이며 관측은 상관된다.",
+    "32문항이 원문에 가능한 모든 명제·용어·오류를 빠짐없이 덮는다고 주장하지 않는다.",
+    "문맥4개는 동일한 한국어 학습 문맥이 허용된 답변가능성이고 문맥 없는 번역 단독 이해와 다르다.",
+    "문맥 의존 다의어 4개는 모두 비금융 의미다. 같은 단어의 금융 의미와 균형 잡힌 시험이 아니다.",
+    "답변이 맞아도 번역 자체에 major 오류가 있으면 의미 gate에서 탈락한다. 질문 점수로 오류를 상쇄하지 않는다."
+  ],
+  "frozenAtUtc": "2026-09-11T03:21:08.626318+00:00",
+  "sourceAudit": {
+    "completed": true,
+    "reviewerType": "assistant",
+    "independentOfQuestionAuthor": false,
+    "humanReviewed": false,
+    "candidateOutputsViewed": false,
+    "expectedItems": 16,
+    "uniqueQuestionIds": 32,
+    "criticalQuestions": 16,
+    "exactSourceOrContextQuotesVerified": 54,
+    "allSourceContextHashesMatched": true,
+    "allFourLearningContextsComparedToOriginalEnglish": true,
+    "contextOnlyCompleteAnswerAudit": "each question requires at least one fact from its target source; manual entailment audit, not a measured guessing-rate experiment",
+    "unresolvedSourceQuestions": [],
+    "sourceFileUnchanged": true
+  },
+  "freezePolicy": "Do not change questions, answers, Korean context, required facts, or critical flags after observing candidate outputs. Preserve this file and use a new version with a reason if a question defect is discovered."
+}

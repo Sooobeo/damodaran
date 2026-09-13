@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ArrowRight, ArrowUpRight, BookMarked, BookOpen, Bookmark, Check, ChevronRight, CircleCheck, CircleHelp, Clock3, Download, ExternalLink, FileText, FolderOpen, Home, Languages, Library, Menu, NotebookPen, Route, Search, Settings2, ShieldCheck, SlidersHorizontal, Sparkles, Table2, Trash2, Upload, X } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, BookMarked, BookOpen, Bookmark, Check, ChevronRight, CircleCheck, CircleHelp, Clock3, CloudDownload, Download, ExternalLink, FileText, FolderOpen, HardDriveDownload, Home, Languages, Library, Menu, NotebookPen, Route, Search, Settings2, ShieldCheck, SlidersHorizontal, Sparkles, Table2, Trash2, Upload, X } from 'lucide-react';
 import type { Bootstrap, Module, Note, Resource, ResourceDetail, Term } from '@/lib/client-types';
 import { api, dateLabel, label, readerLink, RoomContext, useRoom } from './ui-context';
 import { CheckList, Empty, ErrorPanel, JobCard, Loading, PageHeading, ResourceCard, ResourceRow, SourceBadge } from './common';
@@ -43,11 +43,11 @@ export default function StudyRoom() {
   return <div className={`app-shell ${menuOpen ? 'menu-open' : ''} ${sidebarCollapsed && isReader ? 'sidebar-collapsed' : ''}`}>
     <a className="skip-link" href="#main-content">본문으로 건너뛰기</a>
     {menuOpen && <button className="sidebar-scrim" aria-label="메뉴 닫기" onClick={() => setMenuOpen(false)}/>}
-    <aside className="sidebar"><Link className="brand" href="/"><span className="brand-mark"><BookOpen size={23} strokeWidth={1.7}/></span><span>가치평가 공부방<small>DAMODARAN, IN MY WORDS</small></span></Link><div className="sidebar-section-title">나의 공부 공간</div><nav aria-label="주 메뉴">{navigation.map(item => <Link key={item.path} href={item.path} aria-current={activeNav?.path === item.path ? 'page' : undefined} className={`nav-item ${activeNav?.path === item.path ? 'active' : ''}`}><item.icon size={19}/><span>{item.title}</span>{item.path === '/notes' && !!data?.notes.length && <span className="nav-count">{data.notes.length}</span>}</Link>)}</nav><div className="sidebar-bottom"><div className="sidebar-progress"><div className="row-between"><span>한 걸음씩, 나의 속도로</span><span>{finished}<em> / {data?.modules.length || 8}</em></span></div><div className="progress-track"><span style={{ width: `${finished / (data?.modules.length || 8) * 100}%` }}/></div><small>완료한 학습 단원</small></div><Link className={`nav-item ${pathname === '/settings' ? 'active' : ''}`} href="/settings"><Settings2 size={19}/>환경 설정</Link><div className="local-status"><span/>나만의 로컬 공부방<ShieldCheck size={14}/></div></div></aside>
+    <aside className="sidebar"><Link className="brand" href="/"><span className="brand-mark"><BookOpen size={23} strokeWidth={1.7}/></span><span>달모다란<small>MoonModaran</small></span></Link><div className="sidebar-section-title">나의 공부 공간</div><nav aria-label="주 메뉴">{navigation.map(item => <Link key={item.path} href={item.path} aria-current={activeNav?.path === item.path ? 'page' : undefined} className={`nav-item ${activeNav?.path === item.path ? 'active' : ''}`}><item.icon size={19}/><span>{item.title}</span>{item.path === '/notes' && !!data?.notes.length && <span className="nav-count">{data.notes.length}</span>}</Link>)}</nav><div className="sidebar-bottom"><div className="sidebar-progress"><div className="row-between"><span>한 걸음씩, 나의 속도로</span><span>{finished}<em> / {data?.modules.length || 8}</em></span></div><div className="progress-track"><span style={{ width: `${finished / (data?.modules.length || 8) * 100}%` }}/></div><small>완료한 학습 단원</small></div><Link className={`nav-item ${pathname === '/settings' ? 'active' : ''}`} href="/settings"><Settings2 size={19}/>환경 설정</Link><div className="local-status"><span/>나만의 로컬 공부방<ShieldCheck size={14}/></div></div></aside>
     <div className="workspace"><header className="topbar"><div className="topbar-left"><button className="icon-button mobile-menu" aria-label="메뉴 열기" onClick={() => setMenuOpen(true)}><Menu size={22}/></button>{isReader && <button className="icon-button desktop-only" aria-label={sidebarCollapsed ? '메뉴 펼치기' : '메뉴 접기'} onClick={() => setSidebarCollapsed(v => !v)}><Menu size={19}/></button>}<span className="breadcrumb">나의 공부방 <ChevronRight size={13}/><strong>{isReader ? '읽기' : activeNav?.title || '환경 설정'}</strong></span></div><form action="/library" className="topbar-search"><Search size={17}/><input name="q" aria-label="전체 자료 검색" placeholder="어떤 개념이 궁금한가요?" defaultValue={params.get('q') || ''}/><kbd>검색</kbd></form><span className="profile-avatar" aria-label="개인 학습 공간">나</span></header>
       <main id="main-content" className={`main-content ${isReader ? 'reader-main' : ''}`}>
         {error ? <ErrorPanel error={error} retry={() => refresh().catch(e => setError(e.message))}/> : data ? <RoomContext.Provider value={{ data, refresh, run, notify }}>{content}</RoomContext.Provider> : <Loading text="나의 공부방을 준비하고 있습니다"/>}
-      </main><footer className="site-footer"><span>가치평가 공부방</span><span>Aswath Damodaran의 자료와 함께, 차근차근.</span><a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/home.htm" target="_blank" rel="noreferrer">원본 사이트 <ArrowUpRight size={12}/></a></footer>
+      </main><footer className="site-footer"><span>달모다란 (MoonModaran)</span><span>Aswath Damodaran의 자료와 함께, 차근차근.</span><a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/home.htm" target="_blank" rel="noreferrer">원본 사이트 <ArrowUpRight size={12}/></a></footer>
     </div>{notice && <div className={`toast ${notice.error ? 'toast-error' : ''}`} role={notice.error ? 'alert' : 'status'}>{notice.error ? <CircleHelp size={18}/> : <CircleCheck size={18}/>}<span>{notice.text}</span><button aria-label="알림 닫기" onClick={() => setNotice(null)}><X size={16}/></button></div>}
   </div>;
 }
@@ -104,9 +104,64 @@ function ResourcePage({ id }: { id: string }) {
   const resource = data.resources.find(r => r.id === id); const versionCount = resource?.versionCount;
   useEffect(() => { let alive = true; api<ResourceDetail>(`/api/resources/${id}`).then(d => { if (alive) { setDetail(d); setError(''); } }).catch(e => { if (alive) setError(e.message); }); return () => { alive = false; }; }, [id, versionCount]);
   if (error) return <ErrorPanel error={error}/>; if (!detail) return <Loading/>;
-  const r = resource || detail.resource; const guide = data.toolGuides.find(t => t.resourceId === id); const bookmarks = data.bookmarks.find(b => b.resourceId === id && !b.sourceVersionId); const jobs = data.jobs.filter(j => j.resourceId === id).slice(0, 3); const version = detail.versions.find(v => v.id === r.versionId) || detail.versions[0];
-  async function importSource() { setBusy(true); await run(async () => { await api(`/api/resources/${id}/import`, 'POST'); await refresh(); }, '원문 가져오기를 요청했습니다. 준비되면 읽기를 시작할 수 있어요.'); setBusy(false); }
-  return <><Link className="back-link" href="/library">← 자료실</Link><PageHeading eyebrow={`${id} · ${label(r.format.toLowerCase())} · ${label(r.kind)}`} title={r.titleKo} description={r.titleEn}/><div className="detail-grid"><div><section className="content-panel resource-intro"><div className="tag-row"><span className="tag blue">{label(r.priority)}</span><span className="tag">{label(r.level)}</span><SourceBadge resource={r}/></div><h2>{r.question || '이 자료는 무엇을 알려주나요?'}</h2><p className="lead-copy">{r.summaryKo}</p>{r.objectives?.length > 0 && <><h3>읽고 나면 이해할 수 있어요</h3><CheckList items={r.objectives}/></>}<div className="resource-primary-actions">{guide ? <Link className="button primary" href={`/tools/${guide.slug}`}><Table2 size={17}/>한국어 사용 가이드</Link> : r.versionId ? <Link className="button primary" href={`/reader/${id}`}><BookOpen size={17}/>{detail.position ? '이어서 읽기' : '공부방에서 읽기'}<ArrowRight size={17}/></Link> : <button className="button primary" disabled={!r.url || busy || jobs.some(j => ['queued', 'running'].includes(j.status))} onClick={importSource}><Download size={17}/>{busy ? '요청 중…' : !r.url || jobs.some(j => ['queued', 'running'].includes(j.status)) ? '원문 준비 중' : '원문 가져와서 읽기'}</button>}{r.url && <a className="button secondary" href={r.url} target="_blank" rel="noreferrer">원문 사이트 <ExternalLink size={15}/></a>}</div></section>{r.kind === 'catalog' || r.kind === 'index' || r.kind === 'collection' || r.kind === '목록' ? <div className="info-note"><FolderOpen size={18}/><p>여러 자료로 연결되는 목록입니다. 확인된 PDF와 문제·해답은 아래 연결 자료에서 선택할 수 있어요.</p></div> : null}{detail.relations.length > 0 && <section className="home-section"><div className="section-heading"><h2>함께 읽는 자료</h2></div><div className="resource-rows">{detail.relations.filter(r => r.relation !== 'solution').map(r => <ResourceRow resource={r} key={r.id}/>)}{detail.relations.filter(r => r.relation === 'solution').map(r => <details className="solution-disclosure" key={r.id}><summary>문제를 푼 뒤 해답 보기</summary><ResourceRow resource={r}/></details>)}</div></section>}<section className="content-panel"><h2>보관한 원문 버전</h2><p className="muted">새 원문을 가져와도 이전 버전의 번역과 기록은 유지됩니다.</p>{detail.versions.length ? <div className="version-list">{detail.versions.map(v => <div key={v.id}><FileText size={19}/><span><strong>{dateLabel(v.importedAt)} 가져옴</strong><small>{label(v.extractionStatus)}{v.pageCount ? ` · ${v.pageCount}페이지` : ''} · 버전 {v.id.slice(0, 8)}</small></span><a href={`/api/resources/${id}/original?versionId=${v.id}`} download className="icon-button" aria-label="이 버전 원본 다운로드"><Download size={17}/></a>{!guide && <Link href={`/reader/${id}?versionId=${v.id}`} className="button small secondary">읽기</Link>}</div>)}</div> : <p className="muted">아직 가져온 원문이 없습니다.</p>}<button className="text-link" disabled={!r.url || busy} onClick={importSource}><Download size={15}/>{r.versionId ? '원문 다시 가져오기' : '원문 가져오기'}</button></section></div><aside className="detail-aside"><section className="content-panel"><h3>자료 정보</h3><dl className="metadata"><dt>원저자</dt><dd>{r.author || (r.url ? 'Aswath Damodaran' : '확인되지 않음')}</dd><dt>발행일</dt><dd>{dateLabel(version?.publishedAt)}</dd><dt>가져온 날짜</dt><dd>{version ? dateLabel(version.importedAt) : '아직 가져오지 않음'}</dd><dt>번역 상태</dt><dd>{r.blockCount ? `${r.translatedCount} / ${r.blockCount}문단` : '원문 추출 후 확인'}</dd></dl><label className="field-label" htmlFor="priority">나의 우선순위</label><select id="priority" value={r.priority} onChange={e => { run(async () => { await api(`/api/resources/${id}/preferences`, 'PATCH', { priority: e.target.value }); await refresh(); }, '우선순위를 저장했습니다.'); }}>{[...new Set([...data.resources.map(r => r.priority), r.priority])].map(v => <option key={v} value={v}>{label(v)}</option>)}</select><button className="button secondary full" onClick={() => run(async () => { await api(bookmarks ? `/api/bookmarks/${bookmarks.id}` : '/api/bookmarks', bookmarks ? 'DELETE' : 'POST', bookmarks ? undefined : { resourceId: id }); await refresh(); }, bookmarks ? '북마크를 해제했습니다.' : '자료를 북마크에 담았습니다.')}><Bookmark size={17} fill={bookmarks ? 'currentColor' : 'none'}/>{bookmarks ? '담아둔 자료' : '북마크에 담기'}</button></section>{detail.modules.length > 0 && <section className="content-panel"><h3>이어지는 학습 단원</h3>{detail.modules.map(m => <Link className="related-module" href={`/learn/${m.slug}`} key={m.id}><span>{m.titleKo}</span><ChevronRight size={16}/></Link>)}</section>}{jobs.map(j => <JobCard job={j} key={j.id}/>)}</aside></div></>;
+  const r = resource || detail.resource; const guide = data.toolGuides.find(t => t.resourceId === id); const bookmarks = data.bookmarks.find(b => b.resourceId === id && !b.sourceVersionId); const resourceJobs = data.jobs.filter(j => j.resourceId === id); const jobs = resourceJobs.slice(0, 3); const version = detail.versions.find(v => v.id === r.versionId) || detail.versions[0];
+  const importActive = resourceJobs.some(j => j.type === 'import' && ['queued', 'running'].includes(j.status));
+  async function importSource() {
+    setBusy(true);
+    await run(async () => { await api(`/api/resources/${id}/import`, 'POST'); await refresh(); }, r.versionId ? '새 원문 확인을 시작했습니다. 바뀐 원문은 새 버전으로 보관합니다.' : '원문 가져오기를 시작했습니다. 완료되면 앱 보관함에 표시됩니다.');
+    setBusy(false);
+  }
+  return <>
+    <Link className="back-link" href="/library">← 자료실</Link>
+    <PageHeading eyebrow={`${id} · ${label(r.format.toLowerCase())} · ${label(r.kind)}`} title={r.titleKo} description={r.titleEn}/>
+    <div className="detail-grid">
+      <div>
+        <section className="content-panel resource-intro">
+          <div className="tag-row"><span className="tag blue">{label(r.priority)}</span><span className="tag">{label(r.level)}</span><SourceBadge resource={r}/></div>
+          <h2>{r.question || '이 자료는 무엇을 알려주나요?'}</h2>
+          <p className="lead-copy">{r.summaryKo}</p>
+          {r.objectives?.length > 0 && <><h3>읽고 나면 이해할 수 있어요</h3><CheckList items={r.objectives}/></>}
+          <div className="resource-primary-actions">
+            {guide
+              ? <Link className="button primary" href={`/tools/${guide.slug}`}><Table2 size={17}/>한국어 사용 가이드</Link>
+              : r.versionId
+                ? <Link className="button primary" href={`/reader/${id}`}><BookOpen size={17}/>{detail.position ? '이어서 읽기' : '공부방에서 읽기'}<ArrowRight size={17}/></Link>
+                : <button className="button primary" aria-busy={busy || importActive} disabled={!r.url || busy || importActive} onClick={importSource}><CloudDownload size={17}/>{busy || importActive ? '가져오는 중…' : '원문 가져오기'}</button>}
+            {r.url && <a className="button secondary" href={r.url} target="_blank" rel="noreferrer">보관하지 않고 원저자 사이트 열기 (새 탭) <ExternalLink size={15}/></a>}
+          </div>
+        </section>
+        {r.kind === 'catalog' || r.kind === 'index' || r.kind === 'collection' || r.kind === '목록' ? <div className="info-note"><FolderOpen size={18}/><p>여러 자료로 연결되는 목록입니다. 확인된 PDF와 문제·해답은 아래 연결 자료에서 선택할 수 있어요.</p></div> : null}
+        {detail.relations.length > 0 && <section className="home-section"><div className="section-heading"><h2>함께 읽는 자료</h2></div><div className="resource-rows">{detail.relations.filter(r => r.relation !== 'solution').map(r => <ResourceRow resource={r} key={r.id}/>)}{detail.relations.filter(r => r.relation === 'solution').map(r => <details className="solution-disclosure" key={r.id}><summary>문제를 푼 뒤 해답 보기</summary><ResourceRow resource={r}/></details>)}</div></section>}
+        <section className="content-panel stored-source-panel">
+          <h2><HardDriveDownload size={19}/>보관한 원문</h2>
+          <p className="muted">앱 보관함에 저장된 원문입니다. 다운로드하면 원저자 사이트에 접속하지 않고 선택한 버전을 내 파일로 복사합니다.</p>
+          {detail.versions.length
+            ? <div className="version-list">{detail.versions.map(v => <div key={v.id}><FileText size={19}/><span><strong>{dateLabel(v.importedAt)} 보관</strong><small>{label(v.extractionStatus)}{v.pageCount ? ` · ${v.pageCount}페이지` : ''} · 버전 {v.id.slice(0, 8)}</small></span><a href={`/api/resources/${id}/original?versionId=${v.id}`} download className="button small secondary version-download" aria-label={`${dateLabel(v.importedAt)} 버전 ${v.id.slice(0, 8)} 보관본 다운로드`}><HardDriveDownload size={15}/>보관본 다운로드</a>{!guide && <Link href={`/reader/${id}?versionId=${v.id}`} className="button small secondary">읽기</Link>}</div>)}</div>
+            : <p className="source-action-empty">아직 보관한 원문이 없습니다. 먼저 원문을 가져오세요.</p>}
+          {r.url && (detail.versions.length > 0 || guide) && <>
+            <div className="source-action-divider"><span>새 원문이 필요할 때</span></div>
+            <section className="source-action-section remote compact" aria-labelledby={`resource-import-${id}`}>
+              <div className="source-action-heading"><span className="source-action-icon"><CloudDownload size={18}/></span><span><small>웹에서 앱으로 가져오기</small><h3 id={`resource-import-${id}`}>{r.versionId ? '새 원문 버전 확인' : '원문을 앱에 처음 보관'}</h3></span><span className="source-action-status">인터넷 필요</span></div>
+              <div className="source-action-route" aria-label="원저자 사이트에서 앱 보관함으로"><span>원저자 사이트</span><b aria-hidden="true">→</b><span>앱 보관함</span></div>
+              <p>{r.versionId ? '원문이 바뀌었으면 새 버전으로 따로 보관합니다. 기존 버전과 학습 기록은 유지됩니다.' : '원저자 사이트에서 파일을 받아 형식을 확인한 뒤 앱 보관함에 저장합니다.'}</p>
+              <button className="button small secondary" aria-busy={busy || importActive} disabled={busy || importActive} onClick={importSource}><CloudDownload size={15}/>{busy || importActive ? '확인하는 중…' : r.versionId ? '새 원문 확인' : '원문 가져오기'}</button>
+            </section>
+          </>}
+        </section>
+      </div>
+      <aside className="detail-aside">
+        <section className="content-panel">
+          <h3>자료 정보</h3>
+          <dl className="metadata"><dt>원저자</dt><dd>{r.author || (r.url ? 'Aswath Damodaran' : '확인되지 않음')}</dd><dt>발행일</dt><dd>{dateLabel(version?.publishedAt)}</dd><dt>가져온 날짜</dt><dd>{version ? dateLabel(version.importedAt) : '아직 가져오지 않음'}</dd><dt>번역 상태</dt><dd>{r.blockCount ? `${r.translatedCount} / ${r.blockCount}문단` : '원문 추출 후 확인'}</dd></dl>
+          <label className="field-label" htmlFor="priority">나의 우선순위</label>
+          <select id="priority" value={r.priority} onChange={e => { run(async () => { await api(`/api/resources/${id}/preferences`, 'PATCH', { priority: e.target.value }); await refresh(); }, '우선순위를 저장했습니다.'); }}>{[...new Set([...data.resources.map(r => r.priority), r.priority])].map(v => <option key={v} value={v}>{label(v)}</option>)}</select>
+          <button className="button secondary full" onClick={() => run(async () => { await api(bookmarks ? `/api/bookmarks/${bookmarks.id}` : '/api/bookmarks', bookmarks ? 'DELETE' : 'POST', bookmarks ? undefined : { resourceId: id }); await refresh(); }, bookmarks ? '북마크를 해제했습니다.' : '자료를 북마크에 담았습니다.')}><Bookmark size={17} fill={bookmarks ? 'currentColor' : 'none'}/>{bookmarks ? '담아둔 자료' : '북마크에 담기'}</button>
+        </section>
+        {detail.modules.length > 0 && <section className="content-panel"><h3>이어지는 학습 단원</h3>{detail.modules.map(m => <Link className="related-module" href={`/learn/${m.slug}`} key={m.id}><span>{m.titleKo}</span><ChevronRight size={16}/></Link>)}</section>}
+        {jobs.map(j => <JobCard job={j} key={j.id}/>)}
+      </aside>
+    </div>
+  </>;
 }
 
 function ToolsPage() {
@@ -117,8 +172,53 @@ function ToolsPage() {
 function ToolPage({ slug }: { slug: string }) {
   const { data, run, refresh } = useRoom(); const guide = data.toolGuides.find(g => g.slug === slug); const r = data.resources.find(r => r.id === guide?.resourceId); const [busy, setBusy] = useState(false);
   if (!guide || !r) return <Empty title="도구를 찾을 수 없습니다"><Link href="/tools">도구실로 돌아가기</Link></Empty>;
-  const modules = data.modules.filter(m => m.resourceIds.includes(r.id)); const jobs = data.jobs.filter(j => j.resourceId === r.id).slice(0, 2);
-  return <><Link className="back-link" href="/tools">← Excel 도구실</Link><PageHeading eyebrow={`${r.id} · EXCEL LEARNING GUIDE · 학습실 작성`} title={r.titleKo} description={r.titleEn}/><div className="detail-grid"><div><section className="content-panel"><h2>이 도구가 해결하는 문제</h2><p className="lead-copy">{guide.purpose}</p><h3>입력 전에 준비하세요</h3><CheckList items={guide.inputs}/></section><section className="content-panel"><span className="eyebrow">HOW TO USE</span><h2>차근차근 따라 해 보기</h2><ol className="guide-steps">{guide.steps.map((step, i) => <li key={i}><span>{String(i + 1).padStart(2, '0')}</span><p>{step}</p></li>)}</ol><div className="interpretation"><h3>결과는 이렇게 읽으세요</h3><p>{guide.interpretation}</p></div></section><section className="content-panel"><h2>흔히 놓치는 부분</h2><ul className="simple-list">{guide.commonMistakes.map((mistake, i) => <li key={i}>{mistake}</li>)}</ul></section></div><aside className="detail-aside"><section className="content-panel"><span className="tool-icon"><Table2 size={24}/></span><h3>원본 Excel 파일</h3><p className="muted">웹 가이드를 옆에 두고 Excel에서 직접 실습해 보세요.</p>{r.versionId ? <a href={`/api/resources/${r.id}/original?versionId=${r.versionId}`} download className="button primary full"><Download size={17}/>보관한 원본 다운로드</a> : <button className="button primary full" disabled={busy || jobs.some(j => ['queued', 'running'].includes(j.status))} onClick={async () => { setBusy(true); await run(async () => { await api(`/api/resources/${r.id}/import`, 'POST'); await refresh(); }, 'Excel 원본 가져오기를 요청했습니다.'); setBusy(false); }}><Download size={17}/>{busy ? '요청 중…' : '원본 가져오기'}</button>}{r.url && <a href={r.url} className="button secondary full" target="_blank" rel="noreferrer">원저자 파일 열기 <ExternalLink size={15}/></a>}<Link href={`/resources/${r.id}`} className="text-link">출처와 보관 버전 보기 <ChevronRight size={15}/></Link>{!guide.internalVerified && <p className="small-notice">파일 내부 입력 위치 미확인. 특정 시트명이나 셀 주소를 지정하지 않는 개념 가이드입니다.</p>}</section><section className="content-panel"><h3>먼저 읽으면 좋아요</h3>{modules.map(m => <Link href={`/learn/${m.slug}`} className="related-module" key={m.id}>{m.titleKo}<ChevronRight size={15}/></Link>)}</section>{jobs.map(j => <JobCard key={j.id} job={j}/>)}</aside></div></>;
+  const modules = data.modules.filter(m => m.resourceIds.includes(r.id)); const resourceJobs = data.jobs.filter(j => j.resourceId === r.id); const jobs = resourceJobs.slice(0, 2);
+  const importActive = resourceJobs.some(j => j.type === 'import' && ['queued', 'running'].includes(j.status));
+  async function importOriginal() {
+    setBusy(true);
+    await run(async () => { await api(`/api/resources/${r!.id}/import`, 'POST'); await refresh(); }, r!.versionId ? '새 원본 확인을 시작했습니다. 바뀐 파일은 새 버전으로 보관합니다.' : '원본 가져오기를 시작했습니다. 완료되면 앱 보관함에 표시됩니다.');
+    setBusy(false);
+  }
+  const savedFileAction = <section className={`source-action-section local ${r.versionId ? '' : 'unavailable'}`} aria-labelledby={`saved-file-${r.id}`}>
+    <div className="source-action-heading"><span className="source-action-icon"><HardDriveDownload size={18}/></span><span><small>저장된 파일 받기</small><h4 id={`saved-file-${r.id}`}>보관본 다운로드</h4></span><span className="source-action-status">{r.versionId ? '인터넷 불필요' : '아직 없음'}</span></div>
+    <div className="source-action-route" aria-label="앱 보관함에서 내 파일로"><span>앱 보관함</span><b aria-hidden="true">→</b><span>내 파일</span></div>
+    {r.versionId
+      ? <><p>앱이 보관 중인 Excel 파일을 내 파일로 복사합니다. 원저자 사이트에는 접속하지 않습니다.</p><a href={`/api/resources/${r.id}/original?versionId=${r.versionId}`} download className="button primary full"><HardDriveDownload size={17}/>보관본 다운로드</a></>
+      : <p className="source-action-empty">‘원본 가져오기’를 완료하면 여기서 다운로드할 수 있습니다.</p>}
+  </section>;
+  const webSourceAction = <section className="source-action-section remote" aria-labelledby={`web-source-${r.id}`}>
+    <div className="source-action-heading"><span className="source-action-icon"><CloudDownload size={18}/></span><span><small>웹에서 앱으로 가져오기</small><h4 id={`web-source-${r.id}`}>{r.versionId ? '새 원본 확인' : '원본 가져오기'}</h4></span><span className="source-action-status">인터넷 필요</span></div>
+    <div className="source-action-route" aria-label="원저자 사이트에서 앱 보관함으로"><span>원저자 사이트</span><b aria-hidden="true">→</b><span>앱 보관함</span></div>
+    <p>{r.versionId ? '원본이 바뀌었으면 새 버전으로 따로 보관합니다. 기존 보관본은 그대로 유지됩니다.' : '원저자 사이트에서 Excel 파일을 받아 형식을 확인한 뒤 앱 보관함에 저장합니다.'}</p>
+    <button className={`button ${r.versionId ? 'secondary' : 'primary'} full`} aria-busy={busy || importActive} disabled={busy || importActive} onClick={importOriginal}><CloudDownload size={17}/>{busy || importActive ? (r.versionId ? '확인하는 중…' : '가져오는 중…') : r.versionId ? '새 원본 확인' : '원본 가져오기'}</button>
+    {r.url && <a href={r.url} className="source-action-direct-link" target="_blank" rel="noreferrer">앱에 보관하지 않고 원저자 파일 열기 (새 탭) <ExternalLink size={14}/></a>}
+  </section>;
+  return <>
+    <Link className="back-link" href="/tools">← Excel 도구실</Link>
+    <PageHeading eyebrow={`${r.id} · EXCEL LEARNING GUIDE · 학습실 작성`} title={r.titleKo} description={r.titleEn}/>
+    <div className="detail-grid">
+      <div>
+        <section className="content-panel original-file-panel">
+          <span className="tool-icon"><Table2 size={24}/></span>
+          <h2>원본 Excel 파일</h2>
+          <p className="muted">앱 보관함은 원본을 보존하는 곳입니다. 다운로드한 파일은 Excel에서 직접 사용할 수 있는 내 복사본입니다.</p>
+          <div className="source-action-intro"><strong>원하는 작업을 선택하세요</strong><p>보관본을 받는 것과 웹에서 새 원본을 가져오는 것은 서로 다른 작업입니다.</p></div>
+          <div className="source-action-stack">
+            {r.versionId ? <>{savedFileAction}{webSourceAction}</> : <>{webSourceAction}{savedFileAction}</>}
+          </div>
+          <Link href={`/resources/${r.id}`} className="text-link">출처와 보관 버전 관리 <ChevronRight size={15}/></Link>
+          {!guide.internalVerified && <p className="small-notice">파일 내부 입력 위치 미확인. 특정 시트명이나 셀 주소를 지정하지 않는 개념 가이드입니다.</p>}
+        </section>
+        <section className="content-panel"><h2>이 도구가 해결하는 문제</h2><p className="lead-copy">{guide.purpose}</p><h3>입력 전에 준비하세요</h3><CheckList items={guide.inputs}/></section>
+        <section className="content-panel"><span className="eyebrow">HOW TO USE</span><h2>차근차근 따라 해 보기</h2><ol className="guide-steps">{guide.steps.map((step, i) => <li key={i}><span>{String(i + 1).padStart(2, '0')}</span><p>{step}</p></li>)}</ol><div className="interpretation"><h3>결과는 이렇게 읽으세요</h3><p>{guide.interpretation}</p></div></section>
+        <section className="content-panel"><h2>흔히 놓치는 부분</h2><ul className="simple-list">{guide.commonMistakes.map((mistake, i) => <li key={i}>{mistake}</li>)}</ul></section>
+      </div>
+      <aside className="detail-aside">
+        <section className="content-panel"><h3>먼저 읽으면 좋아요</h3>{modules.map(m => <Link href={`/learn/${m.slug}`} className="related-module" key={m.id}>{m.titleKo}<ChevronRight size={15}/></Link>)}</section>
+        {jobs.map(j => <JobCard key={j.id} job={j}/>)}
+      </aside>
+    </div>
+  </>;
 }
 
 function GlossaryPage() {
@@ -173,8 +273,8 @@ function SettingsPage() {
         <p className="small-notice">검수 번역은 같은 원문·문맥·용어집 기준에서 재사용합니다.</p>
         {status.glossarySources && status.glossarySources.length > 0 && <p className="row-gap" style={{ flexWrap: 'wrap' }}>{status.glossarySources.map(source => <a className="text-link" key={source} href={source} target="_blank" rel="noreferrer">{source.includes('definitions.html') ? '금융지표 정의' : source.includes('glossary.htm') ? '금융용어사전' : '용어 규칙 출처'}<ExternalLink size={12}/></a>)}</p>}
         <details className="setup-instructions">
-          <summary>{status.provider === 'finetuned' ? '학습 모델 사용 안내' : status.local ? '무료 번역 설치 방법' : '번역 설정 방법'}</summary>
-          {status.provider === 'finetuned' ? <p>학습·평가를 마친 모델을 등록해 주세요. 등록한 모델은 이 PC에서 무료로 사용하며, 번역 결과는 사용자 검수가 필요합니다.</p> : status.local ? <><p>처음 한 번, 인터넷에 연결한 상태에서 앱 폴더의 터미널에서 실행하세요.</p><pre>npm run setup:translation</pre><p>Argos Translate와 영어 → 한국어 모델을 이 PC에 설치합니다. 설치가 끝나면 앱을 다시 실행하세요. 이후 번역할 원문은 외부 서버로 보내지 않습니다.</p></> : <><p>앱 폴더의 <code>.env.local</code>에 아래 서버 설정을 추가한 뒤 앱을 다시 실행하세요.</p><pre>TRANSLATION_PROVIDER=openai{'\n'}OPENAI_API_KEY=발급받은_API_키{'\n'}TRANSLATION_MODEL=사용할_모델_ID</pre><p>무료 로컬 번역을 쓰려면 제공자를 <code>argos</code>로 변경하고 <code>npm run setup:translation</code>을 실행하세요.</p></>}
+          <summary>{status.provider === 'hymt' ? 'Hy-MT2 사용 안내' : status.provider === 'finetuned' ? '학습 모델 사용 안내' : status.local ? '무료 번역 설치 방법' : '번역 설정 방법'}</summary>
+          {status.provider === 'hymt' ? <p>비교와 검토를 마친 Hy-MT2 구성을 등록한 뒤 이 PC에서 무료로 사용합니다. 번역 결과는 사용자 검수가 필요합니다.</p> : status.provider === 'finetuned' ? <p>학습·평가를 마친 모델을 등록해 주세요. 등록한 모델은 이 PC에서 무료로 사용하며, 번역 결과는 사용자 검수가 필요합니다.</p> : status.local ? <><p>처음 한 번, 인터넷에 연결한 상태에서 앱 폴더의 터미널에서 실행하세요.</p><pre>npm run setup:translation</pre><p>Argos Translate와 영어 → 한국어 모델을 이 PC에 설치합니다. 설치가 끝나면 앱을 다시 실행하세요. 이후 번역할 원문은 외부 서버로 보내지 않습니다.</p></> : <><p>앱 폴더의 <code>.env.local</code>에 아래 서버 설정을 추가한 뒤 앱을 다시 실행하세요.</p><pre>TRANSLATION_PROVIDER=openai{'\n'}OPENAI_API_KEY=발급받은_API_키{'\n'}TRANSLATION_MODEL=사용할_모델_ID</pre><p>무료 로컬 번역을 쓰려면 제공자를 <code>argos</code>로 변경하고 <code>npm run setup:translation</code>을 실행하세요.</p></>}
           <p>저장한 번역은 재사용합니다. 원문·메모·기존 번역은 새 번역 설정 없이도 읽을 수 있습니다.</p>
         </details>
         <p className="small-notice">기계 번역은 사용자 미검수 상태로 저장됩니다. 금융용어·숫자·수식은 원문과 함께 확인하세요.</p>

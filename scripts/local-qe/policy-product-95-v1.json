@@ -1,0 +1,16 @@
+{
+  "version": "product-qe-95-v1",
+  "scoreDirection": "lower-is-risk",
+  "thresholdComparison": "score<=threshold",
+  "minimumRecall": 0.95,
+  "minimumPrecision": 0.95,
+  "maximumWarningRate": 1.0,
+  "allNamedErrorsRequired": true,
+  "requiredNamedErrorCount": 6,
+  "requiredSpanOffsetValidity": 1.0,
+  "spanPerformanceMustBeEvaluatedSeparately": true,
+  "basis": "user-delegated product policy, not a universal academic accuracy threshold",
+  "adoptedAfterInitialDev48Scoring": true,
+  "humanReviewed": false,
+  "independentFinalCertification": false
+}

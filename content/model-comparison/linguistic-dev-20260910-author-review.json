@@ -1,0 +1,509 @@
+{
+  "version": "linguistic-dev-20260910-author-check-v1",
+  "status": "complete",
+  "reviewerType": "assistant",
+  "humanReviewed": false,
+  "datasetSha256": "b8a2b91802e36d96654631a9965566f774e050ea4139ca7270d9f84d2a916848",
+  "rowCount": 18,
+  "historicalFiles": [
+    {
+      "file": "content/training/train.jsonl",
+      "sha256": "57a33cb6cb691b0c31fa6ab7a45e4dc8b52298bd7c77a5ded4ac744ad7e03cfc"
+    },
+    {
+      "file": "content/training/dev.jsonl",
+      "sha256": "8c94b2a249b90cda542cc206f9605aee9779b301aa789f308dd11722c877fe36"
+    },
+    {
+      "file": "content/training/evaluation.jsonl",
+      "sha256": "85d82f670f077e74ebc817583b555f5b4aae07046282170190e35a8468cbbd23"
+    },
+    {
+      "file": ".training/datasets/finance-v4/train.jsonl",
+      "sha256": "4cb6a18b165af96e746b7e000404e0cd7aa9ec9dd97872dd5911863475c0fbd7"
+    },
+    {
+      "file": ".training/datasets/finance-v4/dev.jsonl",
+      "sha256": "16ecde5ad5115d7d5dca67fd7d1f9451e596987537b54b10d2bc577e2451fb36"
+    },
+    {
+      "file": ".training/datasets/finance-v4/test.jsonl",
+      "sha256": "b0ed0de7d3a56d422a113d8cc0317f5d52e04877ebb2742309f3f45211e162ed"
+    },
+    {
+      "file": ".training/datasets/finance-v5/train.jsonl",
+      "sha256": "0b1395d3050a09a1951b1ddc48f2be47f7732a91789e8c1beb87869ec0a0a7f3"
+    },
+    {
+      "file": ".training/datasets/finance-v5/dev.jsonl",
+      "sha256": "6f42a31d85c7a5eaf03dd65bbeb2d169318cfc39acce4dae8d20b6e523eb2398"
+    },
+    {
+      "file": ".training/datasets/finance-v5/test.jsonl",
+      "sha256": "5c94c92530f31eb240d57634d54e4006a8d3918ce2b8edff3daec7e3a41878a1"
+    },
+    {
+      "file": ".training/datasets/finance-v4/polysemy-probe.jsonl",
+      "sha256": "1c6814325e6cd7f4f3f84162c625049dc8ba6c5b422b5b1a3117dc7c2a842252"
+    },
+    {
+      "file": "content/model-comparison/finance-probe-20260909.jsonl",
+      "sha256": "7ccafce31068b98f5f4bcc32ead765da74e5947fbc730c39cc4e6bb19e35a76d"
+    },
+    {
+      "file": ".training/comparisons/finance-quality-20260910/dataset.jsonl",
+      "sha256": "73fb2b2c4291090e49205aeff34cecfa24132d91c19522834fe779139a457737"
+    }
+  ],
+  "historicalFieldAllowlist": [
+    "source",
+    "context"
+  ],
+  "uniqueHistoricalTexts": 1693,
+  "legacyLeakageRules": {
+    "normalizedExact": true,
+    "numericTemplate": true,
+    "nearTemplateRatio": 0.92,
+    "nearTemplateWithJaccard": {
+      "jaccard": 0.85,
+      "ratio": 0.82
+    }
+  },
+  "historicalOverlapIssues": [],
+  "withinScreenExpectedMinimalPairs": [
+    {
+      "kind": "near-template-leakage",
+      "first": {
+        "split": "LDEV26-001",
+        "id": "LDEV26-001"
+      },
+      "second": {
+        "split": "LDEV26-002",
+        "id": "LDEV26-002"
+      }
+    },
+    {
+      "kind": "near-template-leakage",
+      "first": {
+        "split": "LDEV26-003",
+        "id": "LDEV26-003"
+      },
+      "second": {
+        "split": "LDEV26-004",
+        "id": "LDEV26-004"
+      }
+    },
+    {
+      "kind": "near-template-leakage",
+      "first": {
+        "split": "LDEV26-005",
+        "id": "LDEV26-005"
+      },
+      "second": {
+        "split": "LDEV26-006",
+        "id": "LDEV26-006"
+      }
+    },
+    {
+      "kind": "near-template-leakage",
+      "first": {
+        "split": "LDEV26-009",
+        "id": "LDEV26-009"
+      },
+      "second": {
+        "split": "LDEV26-010",
+        "id": "LDEV26-010"
+      }
+    },
+    {
+      "kind": "near-template-leakage",
+      "first": {
+        "split": "LDEV26-011",
+        "id": "LDEV26-011"
+      },
+      "second": {
+        "split": "LDEV26-012",
+        "id": "LDEV26-012"
+      }
+    }
+  ],
+  "withinScreenUnexpectedOverlapIssues": [],
+  "statistics": {
+    "pairs": 1462905,
+    "lengthBoundPruned": 22058,
+    "quickRatioPruned": 8415,
+    "fullRatioCalls": 1
+  },
+  "canonicalTermIssues": [],
+  "rows": [
+    {
+      "id": "LDEV26-001",
+      "sourceWords": 24,
+      "legacyNumericTokensMatch": true,
+      "sourceNumericTokens": {
+        "1800": 1
+      },
+      "referenceNumericTokens": {
+        "1800": 1
+      },
+      "referenceSha256": "b840a3754784e9f65b2b9e50943adf652acfd0c507e15efa0c13a7d15253c0f0",
+      "sourceSha256": "3324ff2329acb057de37c9b847b04b326a91c751ba25492fd9b67e0cf9f2c0db",
+      "sourceGroundedEvidence": [
+        "운송업체가 상환 의무자이고 수출업체가 수취인이다.",
+        "계약은 초안이며 상환이 이미 실행됐다고 말하지 않는다.",
+        "운송업체·수출업체·세관의 역할을 뒤바꾸지 않는다.",
+        "검사 수수료를 세금이나 벌금으로 바꾸지 않는다.",
+        "여기서 상환/보전은 이미 지출한 검사 비용을 되돌려주는 의미다. 대출금이나 이자 지급이라고 추가하면 안 된다."
+      ],
+      "humanReviewed": false
+    },
+    {
+      "id": "LDEV26-002",
+      "sourceWords": 24,
+      "legacyNumericTokensMatch": true,
+      "sourceNumericTokens": {
+        "1800": 1
+      },
+      "referenceNumericTokens": {
+        "1800": 1
+      },
+      "referenceSha256": "874062f57de30358ad5292f507f4927bae2b5cccfbdaf72dd76119830d9fb8dc",
+      "sourceSha256": "fea195a341b37b97509ba5bad0b8757980b9259edb14cb3759bd35fabe261f7f",
+      "sourceGroundedEvidence": [
+        "수출업체가 상환 의무자이고 운송업체가 수취인이다.",
+        "계약은 초안이며 상환이 이미 실행됐다고 말하지 않는다.",
+        "운송업체·수출업체·세관의 역할을 뒤바꾸지 않는다.",
+        "검사 수수료를 세금이나 벌금으로 바꾸지 않는다.",
+        "여기서 상환/보전은 이미 지출한 검사 비용을 되돌려주는 의미다. 대출금이나 이자 지급이라고 추가하면 안 된다."
+      ],
+      "humanReviewed": false
+    },
+    {
+      "id": "LDEV26-003",
+      "sourceWords": 31,
+      "legacyNumericTokensMatch": true,
+      "sourceNumericTokens": {},
+      "referenceNumericTokens": {},
+      "referenceSha256": "b3b2c22014ad4d4775f34aa67466ec3257677ed70bb5f0611f467fe0b279b2bb",
+      "sourceSha256": "26490cf3781e201c52146ac141e63fd6af0ab3be48e7726e8a39778d448da24b",
+      "sourceGroundedEvidence": [
+        "구리는 담보로 제공되어 있으며 반출의 허용 시점을 설명한다.",
+        "대출기관의 서명이 반출 허용보다 먼저 있어야 한다.",
+        "미서명 초안에 대한 부정을 지우지 않는다.",
+        "포기한 권리가 무엇인지는 특정하지 않았으므로 담보권 포기라고 단정하는 해설을 덧붙이지 않는다."
+      ],
+      "humanReviewed": false
+    },
+    {
+      "id": "LDEV26-004",
+      "sourceWords": 31,
+      "legacyNumericTokensMatch": true,
+      "sourceNumericTokens": {},
+      "referenceNumericTokens": {},
+      "referenceSha256": "71a7c98ad99b2cf31a812aa8f791eeed08fb3269653ab77d5bbe6f85fde03be4",
+      "sourceSha256": "5fc0e5b16df7a13d11783212b21329df7de021db7b5b2ef943b4641c92973a33",
+      "sourceGroundedEvidence": [
+        "구리는 담보로 제공되어 있으며 반출의 허용 시점을 설명한다.",
+        "대출기관의 서명 이전에도 반출이 허용된다.",
+        "서명 없이 반출이 허용되는 것과 초안이 서명으로 인정되는 것은 다른 명제다.",
+        "포기한 권리가 무엇인지는 특정하지 않았으므로 담보권 포기라고 단정하는 해설을 덧붙이지 않는다."
+      ],
+      "humanReviewed": false
+    },
+    {
+      "id": "LDEV26-005",
+      "sourceWords": 30,
+      "legacyNumericTokensMatch": true,
+      "sourceNumericTokens": {
+        "4%": 1,
+        "2%": 1
+      },
+      "referenceNumericTokens": {
+        "4%": 1,
+        "2%": 1
+      },
+      "referenceSha256": "c1314398dfbd6853466a4970b0ee81544d8db9328654ceff727999922c8198ce",
+      "sourceSha256": "99e681e5e9bacbdc2879cd870e006b6ab96659bf3826b3ab90ac53cd0a780fa5",
+      "sourceGroundedEvidence": [
+        "4%는 시작 비율이고 2퍼센트포인트는 그 비율에 더하는 절대 증가분이다.",
+        "비교 실행 전에 비율을 높인다.",
+        "2%의 상대 증가로 바꾸지 않는다.",
+        "계산 후 비율은 원문에 없으므로 참조 번역이나 출력에 계산 결과를 추가할 필요가 없다."
+      ],
+      "humanReviewed": false
+    },
+    {
+      "id": "LDEV26-006",
+      "sourceWords": 28,
+      "legacyNumericTokensMatch": true,
+      "sourceNumericTokens": {
+        "4%": 1,
+        "2%": 1
+      },
+      "referenceNumericTokens": {
+        "4%": 1,
+        "2%": 1
+      },
+      "referenceSha256": "cb18b1e6deab85378729f70adb078dbed258afbd6b41fbbc5563bae40c838b62",
+      "sourceSha256": "ff3f14e51bf7c790319d1f47b0d2a0a6127daef936dd85fb6d1edf34d26063d6",
+      "sourceGroundedEvidence": [
+        "4%는 시작 비율이고 2%는 그 시작 값에 대한 상대 증가율이다.",
+        "비교 실행 전에 비율을 높인다.",
+        "2퍼센트포인트를 더하는 것으로 바꾸지 않는다.",
+        "계산 후 비율은 원문에 없으므로 참조 번역이나 출력에 계산 결과를 추가할 필요가 없다."
+      ],
+      "humanReviewed": false
+    },
+    {
+      "id": "LDEV26-007",
+      "sourceWords": 23,
+      "legacyNumericTokensMatch": true,
+      "sourceNumericTokens": {},
+      "referenceNumericTokens": {},
+      "referenceSha256": "e0b0867942842b45b11266e409ae6395f92a74fb4339ecb873489bbc1064374d",
+      "sourceSha256": "743a1600610c1208b08913d04a71bfa4afe527c78a943289742d4fb167a556ec",
+      "sourceGroundedEvidence": [
+        "검토자가 요구하는 것은 지원자 대우의 공정성이다.",
+        "투자 잔액 증가는 요구 대상이 아니다.",
+        "fund라는 금융 기관 배경만으로 equity를 금융 자본으로 번역하지 않는다.",
+        "지원자 대우를 투자자 수익으로 바꾸지 않는다."
+      ],
+      "humanReviewed": false
+    },
+    {
+      "id": "LDEV26-008",
+      "sourceWords": 24,
+      "legacyNumericTokensMatch": true,
+      "sourceNumericTokens": {},
+      "referenceNumericTokens": {},
+      "referenceSha256": "5125d6589851308656563d26ef145b3333f8c27dda3bc80582f87dc8538256c6",
+      "sourceSha256": "b8e7f0bececd30bc770627974fdc809be6c80704dc85a88023518bf790528134",
+      "sourceGroundedEvidence": [
+        "검토자가 요구하는 것은 자금 조달 구성에서 자기자본을 늘리는 것이다.",
+        "채용 방침의 공정성을 높이라는 요구가 아니다.",
+        "equity 단독어는 고정 54개 목록의 완전 표제가 아니므로 금융 의미 적절성과 목록 표기 점수를 혼동하지 않는다.",
+        "채용 방침을 변경하라는 의견으로 바꾸지 않는다."
+      ],
+      "humanReviewed": false
+    },
+    {
+      "id": "LDEV26-009",
+      "sourceWords": 24,
+      "legacyNumericTokensMatch": true,
+      "sourceNumericTokens": {},
+      "referenceNumericTokens": {},
+      "referenceSha256": "71461a4dc995b45ba81cd787e399aa74bc1d016b2282ce8699f1ce042df3a2c5",
+      "sourceSha256": "e759e6a240835817f2c6d984b36435d65d6911ce58383755db0cf2550be548a1",
+      "sourceGroundedEvidence": [
+        "영업이익을 보고한 자회사 모두가 배당금을 지급했다는 명제를 부정한다.",
+        "표본에 포함된 자회사 수는 제시되지 않았다.",
+        "영업이익 보고와 배당금 지급을 같은 사건으로 합치지 않는다."
+      ],
+      "humanReviewed": false
+    },
+    {
+      "id": "LDEV26-010",
+      "sourceWords": 23,
+      "legacyNumericTokensMatch": true,
+      "sourceNumericTokens": {},
+      "referenceNumericTokens": {},
+      "referenceSha256": "a35391600722bae8188b4dde0e1032117137c3272e5b04ecf9dc78d1ea06583c",
+      "sourceSha256": "66aaea999fd5d04ef523e6767e3412d8870eaaf1559a8a7562b61c5e87c96a82",
+      "sourceGroundedEvidence": [
+        "영업이익을 보고한 자회사 중 배당금을 지급한 곳이 없다고 한다.",
+        "표본에 포함된 자회사 수는 제시되지 않았다.",
+        "영업이익 보고와 배당금 지급을 같은 사건으로 합치지 않는다."
+      ],
+      "humanReviewed": false
+    },
+    {
+      "id": "LDEV26-011",
+      "sourceWords": 27,
+      "legacyNumericTokensMatch": true,
+      "sourceNumericTokens": {},
+      "referenceNumericTokens": {},
+      "referenceSha256": "16c11ae73e34fbfc4c6a1a279e43b647a01c1fd71836c2665f13b654c6291036",
+      "sourceSha256": "ac7b5d4515a47341bcc4af16b96b7c61b437e9d2771b440ce5d0c443f92c46d1",
+      "sourceGroundedEvidence": [
+        "간접비 감소는 인수 후 통합을 마친 시점에 관한 위원회의 예측이다.",
+        "감소 가능성을 표현하며 감소를 확정하지 않는다.",
+        "예측의 주체를 위원회에서 번역자나 연구 저자로 바꾸지 않는다.",
+        "통합 이전 비용 감소나 인수 성공이라는 해설을 추가하지 않는다."
+      ],
+      "humanReviewed": false
+    },
+    {
+      "id": "LDEV26-012",
+      "sourceWords": 27,
+      "legacyNumericTokensMatch": true,
+      "sourceNumericTokens": {},
+      "referenceNumericTokens": {},
+      "referenceSha256": "d3c308234ee0fc536c44829d4c4d6635cef5c0fe2799002178a22b586be41388",
+      "sourceSha256": "ac53933dd995d285737556273006aeaeaa27a9666b657ba561efbb1263f1611c",
+      "sourceGroundedEvidence": [
+        "위원회는 인수 후 통합을 마친 뒤 간접비가 줄어들 것이라고 예측한다.",
+        "확정적으로 표현한 예측이지만 실제 감소를 관측했다는 진술은 아니다.",
+        "예측의 주체를 위원회에서 번역자나 연구 저자로 바꾸지 않는다.",
+        "통합 이전 비용 감소나 인수 성공이라는 해설을 추가하지 않는다."
+      ],
+      "humanReviewed": false
+    },
+    {
+      "id": "LDEV26-013",
+      "sourceWords": 69,
+      "legacyNumericTokensMatch": false,
+      "sourceNumericTokens": {
+        "540": 1
+      },
+      "referenceNumericTokens": {
+        "4": 1,
+        "3": 4,
+        "540": 1
+      },
+      "referenceSha256": "ee43966e9619d14d2a34297548706d255097bee3a799ecac5b9024d6027c6270",
+      "sourceSha256": "9421cfacd1dc08982633ce2b96f7952215ddcfe967f086995de03a1762549e78",
+      "sourceGroundedEvidence": [
+        "수리를 완료하고 매출을 기록한 시점은 3월이며 고객이 대금을 지급하는 시점은 4월이다.",
+        "3월 손익계산서에 매출이 포함되어도 3월의 고객 현금 수취가 생기는 것은 아니다.",
+        "서로 다른 보고서에서 동일한 거래를 추적하는 수업이다.",
+        "3월과 4월을 바꾸거나 금액을 추가하지 않는다.",
+        "학습용 장부의 사실을 모든 회계 기준에 관한 단정으로 확장하지 않는다."
+      ],
+      "humanReviewed": false,
+      "numericWarningInterpretation": "March와 April은 각각 3월과 4월이다. 한국어 달 표기에 생긴 숫자는 원문에 없던 금액·수량을 추가한 것이 아니다. legacy numeric_tokens의 표면 불일치는 별도 경고로 보존하며 의미 오류로 자동 판정하지 않는다."
+    },
+    {
+      "id": "LDEV26-014",
+      "sourceWords": 74,
+      "legacyNumericTokensMatch": true,
+      "sourceNumericTokens": {},
+      "referenceNumericTokens": {},
+      "referenceSha256": "213ec10c913f0f2c4353997a83ace21fd23e23cf265e8a1193f89494ffd6af4d",
+      "sourceSha256": "db7a90993300697631bdedc6be50a442b76d54431e6c7eb441477c21daaa77df",
+      "sourceGroundedEvidence": [
+        "기업잉여현금흐름과 가중평균자본비용을 연결한다.",
+        "주주잉여현금흐름과 자기자본비용을 연결한다.",
+        "계속가치의 표상 시점은 예측기간 말이며 오늘의 가치로 할인하는 단계와 구분한다.",
+        "cash flow라는 일반 제목만으로 FCFF나 FCFE를 정할 수 없다.",
+        "FCFF/FCFE의 귀속 집단이나 할인율을 서로 바꾸지 않는다.",
+        "원문에 없는 할인율 수치·성장률·계산식을 추가하지 않는다."
+      ],
+      "humanReviewed": false
+    },
+    {
+      "id": "LDEV26-015",
+      "sourceWords": 75,
+      "legacyNumericTokensMatch": true,
+      "sourceNumericTokens": {
+        "18": 2
+      },
+      "referenceNumericTokens": {
+        "18": 2
+      },
+      "referenceSha256": "d1634a299fbe1332ef78aa97f2e4fd4a6ee5a74a96068f4daddbfc0e2c3a0c2d",
+      "sourceSha256": "87957ab9b649f5442f5ff18180d575c35d56d5971f870cc6afce5c0a9b8f707a",
+      "sourceGroundedEvidence": [
+        "목록의 모든 조건이 함께 요구되며 선택 조건이 아니다.",
+        "너비 경계값은 미만이므로 정확히 18 cm인 소포는 탈락한다.",
+        "이용 자격 판정과 발송 완료는 별개다.",
+        "도입문의 only when all 범위를 모든 목록 항목에 유지한다.",
+        "발송 완료나 발송 의무를 덧붙이지 않는다."
+      ],
+      "humanReviewed": false
+    },
+    {
+      "id": "LDEV26-016",
+      "sourceWords": 63,
+      "legacyNumericTokensMatch": true,
+      "sourceNumericTokens": {
+        "760": 1,
+        "85": 1
+      },
+      "referenceNumericTokens": {
+        "760": 1,
+        "85": 1
+      },
+      "referenceSha256": "70bc2c81a74a838db9de140c9390a946a9ace289a8793702e0f3212fea0a5233",
+      "sourceSha256": "cef603d9e8037fb7b1dac05f3360ccfa56c3e7b06012936f483614da0b60fc1d",
+      "sourceGroundedEvidence": [
+        "C는 연간 보관 비용이며 S는 운송 요금 차감 후 매각 대금이다.",
+        "식에서는 S에서 C를 뺀다.",
+        "운송 요금은 S 산출 단계에서 이미 빠졌으므로 다시 차감하라는 내용이 아니다.",
+        "C와 S의 정의·금액·차감 순서를 바꾸지 않는다.",
+        "V의 계산 결과나 운송 요금 금액을 새로 덧붙이지 않는다.",
+        "연간 비용이라는 시간 단위를 생략하지 않는다."
+      ],
+      "humanReviewed": false
+    },
+    {
+      "id": "LDEV26-017",
+      "sourceWords": 62,
+      "legacyNumericTokensMatch": true,
+      "sourceNumericTokens": {},
+      "referenceNumericTokens": {},
+      "referenceSha256": "d35dccd222661285ded08959db42cc3779a0ed93593223838a57e5b23a3fdfb0",
+      "sourceSha256": "be2609c6b6838e08ff4470e724d3fff4991e4285b69f55432c1df4182e7f51e0",
+      "sourceGroundedEvidence": [
+        "일정하게 통제하는 변수는 매장 규모이며 제품 품질은 아니다.",
+        "설명 관계는 배송 시간과 주간 매출액 사이이며 배송 시간 계수가 양수다.",
+        "이 모형의 추정 연관성과 인과적 효과를 구분한다.",
+        "통계적 유의성이라는 명칭은 인과 추론의 한계를 없애지 않는다.",
+        "계수 부호나 변수 역할을 바꾸지 않는다.",
+        "품질이 원인이라는 별도 결론이나 실제 배송 정책을 권고하지 않는다."
+      ],
+      "humanReviewed": false
+    },
+    {
+      "id": "LDEV26-018",
+      "sourceWords": 67,
+      "legacyNumericTokensMatch": true,
+      "sourceNumericTokens": {},
+      "referenceNumericTokens": {},
+      "referenceSha256": "e2573e886fe9b83fae158eff0993eb249d1c5c7ac81c065078ec927b07bb225e",
+      "sourceSha256": "e8543bad15321d113047b0c8c189829ffe1f822d28927f2f13a46ecdb92d20c9",
+      "sourceGroundedEvidence": [
+        "전자는 감사인으로 실사의 완전성을 확인하며, 후자는 가치평가인으로 물품의 잠재 매각가를 추정한다.",
+        "둘 모두 미래 수요를 보증하는 역할을 맡지 않는다.",
+        "잠정적이라는 표현의 대상은 매각가 추정치이며 완료된 실사가 아니다.",
+        "former/latter의 담당자를 뒤바꾸지 않는다.",
+        "실사·매각가 추정·미래 수요의 서로 다른 판단 대상을 합치지 않는다.",
+        "감사인이 재고 가치나 수요를 보증했다고 추가하지 않는다."
+      ],
+      "humanReviewed": false
+    }
+  ],
+  "modelOutputsRead": false,
+  "finalHoldout": false,
+  "trainingUseAllowed": false,
+  "allSourceReferencePairsIndividuallyReviewed": true,
+  "sourceUnchangedFromLeakageCheck": true,
+  "coverage": {
+    "domains": {
+      "finance": 16,
+      "general": 2
+    },
+    "minimalContrastPairs": 6,
+    "paragraphs": 6,
+    "externalContextRequiredRows": 0,
+    "canonicalCatalogIds": [
+      "FT04",
+      "FT05",
+      "G14",
+      "G17",
+      "G22",
+      "G23",
+      "G29",
+      "G30",
+      "G31",
+      "G44"
+    ],
+    "canonicalTermCheckCount": 12
+  },
+  "limitations": [
+    "Assistant-authored and assistant-reviewed; not human gold.",
+    "Small development diagnostic, not an independent final holdout, a 54-term >=90% certification, or evidence of general-domain retention.",
+    "Minimal-pair rows intentionally share wording within this single development split; both variants must be judged independently.",
+    "Fresh wording and source/context deduplication do not prove independence of linguistic categories or unseen pretraining.",
+    "No model output was viewed in this authoring/review task; old consumed test/probe source/context fields were used only for overlap checks."
+  ]
+}

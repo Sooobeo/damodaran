@@ -9,6 +9,7 @@ import unittest
 from unittest.mock import patch
 
 import runtime
+import evaluate_terms
 
 
 class RuntimeTests(unittest.TestCase):
@@ -92,6 +93,98 @@ class RuntimeTests(unittest.TestCase):
         rules = [{"source":"return on equity","aliases":["ROE"],"target":"자기자본이익률","mode":"phrase","replacements":["주식 반환"]}, {"source":"return","target":"수익률","mode":"phrase","replacements":["반환"]}]
         self.assertEqual(runtime.correct_sentence_terms("ROE improved.", "주식 반환이 개선되었습니다.", rules)["translatedText"], "자기자본이익률이 개선되었습니다.")
         self.assertEqual(runtime.correct_sentence_terms("roe means fish eggs; please return.", "주식 반환과 반환", rules), {"translatedText":"주식 반환과 반환","warnings":[]})
+
+    def test_ambiguous_exact_labels_keep_engine_output_and_request_review(self):
+        rules = json.loads((Path(__file__).resolve().parents[2] / "content/translation-glossary.json").read_text("utf-8"))["rules"]
+        # The study dictionary contributes these whole-label entries at runtime.
+        rules += [{"source":"Revenue","aliases":["Sales"],"target":"매출액","mode":"exact"},
+                  {"source":"Regression","target":"회귀분석","mode":"exact"}]
+        for source, plain in [("Compounding", "조제"), ("Perpetuity", "영속성"),
+                              ("Perpetuities", "영속성"), ("Sales", "할인 행사"),
+                              ("Regression", "퇴행")]:
+            with self.subTest(source=source):
+                translator, calls = self.translator()
+                def fake(text):
+                    calls.append(text)
+                    return plain
+                translator.translate_plain = fake
+                result = translator.translate_segment_result(source, rules)
+                self.assertEqual(result["translatedText"], plain)
+                self.assertEqual(calls, [source])
+                self.assertEqual(len(result["warnings"]), 1)
+                self.assertIn("용어 검토 필요", result["warnings"][0])
+
+    def test_ambiguous_label_cannot_reenter_through_phrase_correction(self):
+        translator, calls = self.translator()
+        translator.translate_plain = lambda text: "반환"
+        rule = {"source":"return","target":"수익률","mode":"phrase","replacements":["반환"]}
+        result = translator.translate_segment_result("return", [rule])
+        self.assertEqual(result["translatedText"], "반환")
+        self.assertTrue(result["warnings"])
+
+    def test_exact_acronyms_require_case_and_preserve_financial_labels(self):
+        rules = [{"source":"ROE","target":"자기자본이익률","mode":"exact"},
+                 {"source":"EV/EBITDA","target":"기업가치/EBITDA","mode":"exact"},
+                 {"source":"return on equity","target":"자기자본이익률","mode":"phrase"}]
+        translator, calls = self.translator()
+        translator.translate_plain = lambda text: "원래 엔진 출력"
+        for source in ["roe", "Roe", "ev/ebitda"]:
+            with self.subTest(source=source):
+                result = translator.translate_segment_result(source, rules)
+                self.assertEqual(result["translatedText"], "원래 엔진 출력")
+                self.assertEqual(len(result["warnings"]), 1)
+                self.assertIn("대소문자", result["warnings"][0])
+        for source, target in [(" ROE\n", " 자기자본이익률\n"),
+                               ("EV/EBITDA", "기업가치/EBITDA"),
+                               ("Return on Equity", "자기자본이익률")]:
+            with self.subTest(source=source):
+                self.assertEqual(translator.translate_segment_result(source, rules),
+                                 {"translatedText":target,"warnings":[]})
+
+    def test_cached_term_evaluation_replays_ambiguous_labels_without_loading_model(self):
+        pairs = [("Compounding", "조제", "복리 계산"),
+                 ("Perpetuity", "영속성", "영구연금"),
+                 ("Return on Equity", "주식 반환", "자기자본이익률")]
+        rules = [{"id":f"exact-{index}", "source":source, "target":target, "mode":"exact"}
+                 for index, (source, plain, target) in enumerate(pairs)]
+        samples = [{"id":rule["id"], "source":source, "baseline":plain,
+                    "sentences":[{"source":source, "plainMT":plain}]}
+                   for rule, (source, plain, target) in zip(rules, pairs)]
+        manifest = {"model":"unchanged-model", "modelHash":"unchanged-hash", "runtimeVersion":"unchanged-runtime"}
+        with tempfile.TemporaryDirectory(prefix="argos-term-replay-") as directory:
+            root = Path(directory)
+            (root / "content").mkdir()
+            (root / ".translation").mkdir()
+            (root / "content/translation-glossary.json").write_text(
+                json.dumps({"version":"test-rules", "rules":rules}), "utf-8")
+            baseline = root / ".translation/term-evaluation-baseline.json"
+            baseline.write_text(json.dumps({**manifest, "generatedAt":"original-time", "samples":samples}), "utf-8")
+            original_baseline = baseline.read_bytes()
+            with patch.object(evaluate_terms, "APP_ROOT", root), \
+                 patch.object(evaluate_terms, "verify_manifest", return_value=manifest), \
+                 patch.object(evaluate_terms.sys, "argv", ["evaluate_terms.py", "--cached"]), \
+                 patch.object(evaluate_terms.sys, "stdout"), \
+                 patch.object(runtime.LocalTranslator, "__init__", side_effect=AssertionError("Model must not load")), \
+                 patch.object(runtime.LocalTranslator, "translate_plain", side_effect=AssertionError("Model must not translate")):
+                evaluate_terms.main()
+            result = json.loads((root / ".translation/term-evaluation.json").read_text("utf-8"))
+            self.assertEqual(baseline.read_bytes(), original_baseline)
+            self.assertEqual(result["baselineGeneratedAt"], "original-time")
+            for sample, (source, plain, target) in zip(result["samples"], pairs):
+                self.assertEqual(sample["baseline"], plain)
+                if source in ["Compounding", "Perpetuity"]:
+                    self.assertEqual(sample["after"], plain)
+                    self.assertFalse(sample["changed"])
+                    self.assertIn("용어 검토 필요", sample["warnings"][0])
+                else:
+                    self.assertEqual(sample["after"], target)
+                    self.assertTrue(sample["changed"])
+                    self.assertEqual(sample["warnings"], [])
+
+    def test_exact_term_replay_rejects_mismatched_cached_source(self):
+        sample = {"source":"Compounding", "sentences":[{"source":"Perpetuity", "plainMT":"영속성"}]}
+        with self.assertRaisesRegex(ValueError, "sources do not match"):
+            evaluate_terms.replay_exact_sample(sample, [])
 
     def test_korean_particles_follow_the_corrected_final_consonant(self):
         self.assertEqual(runtime.adjusted_particle("재무제표", "으로부터"), "로부터")

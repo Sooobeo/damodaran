@@ -1,0 +1,33 @@
+{
+  "version": "qwen35-semantic-review-evaluation-policy-v1",
+  "frozenBeforeCandidateContentOutput": true,
+  "authority": "root explicit instruction before first Qwen completion output",
+  "purpose": "Separate paragraph warning performance, model semantic assertions, quote-location validity, and meaning/span correctness.",
+  "modelInputAllowed": false,
+  "primaryParagraphWarning": {
+    "eligible": "item.status == completed AND assessment.status == valid",
+    "warning": "assessment.whole_paragraph_review == true",
+    "includes": ["minor_semantic_assertions", "major_semantic_assertions", "critical_semantic_assertions", "uncertainties", "unverified_quotes"],
+    "thresholdTuningAfterOutputs": false,
+    "failedOrNotRunAreSuccessfulWarnings": false,
+    "failedPositiveHandling": "Count as false negative when authoritative label is positive; report every failed/unassessed item separately and refuse acceptance for incomplete coverage.",
+    "unknownLabels": "unassessed; never invent labels or silently exclude missingness from acceptance",
+    "positiveUnit": "one paragraph translation containing at least one major or critical meaning error",
+    "acceptancePolicy": "existing product-qe-95-v2: 95% recall and 95% warning precision overall and in each required baseline/subset/cross-subset; required named cases separately; absent denominators remain unassessed"
+  },
+  "secondaryMajorCriticalAssertions": {
+    "positive": "eligible item has semantic_issues severity major or critical",
+    "reportedSeparately": true,
+    "mayReplacePrimaryAcceptance": false
+  },
+  "spanAndMeaningEvaluation": {
+    "uniqueExactQuotesVerify": "location mapping only",
+    "semanticIssueReasonsCorrectness": "requires independent source-grounded review",
+    "highlightPrecision": "requires separate independent span semantics review",
+    "jsonOrUniqueQuoteImpliesSemanticQuality": false,
+    "paragraphWarningImpliesAllErrorsLocated": false
+  },
+  "noApplicationRegistrationBySmoke": true,
+  "noTraining": true,
+  "existingExperimentsReplaced": false
+}

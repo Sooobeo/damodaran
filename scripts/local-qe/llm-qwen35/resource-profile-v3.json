@@ -1,0 +1,68 @@
+{
+  "version": "qwen35-cpu-8g-4threads-4k-prefix-v3",
+  "contextTokens": 4096,
+  "outputReservedTokens": 2048,
+  "threads": 4,
+  "batchThreads": 4,
+  "batchSize": 128,
+  "physicalBatchSize": 128,
+  "parallelSlots": 1,
+  "priorityClass": "BelowNormal",
+  "nativePriority": -1,
+  "poll": 0,
+  "pollBatch": 0,
+  "cachePrompt": true,
+  "contextCheckpoints": 3,
+  "cacheRamMiB": 0,
+  "messageDelimiters": [
+    {
+      "role": "system",
+      "delimiter": "<|im_start|>system\n"
+    },
+    {
+      "role": "user",
+      "delimiter": "<|im_start|>user\n"
+    },
+    {
+      "role": "assistant",
+      "delimiter": "<|im_start|>assistant\n"
+    }
+  ],
+  "maximumChildWorkingSetBytes": 8589934592,
+  "maximumChildPrivateBytes": 8589934592,
+  "minimumStartAvailablePhysicalBytes": 11811160064,
+  "minimumStartAvailableCommitBytes": 11811160064,
+  "outputMappingVersion": "qwen-material-warning-policy-v2",
+  "mappingFiles": [
+    {
+      "path": "scripts\\local-qe\\qwen-material-warning-policy-v2.json",
+      "sha256": "32298b2ac2cb0446fabefd2277b7bdab708e2414df7b32a395da3948a8b55208"
+    },
+    {
+      "path": "scripts\\local-qe\\material_warning.py",
+      "sha256": "818d9aad2495e628a6fc3b2522042f925f414d0d9a39388366acf40a1f7c8cc5"
+    }
+  ],
+  "all48TokenBudgetVerification": "passed_vocab_only_exact_first3_parity",
+  "memoryEstimate": {
+    "attentionKvMiB": 128,
+    "threeRecurrentCheckpointCoreMiB": 150.75,
+    "deltaFromV3CoreMiB": 22.75,
+    "overheadUnknown": true,
+    "measurementRequired": true
+  },
+  "status": "prepared_not_model_executed_not_quality_validated",
+  "tokenBudgetAudit": {
+    "path": ".translation\\qe\\llm-candidates\\qwen35-9b\\token-budget-v1\\attempt-001\\summary.json",
+    "sha256": "11352d7f17267c88608192de6c47ee6616b1f7bc9bc586f509e4a98ed44045cb"
+  },
+  "maximumInputTokens": 1393,
+  "minimumRemainingTokens": 655,
+  "existingFilesModified": false,
+  "singleModelSlotApprovalRequired": true,
+  "sameSeedGuaranteesSameBytes": false,
+  "enableThinking": false,
+  "contractVersion": "qwen35-meaning-v1",
+  "promptSha256": "bda24929520798c7cc95643f153d92071b6bb8dc0dc733f202d319068a9fba1f",
+  "schemaSha256": "449b9853115e100558e0d2e8727de7e7997cb72254880be1a095cbe55252e214"
+}

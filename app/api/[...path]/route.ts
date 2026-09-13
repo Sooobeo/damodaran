@@ -8,6 +8,7 @@ import { enqueueImport,enqueueUpload,enqueueTranslation,getJob,listJobs,cancelJo
 import { uploadOriginal } from '@/lib/sources';
 import { getTranslationForBlock } from '@/lib/translation';
 import { saveTranslationReview,translationReviewHistory } from '@/lib/translation/memory';
+import { enqueueQualityAssessment } from '@/lib/quality';
 export const runtime='nodejs';
 export const dynamic='force-dynamic';
 type Context={params:Promise<{path:string[]}>};
@@ -65,7 +66,7 @@ async function handle(request:Request,context:Context){
           if(q.has('anchorBlockId')){const anchor=db().prepare('SELECT sort_order FROM source_blocks WHERE source_version_id=? AND id=?').get(v.id,q.get('anchorBlockId')) as service.Row|undefined;if(!anchor)throw new service.AppError('BLOCK_INVALID','해당 버전에서 문단을 찾을 수 없습니다.',404);start=Math.max(0,anchor.sort_order-3);}
           rows=db().prepare('SELECT * FROM source_blocks WHERE source_version_id=? AND sort_order>=? ORDER BY sort_order LIMIT 30').all(v.id,start) as service.Row[];
         }
-        const blocks=rows.map(b=>{const active=db().prepare("SELECT job_id FROM job_items WHERE block_id=? AND status IN ('queued','running') LIMIT 1").get(b.id) as service.Row|undefined;return {id:b.id,order:b.sort_order,type:b.type,text:b.text,pageIndex:b.page_index,structure:json(b.structure_json,null),warnings:json(b.warnings_json,[]),translation:getTranslationForBlock(b.id),activeJobId:active?.job_id};});
+        const blocks=rows.map(b=>{const active=db().prepare("SELECT i.job_id FROM job_items i JOIN jobs j ON j.id=i.job_id WHERE i.block_id=? AND i.status IN ('queued','running') AND j.type='translation' LIMIT 1").get(b.id) as service.Row|undefined;return {id:b.id,order:b.sort_order,type:b.type,text:b.text,pageIndex:b.page_index,structure:json(b.structure_json,null),warnings:json(b.warnings_json,[]),translation:getTranslationForBlock(b.id),activeJobId:active?.job_id};});
         const last=rows.at(-1)?.sort_order;return ok({version:service.versionRow(v),blocks,total,nextCursor:v.format!=='pdf'&&last!=null&&last+1<total?last+1:null,prevCursor:v.format!=='pdf'&&start>0?Math.max(0,start-30):null,pageCount:v.page_count,position:service.positionRows().find(x=>x.resourceId===resourceId&&x.sourceVersionId===v.id)||null});
       }
     }
@@ -77,6 +78,8 @@ async function handle(request:Request,context:Context){
     if(p[0]==='modules'&&method==='GET'){const modules=service.moduleRows();if(!p[1])return ok(modules);const module=modules.find(m=>m.slug===p[1]);if(!module)throw new service.AppError('NOT_FOUND','단원을 찾을 수 없습니다.',404);return ok(module);}
     if(p[0]==='glossary'&&method==='GET'){const query=(q.get('q')||'').toLocaleLowerCase();return ok(service.glossaryRows().filter(g=>[g.termKo,g.termEn,g.acronym,...g.aliases].join(' ').toLocaleLowerCase().includes(query)));}
     if(p[0]==='translations'&&p[1]==='review'&&p.length===2&&method==='POST')return ok(saveTranslationReview(await input(request)),201);
+    if(p[0]==='translations'&&p[1]==='quality'&&p.length===2&&method==='POST'){const value=z.object({translationId:z.string().min(1)}).strict().parse(await input(request));return ok(enqueueQualityAssessment(value.translationId),202);}
+    if(p[0]==='translations'&&p[2]==='quality'&&p.length===3&&method==='GET'){const row=db().prepare('SELECT block_id FROM translations WHERE id=?').get(p[1]) as {block_id:string}|undefined;if(!row)throw new service.AppError('NOT_FOUND','번역을 찾을 수 없습니다.',404);const current=getTranslationForBlock(row.block_id);return ok(current?.id===p[1]?current.quality:null);}
     if(p[0]==='translations'&&p[2]==='reviews'&&p.length===3&&method==='GET')return ok(translationReviewHistory(p[1]));
     if(p[0]==='translations'&&p.length===1&&method==='POST'){const t=z.object({sourceVersionId:z.string().min(1),blockIds:z.array(z.string().min(1)).min(1).max(200).optional(),pageRange:z.tuple([z.number().int().positive(),z.number().int().positive()]).optional()}).refine(v=>!!v.blockIds!==!!v.pageRange,'문단 또는 페이지 범위 중 하나를 선택하세요.').parse(await input(request));return ok(enqueueTranslation(t),202);}
     if(p[0]==='jobs'){

@@ -7,6 +7,7 @@ import { assertTranslationAvailable, translationRuntime, isLocalTranslationProvi
 import { translateLocally } from './local';
 import { selectTranslationGlossary, type TranslationGlossaryEntry, type StudyTerm } from './glossary';
 import { linkedReview } from './memory';
+import { qualityForTranslation } from '../quality';
 
 export const PROMPT_VERSION=OPENAI_PROMPT_VERSION;
 type BlockRow={id:string;source_version_id:string;sort_order:number;type:string;text:string;source_hash:string;structure_json:string|null;extractor_version:string;resource_id:string;title_en:string;title_ko:string};
@@ -30,7 +31,8 @@ export function getTranslationForBlock(blockId:string){
   if(!previous)return null;
   const review=linkedReview(String(previous.id));
   const reviewCurrent=review&&review.source_text===snapshot.text&&review.context_hash===snapshot.contextHash&&review.glossary_version===snapshot.glossaryVersion;
-  return {id:String(previous.id),textKo:review?.text_ko??String(previous.text_ko),validationStatus:review?'passed':String(previous.validation_status),reviewStatus:review?'user_reviewed':String(previous.review_status),current:review?Boolean(reviewCurrent):Boolean(current),structure:review?null:json(previous.structure_json,null),warnings:review?[]:json<{warnings?:string[]}>(previous.usage_json,{}).warnings||[],reviewId:review?.id??null,origin:review?(review.translation_id===previous.id?'user':'memory'):'machine'};
+  const usage=json<{warnings?:string[];qualityWarning?:string}>(previous.usage_json,{});
+  return {id:String(previous.id),textKo:review?.text_ko??String(previous.text_ko),validationStatus:review?'passed':String(previous.validation_status),reviewStatus:review?'user_reviewed':String(previous.review_status),current:review?Boolean(reviewCurrent):Boolean(current),structure:review?null:json(previous.structure_json,null),warnings:review?[]:[...(usage.warnings||[]),...(usage.qualityWarning?[usage.qualityWarning]:[])],reviewId:review?.id??null,origin:review?(review.translation_id===previous.id?'user':'memory'):'machine',quality:review?null:qualityForTranslation(String(previous.id),snapshot.text,String(previous.text_ko),snapshot.contextHash)};
 }
 
 const protectedPattern=/https?:\/\/[^\s<>]+|\b(?=[A-Za-z0-9]*[A-Za-z])(?=[A-Za-z0-9]*\d)[A-Za-z0-9]+\b|\b[A-Z]{1,3}\$?\d+\b|\([+−-]?(?:[$€£¥₩]|USD|EUR|KRW)?\s*\d[\d,.]*(?:\s*(?:%|bp|bps|million|billion|trillion|thousand))?\)|[+−-]?(?:[$€£¥₩]|USD|EUR|KRW)\s*[+−-]?\d[\d,.]*(?:\s*(?:million|billion|trillion|thousand))?|[+−-]?\d+(?:[.,]\d+)*(?:\s*(?:%|bp|bps|million|billion|trillion|thousand))?|\b(?:USD|EUR|KRW)\b/g;
@@ -87,13 +89,15 @@ export async function translateSnapshot(snapshot:TranslationSnapshot):Promise<{t
   if(tableRows){tableRows.forEach((r,ri)=>r.cells.forEach((c,ci)=>{if(/[A-Za-z]/.test(c.text))originals.push({id:`${snapshot.blockId}:${ri}:${ci}`,text:c.text});}));}
   else originals=[{id:snapshot.blockId,text:snapshot.text}];
   if(!originals.length)return {textKo:snapshot.text,warnings:[],usage:{data:{segments:[]},inputTokens:0,outputTokens:0,requestId:null}};
-  const protectedSegments=originals.map(s=>({...s,protected:protectText(s.text)}));
+  // The registered Hy-MT2 prompt consumes the whole source and its raw result.
+  const protectedSegments=originals.map(s=>({...s,protected:snapshot.provider==='hymt'?{text:s.text,restore:(text:string)=>text}:protectText(s.text)}));
   const usage=await callProvider({model:snapshot.model,context:snapshot.context,glossary:snapshot.glossary,segments:protectedSegments.map(s=>({id:s.id,text:s.protected.text}))},snapshot.provider);
   const parsed=responseSchema.safeParse(usage.data);if(!parsed.success)throw providerFailure('INVALID_RESPONSE','번역 응답의 구조가 맞지 않습니다.',usage);
   const ids=parsed.data.segments.map(s=>s.id),wanted=originals.map(s=>s.id);
   if(ids.length!==wanted.length||new Set(ids).size!==ids.length||ids.some(i=>!wanted.includes(i)))throw providerFailure('INVALID_RESPONSE','번역 응답에 누락·중복·추가 문단이 있습니다.',usage);
   const warnings:string[]=[],restored=new Map<string,string>();
   for(const s of protectedSegments){const output=parsed.data.segments.find(x=>x.id===s.id)!;let text:string;
+    if(snapshot.provider==='hymt'&&(!output.translatedText.trim()||output.translatedText.length>80000||/<\||\|>|[\x00-\x08\x0b\x0c\x0e-\x1f]/.test(output.translatedText)))throw providerFailure('INVALID_RESPONSE','번역 응답이 비어 있거나 허용 범위를 벗어났습니다.',usage);
     try{text=s.protected.restore(output.translatedText);}catch(e){text=output.translatedText;warnings.push(e instanceof Error?e.message:'보호 표식 검토 필요');}
     warnings.push(...output.warnings,...validatePreserved(s.text,text));restored.set(s.id,text);
   }

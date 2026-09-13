@@ -13,7 +13,11 @@ APP_ROOT = Path(os.environ.get("APP_ROOT", Path(__file__).resolve().parents[2]))
 RUNTIME_ROOT = APP_ROOT / ".translation"
 MODEL = "argos-en_ko-1.1"
 BRIDGE_VERSION = "argos-bridge-v3"
-AMBIGUOUS_SINGLE_WORDS = {"return", "capital", "primer", "value", "income", "equity", "risk", "debt", "growth", "spread", "interest", "statement"}
+AMBIGUOUS_SINGLE_WORDS = {
+    "return", "capital", "primer", "value", "income", "equity", "risk", "debt",
+    "growth", "spread", "interest", "statement", "compounding", "perpetuity",
+    "perpetuities", "sales", "regression",
+}
 COPULA_PAIRS = [("이었습니다", "였습니다"), ("이었다", "였다"), ("이었고", "였고"), ("이었던", "였던"), ("이었지만", "였지만"), ("이라는", "라는"), ("이라고", "라고"), ("이라면", "라면"), ("이다", "다"), ("이며", "며"), ("이고", "고"), ("이지만", "지만"), ("이에요", "예요")]
 COPULA_FIXED = {"입니다", "입니까", "인가", "인가요", "인지"}
 PARTICLES = sorted({"으로부터", "로부터", "으로는", "로는", "으로도", "로도", "에서는", "에서만", "에게는", "들에게", "들은", "들이", "들을", "들과", "들로", "들", "에서", "에게", "에는", "으로", "로", "은", "는", "이", "가", "을", "를", "과", "와", "에", "의", "도", "만"} | COPULA_FIXED | {form for pair in COPULA_PAIRS for form in pair}, key=len, reverse=True)
@@ -32,6 +36,10 @@ def source_variants(rule: dict) -> list[str]:
     return sorted(set(v.strip() for v in variants if v.strip()), key=len, reverse=True)
 
 
+def is_acronym(value: str) -> bool:
+    return re.fullmatch(r"[A-Z][A-Z0-9/.-]{1,10}", value) is not None
+
+
 def phrase_occurrences(text: str, rule: dict) -> list[tuple[int, int]]:
     matches = set()
     for variant in source_variants(rule):
@@ -39,7 +47,7 @@ def phrase_occurrences(text: str, rule: dict) -> list[tuple[int, int]]:
             continue
         pattern = r"(?<![A-Za-z0-9_])" + re.escape(variant).replace(r"\ ", r"\s+") + r"(?![A-Za-z0-9_])"
         # Acronyms are case sensitive; ordinary English phrases are not.
-        flags = 0 if re.fullmatch(r"[A-Z][A-Z0-9-]{1,9}", variant) else re.IGNORECASE
+        flags = 0 if is_acronym(variant) else re.IGNORECASE
         matches.update((m.start(), m.end()) for m in re.finditer(pattern, text, flags))
     return sorted(matches)
 
@@ -303,13 +311,29 @@ class LocalTranslator:
         return pieces or [text]
 
     def translate_segment_result(self, text: str, glossary: list[dict]) -> dict:
-        exact = [rule for rule in glossary if normalize_term(text) in {normalize_term(v) for v in source_variants(rule)}]
+        exact = []
+        warnings = []
+        normalized = normalize_term(text)
+        for rule in glossary:
+            variants = [variant for variant in source_variants(rule) if normalized == normalize_term(variant)]
+            if not variants:
+                continue
+            # A standalone label supplies no context for choosing a financial
+            # sense. The rule's editorial note is not evidence of that context.
+            if normalized in AMBIGUOUS_SINGLE_WORDS:
+                warnings.append(f"용어 검토 필요: {text.strip()}는 문맥 없이 금융 의미로 확정할 수 없는 단독 표현입니다.")
+                continue
+            if not any(not is_acronym(variant) or text.strip() == variant for variant in variants):
+                warnings.append(f"용어 검토 필요: {text.strip()}의 대소문자가 금융 약어와 다릅니다. 원문 문맥을 확인하세요.")
+                continue
+            exact.append(rule)
         targets = {rule["target"] for rule in exact}
-        if len(targets) == 1:
+        if len(targets) == 1 and not warnings:
             leading = text[:len(text) - len(text.lstrip())]
             trailing = text[len(text.rstrip()):]
             return {"translatedText": leading + next(iter(targets)) + trailing, "warnings": []}
-        warnings = ["용어 검토 필요: 전체 일치 규칙의 한국어 번역이 서로 다릅니다."] if len(targets) > 1 else []
+        if len(targets) > 1:
+            warnings.append("용어 검토 필요: 전체 일치 규칙의 한국어 번역이 서로 다릅니다.")
         # Symbols and protected values bypass MT, so the engine cannot alter,
         # reorder, duplicate, or drop them. Never send synthetic tokens into MT.
         parts = re.split(r"(__PV_[a-f0-9]+_\d+__|[=<>≤≥±×÷])", text)

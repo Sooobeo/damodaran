@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Qwen3.5 independent meaning review v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["semantic_issues", "uncertainties", "language_notes"],
+  "properties": {
+    "semantic_issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "dimension", "severity", "source_quote", "translation_quote", "reason"],
+        "properties": {
+          "kind": {"type": "string", "enum": ["mistranslation", "omission", "addition"]},
+          "dimension": {"type": "string", "enum": ["condition", "negation", "actor", "recipient", "quantity_operation", "comparison", "reference", "time", "modality", "causality", "terminology_meaning", "other"]},
+          "severity": {"type": "string", "enum": ["critical", "major", "minor"]},
+          "source_quote": {"type": "string"},
+          "translation_quote": {"type": "string"},
+          "reason": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "uncertainties": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_quote", "translation_quote", "reason"],
+        "properties": {
+          "source_quote": {"type": "string"},
+          "translation_quote": {"type": "string"},
+          "reason": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "language_notes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "translation_quote", "reason"],
+        "properties": {
+          "kind": {"type": "string", "enum": ["fluency", "terminology"]},
+          "translation_quote": {"type": "string", "minLength": 1},
+          "reason": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

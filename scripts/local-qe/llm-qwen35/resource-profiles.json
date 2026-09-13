@@ -1,0 +1,34 @@
+{
+  "version": "qwen35-resource-profile-history-v1",
+  "selectionBasis": "Coordinator reported 11.88 GiB available physical and 16.23 GiB commit after Hy7 QA; no model inference results observed.",
+  "profiles": [
+    {
+      "id": "qwen35-cpu-12g-v1",
+      "status": "proposed_not_executed_insufficient_preflight_memory",
+      "maximumChildWorkingSetGiB": 12,
+      "maximumChildPrivateGiB": 12,
+      "startFreeHeadroomGiB": 4,
+      "contextTokens": 8192,
+      "maxOutputTokens": 2048
+    },
+    {
+      "id": "qwen35-cpu-8g-v2",
+      "status": "selected_for_future_smoke_requires_coordinator_slot_approval",
+      "maximumChildWorkingSetGiB": 8,
+      "maximumChildPrivateGiB": 8,
+      "startFreeHeadroomGiB": 3,
+      "contextTokens": 8192,
+      "maxOutputTokens": 2048,
+      "threads": 8,
+      "batchSize": 128,
+      "parallelSlots": 1,
+      "cpuOnly": true,
+      "reason": "Keep context/output contract; 8192-token f16 KV estimate is 256 MiB for eight full-attention layers, recurrent core estimate 48 MiB. Runtime/scratch unmeasured. Abort above selected budget instead of silently reducing context or changing quantization.",
+      "startRequiresPhysicalGiB": 11,
+      "startRequiresCommitGiB": 11,
+      "runtimeFreeMemoryFloorGiB": 1,
+      "automaticFallback": false,
+      "memoryFitConfirmed": false
+    }
+  ]
+}

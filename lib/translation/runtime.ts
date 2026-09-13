@@ -4,13 +4,15 @@ import { createHash } from 'node:crypto';
 import { z } from 'zod';
 import { APP_ROOT, config } from '../config';
 import { PipelineError } from '../sources';
+import { HYMT_MODEL, readHymtRuntime } from './hymt-runtime';
 
-export type TranslationProvider = 'argos' | 'finetuned' | 'openai';
+export type TranslationProvider = 'argos' | 'finetuned' | 'hymt' | 'openai';
 export type LocalTranslationProvider = Exclude<TranslationProvider, 'openai'>;
-export function isLocalTranslationProvider(provider: string) { return provider === 'argos' || provider === 'finetuned'; }
+export function isLocalTranslationProvider(provider: string) { return provider === 'argos' || provider === 'finetuned' || provider === 'hymt'; }
 export const OPENAI_PROMPT_VERSION = 'finance-ko-v3';
 export const ARGOS_PROMPT_VERSION = 'argos-finance-ko-v3';
 export const FINETUNED_PROMPT_VERSION = 'finetuned-finance-ko-v1';
+export const HYMT_PROMPT_VERSION = 'hymt-finance-ko-v1';
 const fileSchema = z.object({path:z.string().min(1),size:z.number().int().nonnegative(),sha256:z.string().regex(/^[a-f0-9]{64}$/)}).strict();
 const manifestSchema = z.object({
   schemaVersion: z.literal(1), provider: z.enum(['argos','finetuned']), model: z.string().min(1),
@@ -33,6 +35,7 @@ function fileHash(file: string) {
 }
 export function readLocalRuntime(appRoot: string, provider: LocalTranslationProvider) {
   try {
+    if (provider === 'hymt') return readHymtRuntime(appRoot, fileHash);
     const root = fs.realpathSync(appRoot);
     const manifest = manifestSchema.parse(JSON.parse(fs.readFileSync(path.join(root, provider === 'finetuned' ? '.training/deployed/manifest.json' : '.translation/manifest.json'), 'utf8')));
     if (manifest.provider !== provider) throw new Error('Wrong local provider');
@@ -63,10 +66,15 @@ export function readLocalRuntime(appRoot: string, provider: LocalTranslationProv
       // Match Python json.dumps(sort_keys=True, ensure_ascii=True, separators=(',', ':')).
       const canonical = JSON.stringify(files.map(entry => ({path:entry.path,sha256:entry.sha256,size:entry.size}))).replace(/[\u007f-\uffff]/g, character => `\\u${character.charCodeAt(0).toString(16).padStart(4,'0')}`);
       if (createHash('sha256').update(canonical).digest('hex') !== manifest.modelHash) throw new Error('Model identity mismatch');
-      const code = ['scripts/model-training/bridge.py','scripts/model-training/runtime.py','scripts/local-translation/runtime.py'].map(relative => [relative,fileHash(localPath(relative))]);
-      const runtimeHash = createHash('sha256').update(JSON.stringify(code)).digest('hex');
-      identity = `finetuned:${identity}:${runtimeHash}`;
+      identity = `finetuned:${identity}`;
     }
+    // Processing-code updates must invalidate both cached results and a running local engine.
+    const codeFiles = provider === 'finetuned'
+      ? ['scripts/model-training/bridge.py','scripts/model-training/runtime.py','scripts/local-translation/runtime.py']
+      : ['scripts/local-translation/bridge.py','scripts/local-translation/runtime.py'];
+    const code = codeFiles.map(relative => [relative,fileHash(localPath(relative))]);
+    const runtimeHash = createHash('sha256').update(JSON.stringify(code)).digest('hex');
+    identity = `${identity}:${runtimeHash}`;
     return { ...manifest, pythonPath, modelPath, bridgePath, identity };
   } catch {
     // Recheck restored files instead of retaining hashes read during failed verification.
@@ -82,6 +90,12 @@ export function translationRuntime() {
     statusMessage: config.OPENAI_API_KEY && config.TRANSLATION_MODEL ? '선택한 범위는 외부 유료 API에서 번역합니다.' : 'OpenAI를 선택했습니다. API 키와 모델을 설정하세요.',
   };
   const runtime = localRuntime();
+  if (config.TRANSLATION_PROVIDER === 'hymt') return {
+    provider:'hymt' as const,providerLabel:'Hy-MT2',local:true,apiKeyRequired:false,
+    model:runtime?.model || HYMT_MODEL,identity:runtime?.identity || 'hymt:not-registered',promptVersion:HYMT_PROMPT_VERSION,
+    configured:Boolean(runtime),modelConfigured:Boolean(runtime),
+    statusMessage:runtime ? '무료 로컬 번역이 준비되었습니다. 원문은 이 PC에서 처리합니다.' : '비교와 검토를 마친 Hy-MT2 구성을 등록하고 등록 파일의 무결성을 확인해 주세요.',
+  };
   const finetuned = config.TRANSLATION_PROVIDER === 'finetuned';
   return {
     provider: config.TRANSLATION_PROVIDER, providerLabel: finetuned ? '금융 학습 모델' : 'Argos Translate', local: true, apiKeyRequired: false,

@@ -1,4 +1,4 @@
-# 가치평가 공부방 — DB 관리와 페이지 관계 설계
+# 달모다란 (MoonModaran) — DB 관리와 페이지 관계 설계
 
 작성일: 2026-09-09 · 버전: 1.4 · 상태: 실제 모델 가중치 미세조정 추가 승인 반영
 
@@ -6,9 +6,9 @@
 
 문서 역할은 제품 요구사항에 ‘무엇을 만드는지’, 이 문서에 ‘데이터를 어떻게 보관하고 화면을 연결하는지’, [AGENTS.md](AGENTS.md)에 ‘개발할 때 지킬 절차’를 두는 것이다. 제품 범위는 기존 요구사항을 따르고, 이 문서에서 정한 구현 세부를 바꾸면 이유와 영향도 함께 갱신한다.
 
-최신 사용자 요구에 따라 번역 기본값은 `TRANSLATION_PROVIDER=argos`로 변경한다. 무료 공개 도구 Argos Translate의 로컬 영어→한국어 모델 1.1을 사용하며, `openai`를 명시적으로 선택한 경우만 키·모델과 외부 API를 사용한다. 기존 DB·원문·메모·번역은 보존한다. 새 제공자의 설치·성능·실제 번역 검증 결과는 구현 상태 문서에서 별도로 확인한다.
+초기 설치에서 설정을 생략한 번역 기본값은 `TRANSLATION_PROVIDER=argos`다. 무료 공개 도구 Argos Translate의 로컬 영어→한국어 모델 1.1을 사용하며, `openai`를 명시적으로 선택한 경우만 키·모델과 외부 API를 사용한다. 기존 DB·원문·메모·번역은 보존한다. 새 제공자의 설치·성능·실제 번역 검증 결과는 구현 상태 문서에서 별도로 확인한다.
 
-추가 승인된 실제 모델 미세조정은 8.4절의 별도 로컬 CLI 작업이다. 금융 용어 사후 보정이나 검수 번역 메모리로 대체하지 않으며, 학습·평가·앱 적용을 각각 구분한다. 현재 앱 기본 제공자는 Argos로 유지한다.
+추가 승인된 실제 모델 미세조정은 8.4절의 별도 로컬 CLI 작업이다. 금융 용어 사후 보정이나 검수 번역 메모리로 대체하지 않으며, 학습·평가·앱 적용을 각각 구분한다. 이 PC는 별도 Q26 비교·격리 앱 검증 후 `hymt`를 명시 선택했으며 운영 HTML 3문단의 생성·저장·캐시와 최종 API의 실제 검증 완료를 확인했다. 운영 metadata 범위는 `html-only`이며 격리 PDF QA와 구분한다.
 
 ## 1. DB는 누가, 어떻게 관리하는가
 
@@ -45,7 +45,7 @@ flowchart LR
     Services --> Files[로컬 원본과 파생 파일]
     Worker[별도 단일 worker] --> Services
     Worker --> Sources[허용된 NYU와 Blogspot 원문]
-    Worker --> Local[기본 Argos Python 하위 프로세스]
+    Worker --> Local[선택한 로컬 Python 제공자]
     Worker -. 명시 선택 .-> Provider[선택형 OpenAI API]
     CLI[설치와 백업 CLI] --> Services
 ```
@@ -127,8 +127,11 @@ Excel 가이드는 `content/tool-guides/`에서 T01~T10의 resource ID 및 고�
 | `translations` | id, block_id, cache_key, text_ko, provider, model, prompt_version, glossary_version, context_hash, generation_status, validation_status, review_status, usage_json, created_at | 원문 블록당 여러 설정의 결과. cache_key unique. 원문과 문맥이 같은 결과만 재사용 |
 | `translation_reviews` | id, translation_id, parent_review_id, source_text, source_hash, context_hash, glossary_version, block_type, text_ko, created_at | 사용자가 저장한 검수 이력. 기존 기계 번역·이전 검수본 보존 |
 | `translation_review_links` | translation_id, review_id | 현재 표시할 검수본 또는 재사용한 검수본의 출처 연결 |
+| `translation_quality_assessments` | id, translation_id, block_id, source_version_id, source_hash, translation_hash, context_hash, cache_key, model_identity, calibration_version, rules_version, status, risk, score?, findings_json, message, job_id?, created_at, completed_at? | migration 003. 번역·블록 및 버전·블록 복합 FK. 이력 보존, 같은 번역·캐시의 활성 평가는 하나 |
 
 `source_assets`는 저장한 HTML의 도표를 오프라인에서 읽기 위한 보조 모델이다. JSON 필드는 Zod 등으로 입력과 읽기 시 형태를 검증하며 표 구조·좌표·참조에 스키마 버전을 포함한다. 원본은 해시 기반 파일 경로에 저장하고, 원문 파일을 한글로 덮어쓰지 않는다.
+
+PDF의 추출 규칙 개선도 `source_versions`의 별도 버전으로 저장한다. 같은 자료·파일 해시라도 `extractor_version` 또는 `extraction_config_hash`가 다르면 새 버전이며, 기존 버전과 블록·번역·검수·개인 기록의 연결은 바꾸지 않는다. 새 블록의 캐시는 원문 버전·블록 ID·추출기·내용·구조·문맥을 반영하므로 기존 결과를 새 문단의 번역으로 잘못 재사용하지 않는다.
 
 ### 4.3 개인 기록·작업
 
@@ -293,6 +296,8 @@ HTML은 block ID, PDF는 페이지와 그 페이지의 block ID로 원문·번�
 | 번역 요청 | `POST /api/translations` | `sourceVersionId`와 blockIds 또는 pageRange 중 하나. 캐시 및 블록별 jobId/itemId 매핑, 연결된 jobIds 반환 |
 | 번역 검수 | `POST /api/translations/review` | translationId, textKo, expectedReviewId. 숫자·수식 검사, 낙관적 충돌 검사(409), 이력 추가. 표 제외 |
 | 검수 이력 | `GET /api/translations/:id/reviews` | 해당 번역의 사용자 수정 이력. 현재 연결 검수 ID·user/memory 출처는 블록 응답에 포함 |
+| 의미 검사 요청 | `POST /api/translations/quality` | translationId만 입력. 저장 원문·번역·문맥으로 예약. assessmentId/jobId/cached 반환. 검수본은 추가 평가하지 않음 |
+| 의미 검사 조회 | `GET /api/translations/:id/quality` | 현재 표시하는 번역의 평가 또는 null. 블록 응답 translation.quality에도 포함. 조회는 작업을 만들지 않음 |
 | 작업 조회 | `GET /api/jobs`, `/api/jobs/:id` | 대상 수, 완료·실패·검토 필요·남은 수와 원인 |
 | 취소·재시도 | `POST /api/jobs/:id/cancel`, `/api/jobs/:id/retry` | 지정 실행 작업 전체에 적용. 취소 범위를 표시하고 재시도는 미완료/실패 단위만 |
 | 메모·북마크 | `GET/POST /api/notes`, `PATCH/DELETE /api/notes/:id`, `GET/POST /api/bookmarks`, `DELETE /api/bookmarks/:id` | 버전·블록 소유 관계 검증. 삭제는 해당 사용자 기록만 |
@@ -318,7 +323,28 @@ API 오류는 `code`, 한국어 `message`, `retryable`을 일관되게 반환하
 
 PDF 업로드는 성공 응답 전에 파일을 불변 원본 저장소에 확정하고 DB에 추출 대기 버전과 작업 참조를 커밋한다. 추출 대기 버전도 백업 대상이다. worker는 그 버전의 추출 상태를 변경하고 검증된 블록을 공개한다. 임시 업로드 파일만 남긴 채 ‘업로드 완료’로 응답하지 않는다.
 
+현재 추출기 선택은 형식과 저장된 버전으로 구분한다.
+
+| 대상·호출 | 추출기 계약 |
+|---|---|
+| 새 PDF 가져오기·업로드 | `extractorVersionFor('pdf')`와 `extractionConfigHash('pdf')`로 `pdf-paragraphs-v2` 버전을 생성·조회 |
+| HTML·기존 PDF 버전 | HTML은 `structured-v2`, 저장된 PDF는 `structured-v2`·`pdf-paragraphs-v1` 규칙과 설정 해시를 유지 |
+| 저장된 PDF 추출 작업 | `extractPdf(bytes, version.extractor_version)` 사용. 알 수 없는 버전은 `UNSUPPORTED_EXTRACTOR`로 거부 |
+| 직접 `extractPdf(bytes)` 호출 | 호환성을 위해 `structured-v2`가 기본값. 새 규칙은 명시적인 두 번째 인자가 필요 |
+
+`extractionConfigHash(format?, storedExtractorVersion?)`는 저장된 추출기를 명시하면 기존 JSON 필드 순서와 `maxPdfPages`·`blockChars`·`extractor` 값으로 이전 설정 해시를 재현한다. 새 상수로 기존 대기 작업의 규칙을 바꾸지 않으며 세 PDF 추출기 ID 외 값은 거부한다.
+
+`lib/extraction/pdf-paragraphs.ts`는 수평 방향·글꼴·본문 들여쓰기·줄간격이 일관된 단일열 본문만 보수적으로 묶는다. 실제 PDF에서 관측한 `•`, `¨`, `¤` 글머리와 독립 항목·제목·푸터를 구분한다. PDF.js item이 숫자·단어 중간에서 나뉘어도 원문 공백과 좌표 근거 없이 새 공백을 삽입하지 않는다. 합친 블록의 `bbox_json`은 원래 줄들의 영역을 포함하고, `structure_json`에 `schemaVersion: 1`, 해당 추출기의 `pdfParagraphVersion: 1 | 2`, `lineCount`, `lineBoxes`를 저장한다.
+
+v2만 안전한 v1 문단을 만든 뒤 미완결 도입과 종속 목록을 추가로 묶는다. 글머리 도입이 `:` 또는 `can/could/may/might/will/would/should/must be`, `is/are/was/were`로 끝나고, 하위 글머리 항목이 2개 이상이며 항목끼리 들여쓰기·글꼴·크기·간격이 맞아야 한다. 같은/얕은 계층·큰 제목·숫자 푸터에서 목록을 끝낸다. 뒤쪽의 더 깊은 항목이 안전 조건을 벗어나거나 묶은 전체가 6,000자를 넘으면 후보 전체를 미병합 상태로 유지한다. 일부 앞 항목만 도입과 묶지 않는다. 원문 사이에는 `\n`만 추가하고 `bbox` 합집합과 `lineBoxes` 연결로 근거 좌표를 보존한다. 번역이나 평가 정답을 근거로 원문 문구를 바꾸지 않는다.
+
+같은 높이의 독립 셀·여러 열·회전·수식·혼합 글꼴 또는 불충분한 좌표/글꼴 정보가 감지되면 페이지 전체의 문단 병합과 좌표 정렬을 보류한다. 원래 텍스트 조각 순서로 돌아가고, 맞닿은 동일 글꼴 문자 조각만 보존을 위해 연결하며 원본 대조 경고를 남긴다. 복잡한 표의 셀 관계나 차트 라벨의 읽기 순서를 복원했다고 주장하지 않는다. 이미지 내부 본문은 이 규칙의 추출 대상이 아니며 제목·푸터만 있는 페이지를 현재 글자 수 검사로 모두 감지할 수는 없다. `ready`는 모든 본문·수식·도표가 완전하게 추출됐다는 품질 판정이 아니다.
+
+새 PDF 규칙은 사용자의 새 가져오기·업로드에서 적용하며, 제공자 전환·reader 진입으로 재추출하지 않는다. 같은 파일 바이트는 불변 원본으로 재사용하되 추출기·설정이 달라지면 새 버전으로 저장한다. 작업은 저장된 추출기 정체성을 따르고 `ready/partial/ocr_needed`인 버전을 다시 추출하지 않으며 기존 블록을 덮어쓰지 않는다. 따라서 이전 URL의 `versionId`와 그 버전의 번역·검수·메모·북마크·읽기 위치는 그대로 유지된다. 이 변경은 DB 스키마 변경이나 기존 버전 일괄 변환을 필요로 하지 않는다.
+
 NYU의 허용 도메인과 지정 경로, Blogspot만 기본 수집 대상으로 한다. 리디렉션마다 목적지와 주소를 확인하고 내부 IP·loopback·file URL은 거부한다. 기본 파일 제한은 50MiB, PDF 페이지·응답 시간·리디렉션 횟수에도 설정 가능한 한도를 둔다.
+
+실제 NYU DNS 응답에 IPv4와 well-known NAT64 주소가 함께 제공되는 경우를 확인했다. `64:ff9b::/96`에 한해 마지막 32비트의 IPv4를 해석하고 기존 공개 IPv4 기준으로 검사한다. 사설·loopback·문서 예시 주소가 내장되어 있으면 거부하며 다른 NAT64 prefix를 임의 허용하지 않는다. DNS 응답 중 하나라도 허용되지 않으면 요청 전체를 거부하는 규칙과 호스트·리디렉션 검사는 유지한다. 근거는 [RFC 6052](https://www.rfc-editor.org/rfc/rfc6052.html#section-3.1)다.
 
 ### 8.2 번역과 처리량
 
@@ -351,8 +377,15 @@ Argos는 `content/translation-glossary.json`의 출처 있는 복합구·명시�
 - 취소 요청 뒤에는 다음 로컬 처리 단위나 외부 호출을 시작하지 않는다. 선택형 API에 이미 전송한 호출은 사용량이 생길 수 있으며 결과가 도착하면 사실대로 저장한다.
 - 외부 응답 수신과 DB 저장 사이의 강제 종료 때문에 외부 호출을 정확히 한 번만 실행한다고 보장할 수는 없다. 불명확한 호출 이력과 복구 상태를 남긴다.
 - 화면은 활성 작업만 1~2초마다 조회하고 종료/이탈 시 폴링을 멈춘다. 화면을 닫아도 worker는 작업을 계속하며 다시 열면 DB 상태를 표시한다.
+- reader의 원형 로딩 표시는 번역 요청 중 상태와 반환 `jobIds`·현재 버전 블록의 `activeJobId`를 기존 작업 상태에 연결한다. 버튼·고정 하단 상태·처리 문단에 표시하며 `queued/running` 동안 유지한다. `completed/partial/failed/cancelled`를 확인하면 종료한다. 저장 캐시만 반환되면 요청 종료와 함께 해제하며 다른 버전·가져오기 작업을 번역 중으로 표시하지 않는다. 모바일과 패널 접힘에서도 상태를 보이고 동작 줄이기 설정을 존중한다.
 
 ### 8.4 실제 모델 학습의 실행 경계
+
+사용자의 후속 목표는 무료 로컬 모델만으로 현재 PC에서 용어 표기를 포함한 번역 전체 품질을 최대한 개선하는 것이다. 아래 v5 실험의 사전 기준은 그대로 유지하며, 용어 점수만으로 앱 채택을 결정하지 않는다. 원문을 기준으로 모델명을 가린 의미·다의어·부정/조건·수량/수식·누락/추가·자연스러움 대조를 별도로 기록하고, 문단·표의 문맥 전달과 추출 상태를 점검한다. 추가 공개 모델은 별도 실행·입출력·설정 해시로 비교하며 실제 품질과 자원 사용을 확인한다. 이번 개선은 유료 온라인 모델을 사용하지 않는다. 새 비교는 기존 최종 시험을 다시 학습하거나 실패 기준을 완화하는 근거로 사용하지 않는다.
+
+사용자는 처리 시간보다 번역 결과의 품질을 우선한다고 명시했다. 새 언어학적 개발 비교는 [실행 원칙](content/model-comparison/LINGUISTIC_OPTIMIZATION_PROTOCOL.md)에 따라 진행한다. 메모리는 실행 직전에 물리 여유와 Windows commit 여유를 확인하고, 한 번에 모델 하나만 로드하며 완료·실패 시 소유 프로세스를 종료한다. 새 후보의 설치·시작 검사·추론·의미 검토를 각각 구분하고, 개발 비교 결과를 독립 최종 품질 인증으로 사용하지 않는다.
+
+최신 v5 목표는 금융 용어 표기 적중 절대 90% 이상이다. 기존 앱 사전과 번역 규칙을 통합한 54개 표기 및 최장 일치·행별 용어 주석 규칙을 새 데이터·출력 생성 전에 고정한다. v4의 선택 FP32 모델을 부모 가중치로 쓰되 원본 Marian revision과 부모 모델·토크나이저·자체/의존 코드·설정·데이터 해시를 모두 남긴다. 기존 고정 `train.py`는 수정하지 않고 별도 `train_v5.py`를 사용한다. 새 test는 dev로 선택한 뒤 한 번만 평가하며 기존 소비한 test는 조정에 사용하지 않는다. v5는 절대 90%와 부모 대비 용어 회귀 없음, 기존 숫자·일반 문장 유지, 빈 결과/생성 상한 없음, 일반 문맥의 주석된 금지 금융 표현 0개를 요구한다. 이 기준은 v4의 기존 판정을 변경하지 않는다. 데이터·본학습·평가·앱 변환/등록 완료를 구분한다.
 
 최신 사용자 승인으로 공개 `Helsinki-NLP/opus-mt-tc-big-en-ko` Marian 모델을 금융 영한 문장에 미세조정한다. 실제 파라미터 수는 전체 211,223,552개, 학습 가능 209,126,400개다. revision `ae8606b7b29a495f31ce679cee2007f536a3a5ce`와 원본 가중치 SHA-256을 고정한다. 기반 모델·라이선스·설치 명령의 상세는 [학습 도구 안내](scripts/model-training/README.md)를 따른다.
 
@@ -360,7 +393,13 @@ Argos는 `content/translation-glossary.json`의 출처 있는 복합구·명시�
 
 초기 train은 200쌍(금융 160·일반 40), dev는 40쌍(금융 30·일반 10), 최종 test는 독립 작성한 60쌍이다. [데이터 설명](content/training/README.md)의 도우미 작성 미검수 provenance를 유지하고 운영 검수쌍 0개에서 시작했다는 사실을 기록한다. train만 가중치에 사용하고 dev로 체크포인트를 선택한다. 동일한 test 해시의 최종 평가를 다른 실행·모델의 반복 조정에 쓰지 않도록 소비 기록을 보존한다. `export:translation-memory`의 개인 검수 내보내기를 자동 학습에 넣지 않는다.
 
-기반 모델과 후보는 같은 추론 설정에서 용어 보정·검수 메모리 없이 비교한다. dev/test 모두 금융 용어 적중, chrF·BLEU, 숫자 보존, 빈 결과·잘림과 일반 문장 유지 기준을 확인한다. 실제 tensor 해시 변화와 optimizer 갱신을 학습 증거로 남긴다. 내보내기 조건 충족과 변환 후 추론 비교·무결성 확인은 별개이며, 통과하지 않은 결과로 현재 Argos 앱을 자동 교체하지 않는다. 작은 합성 평가의 점수를 전문 번역 의미 검수로 표시하지 않는다.
+후속 `finance-v4-teacher` 실험은 사용자의 실제 자료 번역·학습 승인에 따른다. 운영 DB를 읽기 전용으로 열어 고정 원문 버전의 문단을 추출하고, 원문과 도우미 번역은 공개/Git에서 제외한 `.training/datasets/finance-v4/`에 둔다. 실제 자료의 R01·R05는 train, R02는 dev, B01은 test로 전체 문서 단위 분리한다. 이전 train만 일반·용어 유지용으로 재사용하고 이전 dev/test는 새 학습에 넣지 않는다. 새 일반 보조 문장과 독립 평가 문장의 provenance도 따로 보존한다. 이 자료는 공식 번역이나 사람 검수본이 아니다.
+
+`prepare_v4_sources.py`는 앱 환경 로더가 확정한 절대 DATA_DIR를 명시적으로 받아 SQLite를 `mode=ro`로 읽는다. `assemble_v4_dataset.py`는 원문 해시·문서 분할·숫자·주석을 검사하고 별도 데이터 명세를 고정한다. 기존 `train.py`·이전 가중치·시험은 변경하지 않는다. `evaluate_v4.py`는 dev 선택 후 test 추론 전에 세 모델(기반·v3·새 후보)의 모델/데이터/코드/생성 조건을 고정한다. 기존 학습 판정과 별도로 통화·배율·보호 수식의 진단 및 모델명을 가린 의미 대조를 남긴다. 단위 문자열 경고는 의미 정확도 판정이 아니며, 추가 비교 자체가 앱 등록을 허가하지 않는다.
+
+후속 다의어 주의사항은 원문 문맥에 따른 의미 검토로 반영한다. 금융·일반 의미를 가진 interest/return/capital/bond/equity/period/duration/charge를 고정 금융 단어로 치환하지 않는다. `probe_word_sense.py`의 별도 금융·일반 16개 진단은 모델 선택과 정상 최종 평가 후에만 실행하며, 최종 비교 동결 ID와 입력·산출물 해시를 먼저 검사한다. 진단 자료를 가중치 갱신·모델 재선택·통과 기준 변경에 사용하지 않는다.
+
+기반 모델과 후보는 같은 추론 설정에서 용어 보정·검수 메모리 없이 비교한다. dev/test 모두 금융 용어 적중, chrF·BLEU, 숫자 보존, 빈 결과·잘림과 일반 문장 유지 기준을 확인한다. 실제 tensor 해시 변화와 optimizer 갱신을 학습 증거로 남긴다. 내보내기 조건 충족과 변환 후 추론 비교·무결성 확인은 별개이며, 통과하지 않은 결과로 앱 제공자를 자동 교체하지 않는다. 작은 합성 평가의 점수를 전문 번역 의미 검수로 표시하지 않는다.
 
 원본 모델의 `vocab.json`이 한국어 target ID를 영어 source에도 연결한 문제는 원본을 보존한 `.training/prepared-model/`에서 별도 영어·한국어 어휘표와 `separate_vocabs=true`로 복원한다. 원본 가중치와 두 SPM 해시는 그대로 유지하며 준비 manifest를 검증한다. 학습 전후 모두 같은 복원 토크나이저를 사용한다. `finance-v3`는 XPU/FP32 150 updates / 3 epochs를 완료하고 dev로 step 100을 선택했으며, 최종 test 판정은 통과했다. 수치·loss·가중치 해시·미검수 데이터 한계는 [학습 보고서](content/training/TRAINING_REPORT.md)에 있다.
 
@@ -369,6 +408,36 @@ Argos는 `content/translation-glossary.json`의 출처 있는 복합구·명시�
 첫 INT8 비교는 금융·일반 BLEU 회귀로 실패했다. 표준 변환의 시작 임베딩 누락을 고친 v2는 dev 재비교에서 일반 기준을 통과했으나 금융 BLEU가 1.110881점 하락해 허용치 1점을 초과했다. 이로써 추가 변형·설정 스윕·재학습 없이 **FP32 모델 제공 완료·앱 Argos 유지**로 종료했다. 두 시도에서 학습 가중치·고정 train.py·최종 test·판정 기준을 바꾸지 않았다. 첫 시도의 원본과 `deployment-attempts/int8-v1/`의 15개 파일·해시 보존 manifest, 별도의 v2 변환·판정 기록을 유지한다. 잔여 beam·연산 환경 차이의 기여는 분리하지 못했으므로 양자화만을 원인으로 단정하지 않는다. 학습 성공과 앱용 런타임 비교 실패를 구분하고 실제 새 모델의 앱 E2E를 완료한 것으로 표시하지 않는다.
 
 설치 후 학습·평가는 로컬 파일만 사용하며 운영 SQLite·원문·메모·기존 번역을 변경하지 않는다. 웹 요청이나 앱 worker가 모델 학습을 시작하지 않는다. 본학습, 최종 평가, 배포 변환, 앱 적용의 실제 완료 여부는 [구현 상태](IMPLEMENTATION_STATUS.md)에 기록한다.
+
+추가 후보 비교는 `scripts/model-comparison/`의 독립 CLI와 `.training/comparisons/`를 사용한다. 기존 가상환경은 패키지 변경 없이 읽어 사용하며, 후보 GGUF·Windows llama.cpp는 공개 출처 revision·배포 파일 해시를 고정한다. 제3자 변환본의 기반 revision을 확인하지 못한 경우 확인된 upstream 최신 revision과 같다고 가정하지 않는다. 탐색 자료 `content/model-comparison/`의 source만 번역하고 기존 최종 시험·참조 번역·용어 정답을 입력에 섞지 않는다. 후보의 일시적인 C++ 추론 자식 프로세스는 `127.0.0.1`과 실행별 포트에 바인딩하고 외부 자산 다운로드·웹 UI·도구 실행을 비활성화하며 CLI 종료 시 정리한다. GPU 실패와 CPU 결과는 별도 로그·출력으로 보존한다. 원래 GGUF 번역 템플릿을 로컬에서 렌더링해 원시 completion에 넣으며, 앱 API·DB·캐시·등록 manifest는 변경하지 않는다. 모델별 문장 분할·생성 설정이 다른 실사용 후보 비교로서, 같은 모델의 순수 학습 효과 평가와 구분한다.
+
+### 8.5 문맥을 받는 추가 로컬 제공자
+
+사용자의 무료 로컬 전체 품질 개선 요구에 따라 선택형 `TRANSLATION_PROVIDER=hymt` 연결을 구현했다. 완료된 v5의 학습·최종 시험 기준은 유지하고, 별도 Q26의 네 구성·24문단·96개 익명 도우미 대조 후 Hy-MT2 Q8의 `contextual` 구성을 선택·등록했다. 첫 앱 QA 시작 실패 뒤 원자적 Windows Job 생성으로 수정하고 실제 제품 엔진의 모델 시작·정상 종료를 확인해 `hymt-contextual-q26-20260910-nativejob`으로 재등록했다. v1 HTML 3문단·PDF 7블록의 실제 생성·저장·캐시와 자동 검사는 완료했다. PDF 도입 블록의 내용 추가를 보완한 v2도 새 PDF 4블록의 실제 생성·저장·캐시와 기존 HTML 3문단의 캐시 재사용을 확인했다. 추가 HTML 추론은 0회였다. 이후 실제 운영 빌드·백업·기존 환경설정 보존을 마치고 이 PC는 Hymt를 명시 선택해 웹·worker를 시작했다. 운영 HTML 3문단의 새 생성·저장·캐시와 최종 API의 `configured: true`·`liveVerified: true`를 확인했다. 운영 metadata의 `html-only` 범위를 격리 PDF QA와 구분한다. 설정 생략 시 초기 기본값 Argos는 유지한다. 등록·엔진 시작·실제 앱 검증을 구분하며 최초 실패를 포함한 근거는 [로컬 품질 비교 기록](content/model-comparison/QUALITY_LOCAL_REPORT.md)을 따른다.
+
+상세 파일·NDJSON 계약은 [로컬 제공자 등록 계약](scripts/local-hymt/DEPLOYMENT.md)에 고정한다. `.translation/hymt/manifest.json`의 모델·Windows 실행기·Python 코드·사전·평가 근거를 검증하고, 모델 SHA와 manifest 원본 SHA를 함께 전체 정체성으로 쓴다. 미등록·파일 불일치는 준비되지 않은 상태이며 자동 fallback하지 않는다. 웹 페이지가 worker를 생성하지 않고 기존 단일 worker가 Python bridge를 실행한다. Python이 전용 Windows Job에 들어간 뒤 native localhost 서버는 `CreateProcessW`의 `PROC_THREAD_ATTRIBUTE_JOB_LIST`로 생성 시 같은 Job에 원자적으로 배정한다. 암묵적 상속·생성 후 배정에 의존하지 않으며 실패 시 소유권 없는 생성으로 재시도하지 않는다. Job 핸들은 자식에 상속하지 않고 강제 종료 시 OS의 핸들 회수로 소유한 서버도 정리한다. 지원 범위는 Windows·CPython 3.11과 고정 native 서버이며 실제 번역 로그를 파일·콘솔에 남기지 않는다.
+
+Hy-MT2의 모델 시작 한도는 5분, 개별 요청 한도는 CPU의 긴 문단 처리를 위해 실행기 HTTP와 같은 최대 30분이다. Argos·finetuned의 요청 한도는 기존 5분을 유지한다. 작업 heartbeat·lease 검증과 시간 초과 시 소유 프로세스 종료는 유지하며 최대 한도를 실제 소요 시간으로 표시하지 않는다.
+
+Hymt는 선택한 원문 버전의 블록 전체와 기존 제목·이웃 문맥을 보호 표식 없이 전달한다. 비교에서 선택해 등록한 `contextual` 설정과 고정 사전을 유지하며 평가 정답이나 호출자가 보낸 사후 정답을 프롬프트에 넣지 않는다. 등록 스키마의 `raw` 지원과 현재 선택된 구성을 구분한다. 빈 결과·잘림·생성 상한을 거부하고 기존 ID·숫자·수식 검사와 검토 필요 상태를 유지한다. 제공자 등록·전환 자체는 기존 PDF를 재추출하지 않는다. 무료 로컬 번역의 문맥 품질을 위한 PDF 줄 병합은 8.1의 별도 원문 버전 정책으로 적용하며, 사용자가 선택한 버전·문단·페이지 범위만 번역한다. 원문·개인 기록·기존 번역·검수 이력은 유지하며 새 제공자/정체성은 새 캐시로 구분한다. 사용량은 무료 로컬 처리량으로 집계하고 이전 유료 대기·재시도 작업은 재개하지 않는다. provider 추가만으로 DB 스키마를 변경하지 않는다.
+
+### 8.6 독립 의미 검사와 프로세스 전환
+
+학습용 번역과 위험 감지기의 수용 여부는 [2026-09-11 학습 준비 기준](content/model-comparison/LEARNING_READINESS_BASELINE_20260911.md)에 따라 각각 판단한다. 기존 QE 개발 실험의 85/60 조건은 역사적 근거로 보존하고, 향후 등록은 명시적으로 버전 관리한 95/95 제품 정책과 baseline별 완결성 조건을 적용한다. 기계 점수의 임계값 자체를 정확도 95%로 표시하지 않는다.
+
+개발 비교의 [오류 증거 원장](scripts/model-comparison/error-ledger/README.md)은 별도 로컬 CLI로 `.training/quality-evaluation/error-ledger/`에 기록한다. 원문·번역·문맥의 해시로 출력을 연결하고 개별 판정은 내용 해시로 식별하는 불변 사건으로 추가한다. 번역 검토·동결 답변의 질문 채점·QE 관측·실행/취소 관측·원문 용어 출현별 수동 판정은 서로 다른 사건 종류다. QE 미실행은 `not_observed`로 보존한다. 파일 해시·출력 연결·중복·동시 쓰기를 검사하고 실행별 새 보고서를 남긴다. 용어 검토는 고정 원문 inventory·선정 주석의 별도 정정·실제 후보 출력을 연결하고, 정확한 한국어 인용과 전체 수동 판정의 누락/중복을 검증한다. 문자열 일치로 의미 정답을 만들지 않으며 보류는 정답 분자에 넣지 않는다. 운영 SQLite·worker·앱 등록·모델 추론은 실행하지 않으며 test·개인 검수·가중치 학습으로 자동 전파하지 않는다.
+
+실행 실패 뒤 미완료 ID만 재실행할 때는 원래 producer가 지원하는 선택 입력을 새 실행 폴더로 분리한다. 전체 집합 검증기의 cardinality·품질 기준을 완화하지 않으며, 선택 집합의 별도 증거 계약과 원래 실패/완료 기록을 함께 보존한다. 여러 실행의 완료 문단을 하나의 성공한 전체 실행으로 위장하거나 그 실행의 검증·질문 준비에 전달하지 않는다. TG27 개발017/018의 [별도 재실행 계약](content/model-comparison/TG27_TAIL_RECOVERY_20260912.md)은 정확한2개만 검증하고 전체18 성공을 주장하지 않는다. 전원 유지 보완은 실행 중 임시 요청으로 기록하며 전역 설정·모델 시간 제한은 변경하지 않는다.
+
+2026-09-13의 다음 구현 계획은 [인수인계28절](TRANSLATION_HANDOFF_20260911.md#28-공통-입력-처리와-의미-관계-검사-개선-실행-계획)에 정의한다. 먼저 운영 경로 밖의 별도 CLI에서 같은 source에 대한 구조 문맥 선택·의미 사전 선택을 C0~C3으로 비교한다. 문맥의 버전/블록/인용/선택 이유, 실제 토큰 예산과 사전 출처/적용/제외 조건을 남기며 기존 등록54개 사전과 hash 고정 코드는 수정하지 않는다. 비교의 원문 단위는 동일하게 유지하고 PDF 재추출은 별도 버전 실험으로 구분한다. 신규 관계 검사는 기존 출력과 원시 판정을 보존한 별도 진단으로 검출력부터 검증한다. 이 계획은 현재 앱의 `existing-title-neighbors-v1`·고정 등록 사전·표 의미 검사 미지원 계약을 즉시 변경하지 않는다. 추후 앱 반영에는 새 입력/사전/선택기/처리 정체성을 캐시·등록에 연결하고 원문·기존 번역/검수·정확 문맥 기반 검수 재사용을 보존해야 한다. 실제 HTML3문단·PDF1페이지의 격리 저장·캐시 검증과 등록을 마치기 전에는 적용 완료로 표시하지 않는다.
+
+선택해 생성한 기계 번역 저장 후 type=quality 작업을 별도로 등록한다. 평가 예약 실패는 번역을 되돌리지 않고 경고로 남긴다. 같은 버전·평가기·규칙의 활성 작업에 문단별 assessment ID를 처리 단위로 추가한다. worker는 가져오기·번역을 먼저 처리한 뒤 소유 번역 프로세스를 `await closeLocalTranslator()`로 반환하고 평가기를 로드한다. 평가 배치 종료·실패·취소 시 평가 프로세스 종료를 기다린다. 일반 번역도 활성 요청이 0인 유휴 60초에 소유 프로세스를 반환하며, ready 대기와 종료 중 새 요청 경합을 보호한다.
+
+캐시는 원문·번역·문맥 해시, 등록 manifest의 모델·런타임·실행 코드 해시, 교정 버전, 규칙 버전을 반영한다. 평가 시작·저장에서 입력과 현재 검수 여부를 재확인하고 저장은 job lease 소유권이 있을 때만 수행한다. 변경된 입력·설정은 stale이며 조회에서도 문맥·규칙·평가기 변경을 확인한다. 과거 평가를 삭제하지 않고 새 이력을 추가한다. 복원은 완료 이력을 보존하면서 queued/running 평가와 작업을 취소해 자동 재개하지 않는다.
+
+평가 status는 queued/running/completed/unavailable/failed/cancelled/stale, risk는 review/no_findings/unknown이다. 원시 점수는 별도 REAL로 보존하고 확률로 정규화하지 않는다. findings_json은 category, severity, reason, detector, ruleId와 양쪽 `{start,end,text}` 또는 null을 담는다. UTF-16 문자열·경계·surrogate를 검증하며 major/critical에는 유효한 한국어 구간이 필요하다. 점수만 낮으면 구간 없이 문단 전체 warning을 추가한다. 영어는 화면에서 문장 전체로 확장한다. no_findings는 등록된 검사 범위의 결과이며 정확성 보증이 아니다.
+
+등록 계약은 [로컬 QE 안내](scripts/local-qe/README.md)를 따른다. `.translation/qe/manifest.json`의 파일·해시·모델 revision·점수 방향·교정 근거를 확인하며 교정 기준을 통과한 경우에만 등록한다. 패키지는 `.venv-qe/`로 분리하고 최초 설치 후 추론은 네트워크 없이 실행한다. 평가 모델은 원문과 기계 번역을 받고, 문맥을 사용하지 않는 모델은 contextUsed:false로 기록한다. 긴 입력은 조용히 자르지 않는다. 미등록/오류/시간초과는 명시 상태로 저장하고 확인된 규칙 경고를 유지한다. 평가를 위해 새 번역 호출이나 유료 사용량을 만들지 않는다. 표는 초기 의미 검사에서 unavailable이다.
 
 ## 9. 백업·복원·운영 절차
 
@@ -430,7 +499,9 @@ Argos는 `content/translation-glossary.json`의 출처 있는 복합구·명시�
 
 DB·작업 관련 검증은 다음을 우선한다: 다른 자료의 버전/블록 거부, seed 후 개인 변경 보존, 동시·겹친 번역 요청 중복 방지, 재시도/취소 집계, 만료 lease만 복구, 캐시 설정 변경, 검사 실패의 검토 필요 상태, 백업에서 메모·진도·대표 파일 복구. UI 변경은 해당 실제 동선을 검증하고 단순 구현 복제 테스트를 늘리지 않는다.
 
-실제 Argos 엔진으로 HTML 3문단·PDF 1페이지를 번역해 검증한다. 원격 PDF가 차단되면 준비된 업로드 PDF로 검증하고 출처와 범위를 기록한다. HTML만 검증했다면 `html-only`로 남긴다. 테스트 제공자는 테스트 환경에서만 사용하며 실제 엔진 품질 검증으로 보고하지 않는다. 선택형 OpenAI는 명시 선택과 키·모델이 있을 때만 별도 실호출한다. README와 IMPLEMENTATION_STATUS.md에서 구현 완료·테스트 통과·실제 번역 엔진 검증·외부 조건 미충족을 구분한다.
+PDF 전용 변경은 `tests/pdf-paragraphs.test.ts`와 `tests/pdf-extractor-version.test.ts`의 신규 12개, 기존 관련 3개 테스트 및 TypeScript 검사를 통과했다. 실제 PDF 검사는 `VERIFY_REAL_PDF_PARAGRAPHS=1`로 명시 실행한 범위를 구분한다. `session2.pdf`의 PDF 3페이지(표시 슬라이드 2)는 기존 13줄이 제목·본문·번호 7블록으로 보존되며, 격리 DB에서 새 버전 저장·재실행과 기존 블록·번역·검수·개인 기록·캐시 분리·원본 바이트 보존을 확인했다. 별도 시각·좌표 대조에서 PDF 7페이지의 58개 텍스트 조각과 9페이지의 63개 조각은 병합을 보류했고, 서로 다른 전환점 라벨 4개와 수치 조각 `1.25%`, `1000`, `-0.25%`를 보존했다. 이 검증은 모델 추론·유료 호출·운영 DB 변경을 수행하지 않으며, 실제 번역 엔진 검증은 아래 기준으로 별도 기록한다.
+
+현재 선택한 실제 로컬 엔진으로 HTML 3문단·PDF 1페이지를 번역·저장·캐시 검증한다. 기본 Argos와 등록 후 명시 선택한 Hy-MT2 등의 제공자·모델 정체성과 원문 버전을 구분해 기록하며, 추출기 테스트를 번역 품질 증거로 대신하지 않는다. 원격 PDF가 차단되면 준비된 업로드 PDF로 검증하고 출처와 범위를 기록한다. HTML만 검증했다면 `html-only`로 남긴다. 테스트 제공자는 테스트 환경에서만 사용하며 실제 엔진 품질 검증으로 보고하지 않는다. 선택형 OpenAI는 명시 선택과 키·모델이 있을 때만 별도 실호출하며 이번 무료 로컬 개선에서는 사용하지 않는다. README와 IMPLEMENTATION_STATUS.md에서 구현 완료·테스트 통과·실제 번역 엔진 검증·외부 조건 미충족을 구분한다.
 
 ## 11. 이번 설계에서 정한 세부 결정
 
@@ -445,6 +516,6 @@ DB·작업 관련 검증은 다음을 우선한다: 다른 자료의 버전/블�
 | 스냅샷에 참조된 불변 파일을 묶어 백업 | DB와 파일 사이의 복원 누락 방지 |
 | 실제 설치 때 SQLite 런타임까지 확인 | 선택한 드라이버의 WAL 동작과 수정 버전 확인 |
 | 확인된 NYU 경유 호스트를 로컬 설정에 등록 | www → people → pages의 실제 리디렉션을 확인하여 `EXTRA_SOURCE_HOSTS=people.stern.nyu.edu`로 명시. 경로·DNS 검증 유지 |
-| 추출기 structured-v2 | 원본 HTML의 비교표와 위·아래첨자를 보존하는 개선. 기존 버전은 유지 |
+| HTML·기존 PDF는 structured-v2, 신규 PDF는 pdf-paragraphs-v1 | HTML의 비교표·위아래첨자와 기존 PDF 버전을 유지하면서 단일열 PDF의 문맥을 보수적으로 묶음. 새 규칙은 별도 버전에 적용하고 복잡한 표·회전 텍스트는 원본 대조 경고와 조각을 보존 |
 
 제품 범위와 선별 자료의 근거는 [원 설계서](DAMODARAN_KO_LEARNING_SPEC.md)에 있다. 다운로드·설치·브라우저·번역의 실제 검증 여부는 [구현 상태](IMPLEMENTATION_STATUS.md)에 구분해 기록한다.
