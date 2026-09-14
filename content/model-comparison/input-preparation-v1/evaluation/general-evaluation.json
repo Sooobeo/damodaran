@@ -1,0 +1,1142 @@
+{
+  "schemaVersion": "input-preparation-evaluation-v1",
+  "evaluationOnly": true,
+  "inputAccessPolicy": "이 파일 전체와 pairId, 진단 범주, 명제, 용어 정답, 질문·답변은 번역 입력 및 사전 선택기 접근 금지. 질문 답변자는 questionKo와 해당 구성의 한국어 대상 번역만 본다.",
+  "reviewerKind": "assistant-authored-annotation; human-unreviewed",
+  "split": "development-diagnostic",
+  "independentEvaluation": false,
+  "annotationScope": "각 대상 문단에서 사전 선정한 용어 2개 출현만 주석한다. 대상의 모든 어휘나 문맥 블록의 용어 전체를 망라하지 않으며 전체 일반 용어 정확도로 일반화하지 않는다.",
+  "koreanOnlyAnswerContextPolicy": "외부 한국어 문맥은 제공하지 않는다. target translation에 필요한 지시 대상·관계가 보존되어야 한다. 영어 문맥·다른 구성 출력·정답으로 보충하지 않는다.",
+  "denominators": {
+    "units": 8,
+    "corePropositions": 24,
+    "questions": 16,
+    "coreQuestions": 8,
+    "detailQuestions": 8,
+    "termOccurrences": 16,
+    "uniqueSelectedSourceTerms": 7,
+    "minimalContrastPairs": 4
+  },
+  "evaluations": [
+    {
+      "pairId": "IP1-GPAIR-01",
+      "pairVariant": "A",
+      "diagnosticCategories": [
+        "inclusion-exclusion",
+        "negation-scope",
+        "pronoun-reference",
+        "general-polysemy"
+      ],
+      "questions": [
+        {
+          "id": "IP1-G01-Q1",
+          "questionKo": "임시 출입증의 출입 허용 범위에서 임시 보관실은 빠져 있나요?",
+          "expectedAnswerKo": "아니요. 임시 보관실은 출입 가능한 구역에서 제외되지 않습니다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G01-B03",
+              "quote": "It does not exclude the temporary storage room from the areas a visitor may enter."
+            }
+          ],
+          "acceptedAnswerPolicy": "동의 표현을 허용하되 원문의 주체·조건·부정·수량 관계를 보존해야 한다. 답변자는 평가 대상 한국어 번역만 보고 답한 뒤 답변을 동결한다.",
+          "sourceQuote": "It does not exclude the temporary storage room from the areas a visitor may enter.",
+          "core": true,
+          "allowedKoreanContext": ""
+        },
+        {
+          "id": "IP1-G01-Q2",
+          "questionKo": "출입증 소지자가 열람실에 들어갈 때 필요한 동행 조건은 무엇인가요?",
+          "expectedAnswerKo": "안내원과 함께 들어가야 합니다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G01-B03",
+              "quote": "Holders may enter the reading room only with a guide."
+            }
+          ],
+          "acceptedAnswerPolicy": "동의 표현을 허용하되 원문의 주체·조건·부정·수량 관계를 보존해야 한다. 답변자는 평가 대상 한국어 번역만 보고 답한 뒤 답변을 동결한다.",
+          "sourceQuote": "Holders may enter the reading room only with a guide.",
+          "core": false,
+          "allowedKoreanContext": ""
+        }
+      ],
+      "contextEvidence": [
+        {
+          "blockId": "IP1-G01-B02",
+          "quote": "The museum issues a temporary pass to visiting researchers. The following paragraph defines the access granted by this pass, rather than by a permanent staff badge."
+        }
+      ],
+      "koreanOnlyAnswerContext": null,
+      "humanReviewed": false,
+      "id": "IP1-G01",
+      "targetTextSha256": "2e5c81bf79cc69b19605a5cf12e4b0d48c0e880c2d68dd4f241a8b8906a2671f",
+      "propositions": [
+        {
+          "id": "IP1-G01-P1",
+          "core": true,
+          "expectedMeaningKo": "임시 출입증으로 들어갈 수 있는 구역에서 임시 보관실을 제외하지 않는다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G01-B03",
+              "quote": "It does not exclude the temporary storage room from the areas a visitor may enter."
+            }
+          ],
+          "sourceQuote": "It does not exclude the temporary storage room from the areas a visitor may enter."
+        },
+        {
+          "id": "IP1-G01-P2",
+          "core": true,
+          "expectedMeaningKo": "보안 검사는 출입증에 적힌 방과 관계없이 모든 방문객에게 적용된다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G01-B03",
+              "quote": "The security check still applies to every visitor, regardless of the rooms listed on the permit."
+            }
+          ],
+          "sourceQuote": "The security check still applies to every visitor, regardless of the rooms listed on the permit."
+        },
+        {
+          "id": "IP1-G01-P3",
+          "core": true,
+          "expectedMeaningKo": "출입증 소지자가 열람실에 들어가려면 안내원이 동행해야 한다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G01-B03",
+              "quote": "Holders may enter the reading room only with a guide."
+            }
+          ],
+          "sourceQuote": "Holders may enter the reading room only with a guide."
+        }
+      ],
+      "terms": [
+        {
+          "id": "IP1-G01-T1",
+          "sourceTerm": "security",
+          "occurrenceIndexInTarget": 1,
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G01-B03",
+              "quote": "The security check still applies to every visitor"
+            }
+          ],
+          "allowedKorean": [
+            "보안",
+            "안전 관리"
+          ],
+          "meaningKo": "방문객의 안전과 출입을 관리하는 보안 검사다.",
+          "excludedMeaningsKo": [
+            "증권",
+            "담보 자산"
+          ],
+          "sourceQuote": "The security check still applies to every visitor",
+          "sourceStartCodepoint": 87,
+          "sourceEndCodepoint": 95
+        },
+        {
+          "id": "IP1-G01-T2",
+          "sourceTerm": "pass",
+          "occurrenceIndexInTarget": 1,
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G01-B03",
+              "quote": "Staff must record the time when the pass is returned"
+            }
+          ],
+          "allowedKorean": [
+            "출입증",
+            "임시 출입증"
+          ],
+          "meaningKo": "방문객에게 발급한 출입 허가 증표다.",
+          "excludedMeaningsKo": [
+            "합격",
+            "경기에서 공 전달"
+          ],
+          "sourceQuote": "Staff must record the time when the pass is returned",
+          "sourceStartCodepoint": 270,
+          "sourceEndCodepoint": 274
+        }
+      ]
+    },
+    {
+      "pairId": "IP1-GPAIR-01",
+      "pairVariant": "B",
+      "diagnosticCategories": [
+        "inclusion-exclusion",
+        "negation-scope",
+        "pronoun-reference",
+        "general-polysemy"
+      ],
+      "questions": [
+        {
+          "id": "IP1-G02-Q1",
+          "questionKo": "임시 출입증의 출입 허용 범위에서 임시 보관실은 빠져 있나요?",
+          "expectedAnswerKo": "네. 임시 보관실은 출입 가능한 구역에 포함되지 않습니다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G02-B03",
+              "quote": "It does not include the temporary storage room in the areas a visitor may enter."
+            }
+          ],
+          "acceptedAnswerPolicy": "동의 표현을 허용하되 원문의 주체·조건·부정·수량 관계를 보존해야 한다. 답변자는 평가 대상 한국어 번역만 보고 답한 뒤 답변을 동결한다.",
+          "sourceQuote": "It does not include the temporary storage room in the areas a visitor may enter.",
+          "core": true,
+          "allowedKoreanContext": ""
+        },
+        {
+          "id": "IP1-G02-Q2",
+          "questionKo": "출입증 소지자가 열람실에 들어갈 때 필요한 동행 조건은 무엇인가요?",
+          "expectedAnswerKo": "안내원과 함께 들어가야 합니다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G02-B03",
+              "quote": "Holders may enter the reading room only with a guide."
+            }
+          ],
+          "acceptedAnswerPolicy": "동의 표현을 허용하되 원문의 주체·조건·부정·수량 관계를 보존해야 한다. 답변자는 평가 대상 한국어 번역만 보고 답한 뒤 답변을 동결한다.",
+          "sourceQuote": "Holders may enter the reading room only with a guide.",
+          "core": false,
+          "allowedKoreanContext": ""
+        }
+      ],
+      "contextEvidence": [
+        {
+          "blockId": "IP1-G02-B02",
+          "quote": "The museum issues a temporary pass to visiting researchers. The following paragraph defines the access granted by this pass, rather than by a permanent staff badge."
+        }
+      ],
+      "koreanOnlyAnswerContext": null,
+      "humanReviewed": false,
+      "id": "IP1-G02",
+      "targetTextSha256": "ae465d681147b1236421ed1bb0bfd285150244eb8606d1be4ecfb5a041ab1ff0",
+      "propositions": [
+        {
+          "id": "IP1-G02-P1",
+          "core": true,
+          "expectedMeaningKo": "임시 출입증으로 들어갈 수 있는 구역에 임시 보관실을 포함하지 않는다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G02-B03",
+              "quote": "It does not include the temporary storage room in the areas a visitor may enter."
+            }
+          ],
+          "sourceQuote": "It does not include the temporary storage room in the areas a visitor may enter."
+        },
+        {
+          "id": "IP1-G02-P2",
+          "core": true,
+          "expectedMeaningKo": "보안 검사는 출입증에 적힌 방과 관계없이 모든 방문객에게 적용된다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G02-B03",
+              "quote": "The security check still applies to every visitor, regardless of the rooms listed on the permit."
+            }
+          ],
+          "sourceQuote": "The security check still applies to every visitor, regardless of the rooms listed on the permit."
+        },
+        {
+          "id": "IP1-G02-P3",
+          "core": true,
+          "expectedMeaningKo": "출입증 소지자가 열람실에 들어가려면 안내원이 동행해야 한다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G02-B03",
+              "quote": "Holders may enter the reading room only with a guide."
+            }
+          ],
+          "sourceQuote": "Holders may enter the reading room only with a guide."
+        }
+      ],
+      "terms": [
+        {
+          "id": "IP1-G02-T1",
+          "sourceTerm": "security",
+          "occurrenceIndexInTarget": 1,
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G02-B03",
+              "quote": "The security check still applies to every visitor"
+            }
+          ],
+          "allowedKorean": [
+            "보안",
+            "안전 관리"
+          ],
+          "meaningKo": "방문객의 안전과 출입을 관리하는 보안 검사다.",
+          "excludedMeaningsKo": [
+            "증권",
+            "담보 자산"
+          ],
+          "sourceQuote": "The security check still applies to every visitor",
+          "sourceStartCodepoint": 85,
+          "sourceEndCodepoint": 93
+        },
+        {
+          "id": "IP1-G02-T2",
+          "sourceTerm": "pass",
+          "occurrenceIndexInTarget": 1,
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G02-B03",
+              "quote": "Staff must record the time when the pass is returned"
+            }
+          ],
+          "allowedKorean": [
+            "출입증",
+            "임시 출입증"
+          ],
+          "meaningKo": "방문객에게 발급한 출입 허가 증표다.",
+          "excludedMeaningsKo": [
+            "합격",
+            "경기에서 공 전달"
+          ],
+          "sourceQuote": "Staff must record the time when the pass is returned",
+          "sourceStartCodepoint": 268,
+          "sourceEndCodepoint": 272
+        }
+      ]
+    },
+    {
+      "pairId": "IP1-GPAIR-02",
+      "pairVariant": "A",
+      "diagnosticCategories": [
+        "after-during",
+        "temporal-condition",
+        "pronoun-reference",
+        "general-polysemy"
+      ],
+      "questions": [
+        {
+          "id": "IP1-G03-Q1",
+          "questionKo": "일반 방문객 출입 서비스가 운영되는 시점은 유지보수 기간 중인가요, 끝난 뒤인가요?",
+          "expectedAnswerKo": "유지보수 기간이 끝난 뒤입니다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G03-B03",
+              "quote": "It operates only after the maintenance period, according to the schedule issued by the museum."
+            }
+          ],
+          "acceptedAnswerPolicy": "동의 표현을 허용하되 원문의 주체·조건·부정·수량 관계를 보존해야 한다. 답변자는 평가 대상 한국어 번역만 보고 답한 뒤 답변을 동결한다.",
+          "sourceQuote": "It operates only after the maintenance period, according to the schedule issued by the museum.",
+          "core": true,
+          "allowedKoreanContext": ""
+        },
+        {
+          "id": "IP1-G03-Q2",
+          "questionKo": "유지보수 작업자가 도착했다는 사실만으로 정문이 열렸다고 판단할 수 있나요?",
+          "expectedAnswerKo": "아니요. 유지보수 인력은 별도 출입구를 사용하므로 그 사실만으로 정문 개방을 판단할 수 없습니다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G03-B03",
+              "quote": "The maintenance crew uses a separate entrance, so its arrival does not establish that the main gate is open."
+            }
+          ],
+          "acceptedAnswerPolicy": "동의 표현을 허용하되 원문의 주체·조건·부정·수량 관계를 보존해야 한다. 답변자는 평가 대상 한국어 번역만 보고 답한 뒤 답변을 동결한다.",
+          "sourceQuote": "The maintenance crew uses a separate entrance, so its arrival does not establish that the main gate is open.",
+          "core": false,
+          "allowedKoreanContext": ""
+        }
+      ],
+      "contextEvidence": [
+        {
+          "blockId": "IP1-G03-B02",
+          "quote": "The museum has a public admission service at its main gate. A maintenance period is shown separately on the calendar, and the next paragraph explains when the admission service operates."
+        }
+      ],
+      "koreanOnlyAnswerContext": null,
+      "humanReviewed": false,
+      "id": "IP1-G03",
+      "targetTextSha256": "b0290c951448dfab3f7d31911c5ab2d958edf4e10ceb9c9e651e949fac690397",
+      "propositions": [
+        {
+          "id": "IP1-G03-P1",
+          "core": true,
+          "expectedMeaningKo": "일반 방문객 출입 서비스는 유지보수 기간이 끝난 뒤에만 운영된다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G03-B03",
+              "quote": "It operates only after the maintenance period, according to the schedule issued by the museum."
+            }
+          ],
+          "sourceQuote": "It operates only after the maintenance period, according to the schedule issued by the museum."
+        },
+        {
+          "id": "IP1-G03-P2",
+          "core": true,
+          "expectedMeaningKo": "방문객 출입 서비스 운영 중에는 보안팀이 정문을 감독한다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G03-B03",
+              "quote": "The security team supervises the main gate whenever the service is operating."
+            }
+          ],
+          "sourceQuote": "The security team supervises the main gate whenever the service is operating."
+        },
+        {
+          "id": "IP1-G03-P3",
+          "core": true,
+          "expectedMeaningKo": "유지보수 인력의 도착만으로 정문이 열렸다고 판단할 수 없다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G03-B03",
+              "quote": "The maintenance crew uses a separate entrance, so its arrival does not establish that the main gate is open."
+            }
+          ],
+          "sourceQuote": "The maintenance crew uses a separate entrance, so its arrival does not establish that the main gate is open."
+        }
+      ],
+      "terms": [
+        {
+          "id": "IP1-G03-T1",
+          "sourceTerm": "security",
+          "occurrenceIndexInTarget": 1,
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G03-B03",
+              "quote": "The security team supervises the main gate"
+            }
+          ],
+          "allowedKorean": [
+            "보안",
+            "경비"
+          ],
+          "meaningKo": "박물관 정문을 감독하는 보안·경비 업무다.",
+          "excludedMeaningsKo": [
+            "증권",
+            "담보"
+          ],
+          "sourceQuote": "The security team supervises the main gate",
+          "sourceStartCodepoint": 99,
+          "sourceEndCodepoint": 107
+        },
+        {
+          "id": "IP1-G03-T2",
+          "sourceTerm": "maintenance crew",
+          "occurrenceIndexInTarget": 1,
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G03-B03",
+              "quote": "The maintenance crew uses a separate entrance"
+            }
+          ],
+          "allowedKorean": [
+            "유지보수 인력",
+            "정비 인력",
+            "정비팀"
+          ],
+          "meaningKo": "시설이나 장비를 유지하고 정비하는 작업자다.",
+          "excludedMeaningsKo": [
+            "부양료",
+            "투자 유지 비용"
+          ],
+          "sourceQuote": "The maintenance crew uses a separate entrance",
+          "sourceStartCodepoint": 177,
+          "sourceEndCodepoint": 193
+        }
+      ]
+    },
+    {
+      "pairId": "IP1-GPAIR-02",
+      "pairVariant": "B",
+      "diagnosticCategories": [
+        "after-during",
+        "temporal-condition",
+        "pronoun-reference",
+        "general-polysemy"
+      ],
+      "questions": [
+        {
+          "id": "IP1-G04-Q1",
+          "questionKo": "일반 방문객 출입 서비스가 운영되는 시점은 유지보수 기간 중인가요, 끝난 뒤인가요?",
+          "expectedAnswerKo": "유지보수 기간 중입니다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G04-B03",
+              "quote": "It operates only during the maintenance period, according to the schedule issued by the museum."
+            }
+          ],
+          "acceptedAnswerPolicy": "동의 표현을 허용하되 원문의 주체·조건·부정·수량 관계를 보존해야 한다. 답변자는 평가 대상 한국어 번역만 보고 답한 뒤 답변을 동결한다.",
+          "sourceQuote": "It operates only during the maintenance period, according to the schedule issued by the museum.",
+          "core": true,
+          "allowedKoreanContext": ""
+        },
+        {
+          "id": "IP1-G04-Q2",
+          "questionKo": "유지보수 작업자가 도착했다는 사실만으로 정문이 열렸다고 판단할 수 있나요?",
+          "expectedAnswerKo": "아니요. 유지보수 인력은 별도 출입구를 사용하므로 그 사실만으로 정문 개방을 판단할 수 없습니다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G04-B03",
+              "quote": "The maintenance crew uses a separate entrance, so its arrival does not establish that the main gate is open."
+            }
+          ],
+          "acceptedAnswerPolicy": "동의 표현을 허용하되 원문의 주체·조건·부정·수량 관계를 보존해야 한다. 답변자는 평가 대상 한국어 번역만 보고 답한 뒤 답변을 동결한다.",
+          "sourceQuote": "The maintenance crew uses a separate entrance, so its arrival does not establish that the main gate is open.",
+          "core": false,
+          "allowedKoreanContext": ""
+        }
+      ],
+      "contextEvidence": [
+        {
+          "blockId": "IP1-G04-B02",
+          "quote": "The museum has a public admission service at its main gate. A maintenance period is shown separately on the calendar, and the next paragraph explains when the admission service operates."
+        }
+      ],
+      "koreanOnlyAnswerContext": null,
+      "humanReviewed": false,
+      "id": "IP1-G04",
+      "targetTextSha256": "3a8a91644d18563b1c77e7044b15697c34e77e4aa06c74bd4a192becfd39b4b1",
+      "propositions": [
+        {
+          "id": "IP1-G04-P1",
+          "core": true,
+          "expectedMeaningKo": "일반 방문객 출입 서비스는 유지보수 기간 중에만 운영된다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G04-B03",
+              "quote": "It operates only during the maintenance period, according to the schedule issued by the museum."
+            }
+          ],
+          "sourceQuote": "It operates only during the maintenance period, according to the schedule issued by the museum."
+        },
+        {
+          "id": "IP1-G04-P2",
+          "core": true,
+          "expectedMeaningKo": "방문객 출입 서비스 운영 중에는 보안팀이 정문을 감독한다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G04-B03",
+              "quote": "The security team supervises the main gate whenever the service is operating."
+            }
+          ],
+          "sourceQuote": "The security team supervises the main gate whenever the service is operating."
+        },
+        {
+          "id": "IP1-G04-P3",
+          "core": true,
+          "expectedMeaningKo": "유지보수 인력의 도착만으로 정문이 열렸다고 판단할 수 없다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G04-B03",
+              "quote": "The maintenance crew uses a separate entrance, so its arrival does not establish that the main gate is open."
+            }
+          ],
+          "sourceQuote": "The maintenance crew uses a separate entrance, so its arrival does not establish that the main gate is open."
+        }
+      ],
+      "terms": [
+        {
+          "id": "IP1-G04-T1",
+          "sourceTerm": "security",
+          "occurrenceIndexInTarget": 1,
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G04-B03",
+              "quote": "The security team supervises the main gate"
+            }
+          ],
+          "allowedKorean": [
+            "보안",
+            "경비"
+          ],
+          "meaningKo": "박물관 정문을 감독하는 보안·경비 업무다.",
+          "excludedMeaningsKo": [
+            "증권",
+            "담보"
+          ],
+          "sourceQuote": "The security team supervises the main gate",
+          "sourceStartCodepoint": 100,
+          "sourceEndCodepoint": 108
+        },
+        {
+          "id": "IP1-G04-T2",
+          "sourceTerm": "maintenance crew",
+          "occurrenceIndexInTarget": 1,
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G04-B03",
+              "quote": "The maintenance crew uses a separate entrance"
+            }
+          ],
+          "allowedKorean": [
+            "유지보수 인력",
+            "정비 인력",
+            "정비팀"
+          ],
+          "meaningKo": "시설이나 장비를 유지하고 정비하는 작업자다.",
+          "excludedMeaningsKo": [
+            "부양료",
+            "투자 유지 비용"
+          ],
+          "sourceQuote": "The maintenance crew uses a separate entrance",
+          "sourceStartCodepoint": 178,
+          "sourceEndCodepoint": 194
+        }
+      ]
+    },
+    {
+      "pairId": "IP1-GPAIR-03",
+      "pairVariant": "A",
+      "diagnosticCategories": [
+        "division-direction",
+        "quantity-unit",
+        "inclusion-exclusion",
+        "pronoun-reference",
+        "general-polysemy"
+      ],
+      "questions": [
+        {
+          "id": "IP1-G05-Q1",
+          "questionKo": "어느 값을 어느 값으로 나누며, 계산 결과의 단위는 무엇인가요?",
+          "expectedAnswerKo": "완료된 파일 수를 처리 시간으로 나누며, 단위는 분당 파일 수입니다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G05-B03",
+              "quote": "Divide the number of completed files by the processing time to obtain the measure in files per minute."
+            }
+          ],
+          "acceptedAnswerPolicy": "동의 표현을 허용하되 원문의 주체·조건·부정·수량 관계를 보존해야 한다. 답변자는 평가 대상 한국어 번역만 보고 답한 뒤 답변을 동결한다.",
+          "sourceQuote": "Divide the number of completed files by the processing time to obtain the measure in files per minute.",
+          "core": true,
+          "allowedKoreanContext": ""
+        },
+        {
+          "id": "IP1-G05-Q2",
+          "questionKo": "준비 작업이 실제 처리보다 오래 걸리면 그 준비 작업의 소요 시간도 계산에 포함하나요?",
+          "expectedAnswerKo": "아니요. 준비 작업의 부가 소요는 더 오래 걸리더라도 제외합니다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G05-B03",
+              "quote": "It excludes the setup overhead described above, even if setup takes longer than processing."
+            }
+          ],
+          "acceptedAnswerPolicy": "동의 표현을 허용하되 원문의 주체·조건·부정·수량 관계를 보존해야 한다. 답변자는 평가 대상 한국어 번역만 보고 답한 뒤 답변을 동결한다.",
+          "sourceQuote": "It excludes the setup overhead described above, even if setup takes longer than processing.",
+          "core": false,
+          "allowedKoreanContext": ""
+        }
+      ],
+      "contextEvidence": [
+        {
+          "blockId": "IP1-G05-B02",
+          "quote": "The lab records the number of completed files and the processing time in minutes. Its active timer begins after setup. Loading the software before that timer starts is setup overhead."
+        }
+      ],
+      "koreanOnlyAnswerContext": null,
+      "humanReviewed": false,
+      "id": "IP1-G05",
+      "targetTextSha256": "d32a5a20a1232ac399fcef81c419107f332ff697b965b8dfbed36d28f7daaa90",
+      "propositions": [
+        {
+          "id": "IP1-G05-P1",
+          "core": true,
+          "expectedMeaningKo": "완료된 파일 수를 처리 시간으로 나눈다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G05-B03",
+              "quote": "Divide the number of completed files by the processing time to obtain the measure in files per minute."
+            }
+          ],
+          "sourceQuote": "Divide the number of completed files by the processing time to obtain the measure in files per minute."
+        },
+        {
+          "id": "IP1-G05-P2",
+          "core": true,
+          "expectedMeaningKo": "결과의 단위는 분당 파일 수다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G05-B03",
+              "quote": "Divide the number of completed files by the processing time to obtain the measure in files per minute."
+            }
+          ],
+          "sourceQuote": "Divide the number of completed files by the processing time to obtain the measure in files per minute."
+        },
+        {
+          "id": "IP1-G05-P3",
+          "core": true,
+          "expectedMeaningKo": "준비 작업이 실제 처리보다 오래 걸려도 이 계산에는 준비 작업의 부가 소요를 포함하지 않는다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G05-B03",
+              "quote": "It excludes the setup overhead described above, even if setup takes longer than processing."
+            }
+          ],
+          "sourceQuote": "It excludes the setup overhead described above, even if setup takes longer than processing."
+        }
+      ],
+      "terms": [
+        {
+          "id": "IP1-G05-T1",
+          "sourceTerm": "quotient",
+          "occurrenceIndexInTarget": 1,
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G05-B03",
+              "quote": "This quotient uses only the interval recorded by the active timer."
+            }
+          ],
+          "allowedKorean": [
+            "몫",
+            "나눗셈 결과",
+            "계산 결과"
+          ],
+          "meaningKo": "정해진 두 양을 나눈 수치다.",
+          "excludedMeaningsKo": [
+            "증가분",
+            "분모만의 값"
+          ],
+          "sourceQuote": "This quotient uses only the interval recorded by the active timer.",
+          "sourceStartCodepoint": 108,
+          "sourceEndCodepoint": 116
+        },
+        {
+          "id": "IP1-G05-T2",
+          "sourceTerm": "overhead",
+          "occurrenceIndexInTarget": 1,
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G05-B03",
+              "quote": "the setup overhead described above"
+            }
+          ],
+          "allowedKorean": [
+            "부가 소요",
+            "부가 작업 시간",
+            "준비 작업 부담",
+            "준비 부하"
+          ],
+          "meaningKo": "본 처리 외에 소프트웨어 준비에 드는 시간이나 작업량이다.",
+          "excludedMeaningsKo": [
+            "머리 위",
+            "간접비 금액"
+          ],
+          "sourceQuote": "the setup overhead described above",
+          "sourceStartCodepoint": 192,
+          "sourceEndCodepoint": 200
+        }
+      ]
+    },
+    {
+      "pairId": "IP1-GPAIR-03",
+      "pairVariant": "B",
+      "diagnosticCategories": [
+        "division-direction",
+        "quantity-unit",
+        "inclusion-exclusion",
+        "pronoun-reference",
+        "general-polysemy"
+      ],
+      "questions": [
+        {
+          "id": "IP1-G06-Q1",
+          "questionKo": "어느 값을 어느 값으로 나누며, 계산 결과의 단위는 무엇인가요?",
+          "expectedAnswerKo": "처리 시간을 완료된 파일 수로 나누며, 단위는 파일당 분입니다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G06-B03",
+              "quote": "Divide the processing time by the number of completed files to obtain the measure in minutes per file."
+            }
+          ],
+          "acceptedAnswerPolicy": "동의 표현을 허용하되 원문의 주체·조건·부정·수량 관계를 보존해야 한다. 답변자는 평가 대상 한국어 번역만 보고 답한 뒤 답변을 동결한다.",
+          "sourceQuote": "Divide the processing time by the number of completed files to obtain the measure in minutes per file.",
+          "core": true,
+          "allowedKoreanContext": ""
+        },
+        {
+          "id": "IP1-G06-Q2",
+          "questionKo": "준비 작업이 실제 처리보다 오래 걸리면 그 준비 작업의 소요 시간도 계산에 포함하나요?",
+          "expectedAnswerKo": "아니요. 준비 작업의 부가 소요는 더 오래 걸리더라도 제외합니다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G06-B03",
+              "quote": "It excludes the setup overhead described above, even if setup takes longer than processing."
+            }
+          ],
+          "acceptedAnswerPolicy": "동의 표현을 허용하되 원문의 주체·조건·부정·수량 관계를 보존해야 한다. 답변자는 평가 대상 한국어 번역만 보고 답한 뒤 답변을 동결한다.",
+          "sourceQuote": "It excludes the setup overhead described above, even if setup takes longer than processing.",
+          "core": false,
+          "allowedKoreanContext": ""
+        }
+      ],
+      "contextEvidence": [
+        {
+          "blockId": "IP1-G06-B02",
+          "quote": "The lab records the number of completed files and the processing time in minutes. Its active timer begins after setup. Loading the software before that timer starts is setup overhead."
+        }
+      ],
+      "koreanOnlyAnswerContext": null,
+      "humanReviewed": false,
+      "id": "IP1-G06",
+      "targetTextSha256": "cf7a7de26923db9c7e6bdd56d601435a8eeee8bec15d75b895c845fd2bebafcb",
+      "propositions": [
+        {
+          "id": "IP1-G06-P1",
+          "core": true,
+          "expectedMeaningKo": "처리 시간을 완료된 파일 수로 나눈다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G06-B03",
+              "quote": "Divide the processing time by the number of completed files to obtain the measure in minutes per file."
+            }
+          ],
+          "sourceQuote": "Divide the processing time by the number of completed files to obtain the measure in minutes per file."
+        },
+        {
+          "id": "IP1-G06-P2",
+          "core": true,
+          "expectedMeaningKo": "결과의 단위는 파일당 분이다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G06-B03",
+              "quote": "Divide the processing time by the number of completed files to obtain the measure in minutes per file."
+            }
+          ],
+          "sourceQuote": "Divide the processing time by the number of completed files to obtain the measure in minutes per file."
+        },
+        {
+          "id": "IP1-G06-P3",
+          "core": true,
+          "expectedMeaningKo": "준비 작업이 실제 처리보다 오래 걸려도 이 계산에는 준비 작업의 부가 소요를 포함하지 않는다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G06-B03",
+              "quote": "It excludes the setup overhead described above, even if setup takes longer than processing."
+            }
+          ],
+          "sourceQuote": "It excludes the setup overhead described above, even if setup takes longer than processing."
+        }
+      ],
+      "terms": [
+        {
+          "id": "IP1-G06-T1",
+          "sourceTerm": "quotient",
+          "occurrenceIndexInTarget": 1,
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G06-B03",
+              "quote": "This quotient uses only the interval recorded by the active timer."
+            }
+          ],
+          "allowedKorean": [
+            "몫",
+            "나눗셈 결과",
+            "계산 결과"
+          ],
+          "meaningKo": "정해진 두 양을 나눈 수치다.",
+          "excludedMeaningsKo": [
+            "증가분",
+            "분모만의 값"
+          ],
+          "sourceQuote": "This quotient uses only the interval recorded by the active timer.",
+          "sourceStartCodepoint": 108,
+          "sourceEndCodepoint": 116
+        },
+        {
+          "id": "IP1-G06-T2",
+          "sourceTerm": "overhead",
+          "occurrenceIndexInTarget": 1,
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G06-B03",
+              "quote": "the setup overhead described above"
+            }
+          ],
+          "allowedKorean": [
+            "부가 소요",
+            "부가 작업 시간",
+            "준비 작업 부담",
+            "준비 부하"
+          ],
+          "meaningKo": "본 처리 외에 소프트웨어 준비에 드는 시간이나 작업량이다.",
+          "excludedMeaningsKo": [
+            "머리 위",
+            "간접비 금액"
+          ],
+          "sourceQuote": "the setup overhead described above",
+          "sourceStartCodepoint": 192,
+          "sourceEndCodepoint": 200
+        }
+      ]
+    },
+    {
+      "pairId": "IP1-GPAIR-04",
+      "pairVariant": "A",
+      "diagnosticCategories": [
+        "negation-scope",
+        "requirement-versus-permission",
+        "pronoun-reference",
+        "general-polysemy"
+      ],
+      "questions": [
+        {
+          "id": "IP1-G07-Q1",
+          "questionKo": "이 수업 규칙은 형평성을 위해 모든 참가자의 수업 시간을 반드시 동일하게 하도록 요구하나요?",
+          "expectedAnswerKo": "네. 이 규칙은 모든 참가자의 수업 시간을 동일하게 하도록 요구합니다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G07-B03",
+              "quote": "Under this rule, equity requires identical session lengths for every participant."
+            }
+          ],
+          "acceptedAnswerPolicy": "동의 표현을 허용하되 원문의 주체·조건·부정·수량 관계를 보존해야 한다. 답변자는 평가 대상 한국어 번역만 보고 답한 뒤 답변을 동결한다.",
+          "sourceQuote": "Under this rule, equity requires identical session lengths for every participant.",
+          "core": true,
+          "allowedKoreanContext": ""
+        },
+        {
+          "id": "IP1-G07-Q2",
+          "questionKo": "담당자는 참가자의 관심을 기록한 설문을 어떤 계획에 사용하나요?",
+          "expectedAnswerKo": "선택 독서 계획에 사용합니다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G07-B03",
+              "quote": "The coordinator uses this record to plan optional reading, while attendance is entered in another register."
+            }
+          ],
+          "acceptedAnswerPolicy": "동의 표현을 허용하되 원문의 주체·조건·부정·수량 관계를 보존해야 한다. 답변자는 평가 대상 한국어 번역만 보고 답한 뒤 답변을 동결한다.",
+          "sourceQuote": "The coordinator uses this record to plan optional reading, while attendance is entered in another register.",
+          "core": false,
+          "allowedKoreanContext": ""
+        }
+      ],
+      "contextEvidence": [
+        {
+          "blockId": "IP1-G07-B02",
+          "quote": "The workshop council is testing a session rule. In its report, equity concerns how fairly participants receive teaching time. The next paragraph states the requirement of this particular rule."
+        }
+      ],
+      "koreanOnlyAnswerContext": null,
+      "humanReviewed": false,
+      "id": "IP1-G07",
+      "targetTextSha256": "d83ac319fe3b0e8f41355299e2d83493fa14f5b7e923eeb67cd8defdf24acf0a",
+      "propositions": [
+        {
+          "id": "IP1-G07-P1",
+          "core": true,
+          "expectedMeaningKo": "이 규칙에서는 형평성을 위해 모든 참가자의 수업 시간을 동일하게 해야 한다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G07-B03",
+              "quote": "Under this rule, equity requires identical session lengths for every participant."
+            }
+          ],
+          "sourceQuote": "Under this rule, equity requires identical session lengths for every participant."
+        },
+        {
+          "id": "IP1-G07-P2",
+          "core": true,
+          "expectedMeaningKo": "참가자의 주제에 대한 관심은 이 규칙을 바꾸지 않는다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G07-B03",
+              "quote": "Their interest in the topic is recorded in a separate survey and does not change the rule."
+            }
+          ],
+          "sourceQuote": "Their interest in the topic is recorded in a separate survey and does not change the rule."
+        },
+        {
+          "id": "IP1-G07-P3",
+          "core": true,
+          "expectedMeaningKo": "담당자는 참가자의 관심을 기록한 설문을 선택 독서 계획에 사용한다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G07-B03",
+              "quote": "The coordinator uses this record to plan optional reading, while attendance is entered in another register."
+            }
+          ],
+          "sourceQuote": "The coordinator uses this record to plan optional reading, while attendance is entered in another register."
+        }
+      ],
+      "terms": [
+        {
+          "id": "IP1-G07-T1",
+          "sourceTerm": "equity",
+          "occurrenceIndexInTarget": 1,
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G07-B03",
+              "quote": "Under this rule, equity requires identical session lengths for every participant."
+            }
+          ],
+          "allowedKorean": [
+            "형평성",
+            "공정성",
+            "공평함"
+          ],
+          "meaningKo": "참가자에게 교육 기회를 공평하게 배분하는 성질이다.",
+          "excludedMeaningsKo": [
+            "자기자본",
+            "지분",
+            "주식"
+          ],
+          "sourceQuote": "Under this rule, equity requires identical session lengths for every participant.",
+          "sourceStartCodepoint": 17,
+          "sourceEndCodepoint": 23
+        },
+        {
+          "id": "IP1-G07-T2",
+          "sourceTerm": "interest",
+          "occurrenceIndexInTarget": 1,
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G07-B03",
+              "quote": "Their interest in the topic"
+            }
+          ],
+          "allowedKorean": [
+            "관심",
+            "흥미"
+          ],
+          "meaningKo": "참가자가 수업 주제에 느끼는 관심이나 흥미다.",
+          "excludedMeaningsKo": [
+            "이자",
+            "지분",
+            "이해관계"
+          ],
+          "sourceQuote": "Their interest in the topic",
+          "sourceStartCodepoint": 88,
+          "sourceEndCodepoint": 96
+        }
+      ]
+    },
+    {
+      "pairId": "IP1-GPAIR-04",
+      "pairVariant": "B",
+      "diagnosticCategories": [
+        "negation-scope",
+        "requirement-versus-permission",
+        "pronoun-reference",
+        "general-polysemy"
+      ],
+      "questions": [
+        {
+          "id": "IP1-G08-Q1",
+          "questionKo": "이 수업 규칙은 형평성을 위해 모든 참가자의 수업 시간을 반드시 동일하게 하도록 요구하나요?",
+          "expectedAnswerKo": "아니요. 이 규칙은 모든 참가자의 수업 시간이 반드시 같아야 한다고 요구하지 않습니다. 다르게 해야 한다는 뜻도 아닙니다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G08-B03",
+              "quote": "Under this rule, equity does not require identical session lengths for every participant."
+            }
+          ],
+          "acceptedAnswerPolicy": "동의 표현을 허용하되 원문의 주체·조건·부정·수량 관계를 보존해야 한다. 답변자는 평가 대상 한국어 번역만 보고 답한 뒤 답변을 동결한다.",
+          "sourceQuote": "Under this rule, equity does not require identical session lengths for every participant.",
+          "core": true,
+          "allowedKoreanContext": ""
+        },
+        {
+          "id": "IP1-G08-Q2",
+          "questionKo": "담당자는 참가자의 관심을 기록한 설문을 어떤 계획에 사용하나요?",
+          "expectedAnswerKo": "선택 독서 계획에 사용합니다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G08-B03",
+              "quote": "The coordinator uses this record to plan optional reading, while attendance is entered in another register."
+            }
+          ],
+          "acceptedAnswerPolicy": "동의 표현을 허용하되 원문의 주체·조건·부정·수량 관계를 보존해야 한다. 답변자는 평가 대상 한국어 번역만 보고 답한 뒤 답변을 동결한다.",
+          "sourceQuote": "The coordinator uses this record to plan optional reading, while attendance is entered in another register.",
+          "core": false,
+          "allowedKoreanContext": ""
+        }
+      ],
+      "contextEvidence": [
+        {
+          "blockId": "IP1-G08-B02",
+          "quote": "The workshop council is testing a session rule. In its report, equity concerns how fairly participants receive teaching time. The next paragraph states the requirement of this particular rule."
+        }
+      ],
+      "koreanOnlyAnswerContext": null,
+      "humanReviewed": false,
+      "id": "IP1-G08",
+      "targetTextSha256": "9900f5dfb9516346d1a342fda5a70b425732d878d96f15b675d8e448988aceae",
+      "propositions": [
+        {
+          "id": "IP1-G08-P1",
+          "core": true,
+          "expectedMeaningKo": "이 규칙에서는 형평성을 위해 모든 참가자의 수업 시간을 반드시 동일하게 할 필요는 없다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G08-B03",
+              "quote": "Under this rule, equity does not require identical session lengths for every participant."
+            }
+          ],
+          "sourceQuote": "Under this rule, equity does not require identical session lengths for every participant."
+        },
+        {
+          "id": "IP1-G08-P2",
+          "core": true,
+          "expectedMeaningKo": "참가자의 주제에 대한 관심은 이 규칙을 바꾸지 않는다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G08-B03",
+              "quote": "Their interest in the topic is recorded in a separate survey and does not change the rule."
+            }
+          ],
+          "sourceQuote": "Their interest in the topic is recorded in a separate survey and does not change the rule."
+        },
+        {
+          "id": "IP1-G08-P3",
+          "core": true,
+          "expectedMeaningKo": "담당자는 참가자의 관심을 기록한 설문을 선택 독서 계획에 사용한다.",
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G08-B03",
+              "quote": "The coordinator uses this record to plan optional reading, while attendance is entered in another register."
+            }
+          ],
+          "sourceQuote": "The coordinator uses this record to plan optional reading, while attendance is entered in another register."
+        }
+      ],
+      "terms": [
+        {
+          "id": "IP1-G08-T1",
+          "sourceTerm": "equity",
+          "occurrenceIndexInTarget": 1,
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G08-B03",
+              "quote": "Under this rule, equity does not require identical session lengths for every participant."
+            }
+          ],
+          "allowedKorean": [
+            "형평성",
+            "공정성",
+            "공평함"
+          ],
+          "meaningKo": "참가자에게 교육 기회를 공평하게 배분하는 성질이다.",
+          "excludedMeaningsKo": [
+            "자기자본",
+            "지분",
+            "주식"
+          ],
+          "sourceQuote": "Under this rule, equity does not require identical session lengths for every participant.",
+          "sourceStartCodepoint": 17,
+          "sourceEndCodepoint": 23
+        },
+        {
+          "id": "IP1-G08-T2",
+          "sourceTerm": "interest",
+          "occurrenceIndexInTarget": 1,
+          "sourceEvidence": [
+            {
+              "blockId": "IP1-G08-B03",
+              "quote": "Their interest in the topic"
+            }
+          ],
+          "allowedKorean": [
+            "관심",
+            "흥미"
+          ],
+          "meaningKo": "참가자가 수업 주제에 느끼는 관심이나 흥미다.",
+          "excludedMeaningsKo": [
+            "이자",
+            "지분",
+            "이해관계"
+          ],
+          "sourceQuote": "Their interest in the topic",
+          "sourceStartCodepoint": 96,
+          "sourceEndCodepoint": 104
+        }
+      ]
+    }
+  ]
+}

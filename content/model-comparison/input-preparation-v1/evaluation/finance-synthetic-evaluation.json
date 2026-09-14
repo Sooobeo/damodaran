@@ -1,0 +1,350 @@
+{
+  "schemaVersion": "input-preparation-evaluation-v1",
+  "evaluations": [
+    {
+      "id": "IP1-F05",
+      "targetTextSha256": "8c24011f5151f36d969fd416fe7167cf0a2625ad7476589fbb37f7ed7e1c081b",
+      "propositions": [
+        {
+          "id": "IP1-F05-P1",
+          "core": true,
+          "sourceQuote": "increased the annual lending rate by 2 percentage points.",
+          "expectedMeaningKo": "2%포인트의 절대 증가이며 상대 2% 증가가 아니다."
+        },
+        {
+          "id": "IP1-F05-P2",
+          "core": true,
+          "sourceQuote": "The revision describes the size of the change, not a replacement label for the original rate.",
+          "expectedMeaningKo": "표기한 수치는 변동 폭이며 새 금리 자체가 아니다."
+        },
+        {
+          "id": "IP1-F05-P3",
+          "core": true,
+          "sourceQuote": "The preparation fee remains unchanged.",
+          "expectedMeaningKo": "대출 준비 수수료는 바뀌지 않는다."
+        }
+      ],
+      "questions": [
+        {
+          "id": "IP1-F05-Q1",
+          "core": true,
+          "questionKo": "금리 변동 폭은 기존 금리의 상대 비율인가, 퍼센트포인트인가?",
+          "expectedAnswerKo": "퍼센트포인트다.",
+          "sourceQuote": "increased the annual lending rate by 2 percentage points.",
+          "allowedKoreanContext": ""
+        },
+        {
+          "id": "IP1-F05-Q2",
+          "core": false,
+          "questionKo": "이번 변경에서 대출 준비 수수료도 바뀌는가?",
+          "expectedAnswerKo": "아니다. 그대로다.",
+          "sourceQuote": "The preparation fee remains unchanged.",
+          "allowedKoreanContext": ""
+        }
+      ],
+      "terms": [
+        {
+          "id": "IP1-F05-T1",
+          "sourceTerm": "annual lending rate",
+          "sourceQuote": "annual lending rate",
+          "sourceStartCodepoint": 35,
+          "sourceEndCodepoint": 54,
+          "allowedKorean": [
+            "연간 대출금리",
+            "연 대출금리"
+          ],
+          "meaningKo": "돈을 빌려주는 연간 금리다."
+        },
+        {
+          "id": "IP1-F05-T2",
+          "sourceTerm": "preparation fee",
+          "sourceQuote": "preparation fee",
+          "sourceStartCodepoint": 177,
+          "sourceEndCodepoint": 192,
+          "allowedKorean": [
+            "대출 준비 수수료",
+            "준비 수수료",
+            "대출 취급 수수료"
+          ],
+          "meaningKo": "금리와 별개인 수수료다."
+        },
+        {
+          "id": "IP1-F05-T3",
+          "sourceTerm": "percentage points",
+          "sourceQuote": "percentage points",
+          "sourceStartCodepoint": 60,
+          "sourceEndCodepoint": 77,
+          "allowedKorean": [
+            "퍼센트포인트",
+            "%p",
+            "%포인트"
+          ],
+          "meaningKo": "절대 차이"
+        }
+      ],
+      "humanReviewed": false,
+      "evaluationKind": "assistant-source-grounded-development-annotation",
+      "knownErrorFamiliesExposed": true,
+      "pairId": "IP1-F-RELATIVE"
+    },
+    {
+      "id": "IP1-F06",
+      "targetTextSha256": "d1b6f2fbe73c95e6e23c74705951ffd7ac908c35bffc5cea4ddb0a2c44f9ee19",
+      "propositions": [
+        {
+          "id": "IP1-F06-P1",
+          "core": true,
+          "sourceQuote": "increased the annual lending rate by 2% of its starting level.",
+          "expectedMeaningKo": "기존 금리에 대한 상대 2% 증가이며 2%포인트가 아니다."
+        },
+        {
+          "id": "IP1-F06-P2",
+          "core": true,
+          "sourceQuote": "The revision describes the size of the change, not a replacement label for the original rate.",
+          "expectedMeaningKo": "표기한 수치는 변동 폭이며 새 금리 자체가 아니다."
+        },
+        {
+          "id": "IP1-F06-P3",
+          "core": true,
+          "sourceQuote": "The preparation fee remains unchanged.",
+          "expectedMeaningKo": "대출 준비 수수료는 바뀌지 않는다."
+        }
+      ],
+      "questions": [
+        {
+          "id": "IP1-F06-Q1",
+          "core": true,
+          "questionKo": "금리 변동 폭은 기존 금리의 상대 비율인가, 퍼센트포인트인가?",
+          "expectedAnswerKo": "기존 금리에 대한 상대 비율이다.",
+          "sourceQuote": "increased the annual lending rate by 2% of its starting level.",
+          "allowedKoreanContext": ""
+        },
+        {
+          "id": "IP1-F06-Q2",
+          "core": false,
+          "questionKo": "이번 변경에서 대출 준비 수수료도 바뀌는가?",
+          "expectedAnswerKo": "아니다. 그대로다.",
+          "sourceQuote": "The preparation fee remains unchanged.",
+          "allowedKoreanContext": ""
+        }
+      ],
+      "terms": [
+        {
+          "id": "IP1-F06-T1",
+          "sourceTerm": "annual lending rate",
+          "sourceQuote": "annual lending rate",
+          "sourceStartCodepoint": 35,
+          "sourceEndCodepoint": 54,
+          "allowedKorean": [
+            "연간 대출금리",
+            "연 대출금리"
+          ],
+          "meaningKo": "돈을 빌려주는 연간 금리다."
+        },
+        {
+          "id": "IP1-F06-T2",
+          "sourceTerm": "preparation fee",
+          "sourceQuote": "preparation fee",
+          "sourceStartCodepoint": 182,
+          "sourceEndCodepoint": 197,
+          "allowedKorean": [
+            "대출 준비 수수료",
+            "준비 수수료",
+            "대출 취급 수수료"
+          ],
+          "meaningKo": "금리와 별개인 수수료다."
+        },
+        {
+          "id": "IP1-F06-T3",
+          "sourceTerm": "2%",
+          "sourceQuote": "2%",
+          "sourceStartCodepoint": 58,
+          "sourceEndCodepoint": 60,
+          "allowedKorean": [
+            "2%",
+            "2퍼센트"
+          ],
+          "meaningKo": "상대 변화"
+        }
+      ],
+      "humanReviewed": false,
+      "evaluationKind": "assistant-source-grounded-development-annotation",
+      "knownErrorFamiliesExposed": true,
+      "pairId": "IP1-F-RELATIVE"
+    },
+    {
+      "id": "IP1-F07",
+      "targetTextSha256": "4591e9eea1bd3d17c06e96f8a246097a0209a94d1eddb301335f26546f551d68",
+      "propositions": [
+        {
+          "id": "IP1-F07-P1",
+          "core": true,
+          "sourceQuote": "The budget assumes that overhead will decline after the integration of the two branches.",
+          "expectedMeaningKo": "예산은 통합 이후 간접비가 감소한다고 가정한다."
+        },
+        {
+          "id": "IP1-F07-P2",
+          "core": true,
+          "sourceQuote": "not to the equity raised to finance the project.",
+          "expectedMeaningKo": "시점 가정은 프로젝트 자금 조달을 위한 자기자본에 적용하지 않는다."
+        },
+        {
+          "id": "IP1-F07-P3",
+          "core": true,
+          "sourceQuote": "does not describe the overhead as unnecessary spending.",
+          "expectedMeaningKo": "간접비를 불필요한 지출로 규정하는 것을 부정한다."
+        }
+      ],
+      "questions": [
+        {
+          "id": "IP1-F07-Q1",
+          "core": true,
+          "questionKo": "간접비가 감소하는 시점은 통합 중인가, 통합 이후인가?",
+          "expectedAnswerKo": "통합 이후다.",
+          "sourceQuote": "overhead will decline after the integration of the two branches.",
+          "allowedKoreanContext": ""
+        },
+        {
+          "id": "IP1-F07-Q2",
+          "core": false,
+          "questionKo": "감소 시점 가정이 자금 조달용 자기자본에도 적용되는가?",
+          "expectedAnswerKo": "아니다. 공유 운영비에 적용되며 자기자본에는 적용되지 않는다.",
+          "sourceQuote": "not to the equity raised to finance the project.",
+          "allowedKoreanContext": ""
+        }
+      ],
+      "terms": [
+        {
+          "id": "IP1-F07-T1",
+          "sourceTerm": "overhead",
+          "sourceQuote": "overhead",
+          "sourceStartCodepoint": 24,
+          "sourceEndCodepoint": 32,
+          "allowedKorean": [
+            "간접비",
+            "공통 운영비",
+            "공통 경비"
+          ],
+          "meaningKo": "필요한 운영비이며 불필요한 지출이 아니다."
+        },
+        {
+          "id": "IP1-F07-T2",
+          "sourceTerm": "equity",
+          "sourceQuote": "equity",
+          "sourceStartCodepoint": 162,
+          "sourceEndCodepoint": 168,
+          "allowedKorean": [
+            "자기자본",
+            "지분자본",
+            "주식자본"
+          ],
+          "meaningKo": "프로젝트 자금 조달 자본이며 형평성이 아니다."
+        },
+        {
+          "id": "IP1-F07-T3",
+          "sourceTerm": "financed",
+          "sourceQuote": "financed",
+          "sourceStartCodepoint": 345,
+          "sourceEndCodepoint": 353,
+          "allowedKorean": [
+            "자금이 조달",
+            "자금을 조달",
+            "자금 조달"
+          ],
+          "meaningKo": "자금 조달 방식이다."
+        }
+      ],
+      "humanReviewed": false,
+      "evaluationKind": "assistant-source-grounded-development-annotation",
+      "knownErrorFamiliesExposed": true,
+      "pairId": "IP1-F-TIMING"
+    },
+    {
+      "id": "IP1-F08",
+      "targetTextSha256": "66717db485d389f777b6240e0825254a15ca09b88608b2f18f20d4978c84f135",
+      "propositions": [
+        {
+          "id": "IP1-F08-P1",
+          "core": true,
+          "sourceQuote": "The budget assumes that overhead will decline during the integration of the two branches.",
+          "expectedMeaningKo": "예산은 통합이 진행되는 동안 간접비가 감소한다고 가정한다."
+        },
+        {
+          "id": "IP1-F08-P2",
+          "core": true,
+          "sourceQuote": "not to the equity raised to finance the project.",
+          "expectedMeaningKo": "시점 가정은 프로젝트 자금 조달을 위한 자기자본에 적용하지 않는다."
+        },
+        {
+          "id": "IP1-F08-P3",
+          "core": true,
+          "sourceQuote": "does not describe the overhead as unnecessary spending.",
+          "expectedMeaningKo": "간접비를 불필요한 지출로 규정하는 것을 부정한다."
+        }
+      ],
+      "questions": [
+        {
+          "id": "IP1-F08-Q1",
+          "core": true,
+          "questionKo": "간접비가 감소하는 시점은 통합 중인가, 통합 이후인가?",
+          "expectedAnswerKo": "통합 중이다.",
+          "sourceQuote": "overhead will decline during the integration of the two branches.",
+          "allowedKoreanContext": ""
+        },
+        {
+          "id": "IP1-F08-Q2",
+          "core": false,
+          "questionKo": "감소 시점 가정이 자금 조달용 자기자본에도 적용되는가?",
+          "expectedAnswerKo": "아니다. 공유 운영비에 적용되며 자기자본에는 적용되지 않는다.",
+          "sourceQuote": "not to the equity raised to finance the project.",
+          "allowedKoreanContext": ""
+        }
+      ],
+      "terms": [
+        {
+          "id": "IP1-F08-T1",
+          "sourceTerm": "overhead",
+          "sourceQuote": "overhead",
+          "sourceStartCodepoint": 24,
+          "sourceEndCodepoint": 32,
+          "allowedKorean": [
+            "간접비",
+            "공통 운영비",
+            "공통 경비"
+          ],
+          "meaningKo": "필요한 운영비이며 불필요한 지출이 아니다."
+        },
+        {
+          "id": "IP1-F08-T2",
+          "sourceTerm": "equity",
+          "sourceQuote": "equity",
+          "sourceStartCodepoint": 163,
+          "sourceEndCodepoint": 169,
+          "allowedKorean": [
+            "자기자본",
+            "지분자본",
+            "주식자본"
+          ],
+          "meaningKo": "프로젝트 자금 조달 자본이며 형평성이 아니다."
+        },
+        {
+          "id": "IP1-F08-T3",
+          "sourceTerm": "financed",
+          "sourceQuote": "financed",
+          "sourceStartCodepoint": 346,
+          "sourceEndCodepoint": 354,
+          "allowedKorean": [
+            "자금이 조달",
+            "자금을 조달",
+            "자금 조달"
+          ],
+          "meaningKo": "자금 조달 방식이다."
+        }
+      ],
+      "humanReviewed": false,
+      "evaluationKind": "assistant-source-grounded-development-annotation",
+      "knownErrorFamiliesExposed": true,
+      "pairId": "IP1-F-TIMING"
+    }
+  ]
+}

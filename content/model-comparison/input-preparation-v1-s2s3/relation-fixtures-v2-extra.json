@@ -1,0 +1,16 @@
+{
+  "version":"relation-synthetic-fixtures-v2-extra",
+  "provenance":"assistant_authored_regression_after_v1_diagnostic_not_independent_holdout",
+  "cases":[
+    {"id":"V2-P01","type":"value_unit","source":"The change is 3 percentage points.","translation":"변화는 3%포인트다.","expected":"supported_match"},
+    {"id":"V2-P02","type":"value_unit","source":"The change is 3%.","translation":"변화는 3%포인트다.","expected":"supported_conflict"},
+    {"id":"V2-P03","type":"value_unit","source":"The change is 3 percentage points.","translation":"변화는 3 퍼센트 포인트다.","expected":"supported_match"},
+    {"id":"V2-R01","type":"start_delta_result","source":"The rate rises to 6%.","translation":"비율은 6%까지 오른다.","expected":"supported_match"},
+    {"id":"V2-R02","type":"start_delta_result","source":"The rate rises by 6%.","translation":"비율은 6%까지 오른다.","expected":"supported_conflict"},
+    {"id":"V2-R03","type":"start_delta_result","source":"The rate rises to 6%.","translation":"비율은 6% 수준으로 오른다.","expected":"supported_match"},
+    {"id":"V2-R04","type":"start_delta_result","source":"The rate increases by 2%.","translation":"비율은 2%라는 설명에 따르면 증가한다.","expected":"undetermined"},
+    {"id":"V2-P04","type":"percent_change","source":"The rate increases by 2 percentage points.","translation":"비율을 2%포인트 올린다.","expected":"supported_match"},
+    {"id":"V2-P05","type":"percent_change","source":"The rate increases by 2%.","translation":"비율을 2%포인트 올린다.","expected":"supported_conflict"},
+    {"id":"V2-U01","type":"value_unit","source":"The amount is $1.50.","translation":"금액은 1.5달러다.","expected":"supported_match"}
+  ]
+}

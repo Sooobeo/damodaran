@@ -1,0 +1,9 @@
+{
+  "version": "relation-fixtures-freeze-v2-extra",
+  "fixturePath": "content/model-comparison/input-preparation-v1-s2s3/relation-fixtures-v2-extra.json",
+  "fixtureSha256": "b0d44bf1cc02142d9490676c26e36d6e698921b86d1bc723eb63f25637b1c5d0",
+  "caseCount": 10,
+  "v2CheckerHasBeenExecuted": false,
+  "humanReviewed": false,
+  "independentHoldout": false
+}

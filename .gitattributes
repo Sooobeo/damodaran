@@ -1,0 +1,4 @@
+# S1 artifacts and verifier use byte hashes; preserve their LF bytes on Windows.
+.gitattributes text eol=lf
+content/model-comparison/input-preparation-v1/** text eol=lf
+scripts/model-comparison/verify_input_preparation_v1.py text eol=lf

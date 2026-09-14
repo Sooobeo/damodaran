@@ -1,0 +1,14 @@
+{
+  "version":"relation-synthetic-fixtures-v2-review",
+  "provenance":"assistant_independent_code_review_regression_before_v2_real_diagnostic_not_holdout",
+  "cases":[
+    {"id":"REV01","type":"value_unit","source":"The estimate is 5 months.","translation":"추정치는 5미터다.","expected":"unsupported"},
+    {"id":"REV02","type":"value_unit","source":"The rate is -5%.","translation":"비율은 −5%다.","expected":"supported_match"},
+    {"id":"REV03","type":"value_unit","source":"The rate is -5%.","translation":"비율은 5%다.","expected":"supported_conflict"},
+    {"id":"REV04","type":"value_unit","source":"The count is 5 million.","translation":"개수는 5미터다.","expected":"unsupported"},
+    {"id":"REV05","type":"inclusion_negation","source":"The measure includes cash and excludes inventory.","translation":"측정치는 재고를 제외하지만 현금을 포함한다.","expected":"undetermined"},
+    {"id":"REV06","type":"inclusion_negation","source":"The measure does not exclude cash.","translation":"현금을 제외하지 않는 것이 아니다.","expected":"undetermined"},
+    {"id":"REV07","type":"inclusion_negation","source":"The measure includes cash.","translation":"현금을 포함하지 않는 것은 아니다.","expected":"undetermined"},
+    {"id":"REV08","type":"inclusion_negation","source":"The measure includes cash.","translation":"측정치에는 현금이 포함된다. 재고는 제외한다.","expected":"supported_match"}
+  ]
+}

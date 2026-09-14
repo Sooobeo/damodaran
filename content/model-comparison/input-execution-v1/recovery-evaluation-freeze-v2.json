@@ -1,0 +1,118 @@
+{
+  "actualCommandComparison": {
+    "bytes": 3993,
+    "path": ".training/verifications/input-preparation-v1/recovery-v2-runtime-command-verification-20260914.json",
+    "sha256": "80d9273281369079ea811abc344e6734740311d46e4d7ce45f7ec96ad358ca6f"
+  },
+  "actualS4RecoveryStillRunning": true,
+  "checksCompletedInSeparateInvocations": [
+    {
+      "seconds": 571.864,
+      "status": "passed",
+      "suite": "test_recovery_evaluation_v2",
+      "tests": 24
+    },
+    {
+      "seconds": 14.227,
+      "status": "passed",
+      "suite": "test_recovery_append_evidence_v2",
+      "tests": 13
+    },
+    {
+      "seconds": 145.8,
+      "status": "passed",
+      "suite": "test_recovery_v2_boundaries",
+      "tests": 13
+    },
+    {
+      "seconds": 1.215,
+      "status": "passed",
+      "suite": "test_recovery_relations_v2",
+      "tests": 7
+    },
+    {
+      "reportedBy": "/root/s4_runtime_review",
+      "status": "passed",
+      "suite": "test_recovery_cohort_v2",
+      "tests": 17
+    }
+  ],
+  "createdAtUtc": "2026-09-14T00:52:06.803188+00:00",
+  "criteriaChanged": false,
+  "files": [
+    {
+      "bytes": 1483,
+      "path": "scripts/model-comparison/input_execution_v1/recovery_v2_lineage.py",
+      "sha256": "1aa282a05f47fc2b174a5e8db3310677f899dc91b328aebea4fb994e845073c0"
+    },
+    {
+      "bytes": 28255,
+      "path": "scripts/model-comparison/input_execution_v1/recovery_evaluation_v2.py",
+      "sha256": "00f96ee52ee44d71664c864b95db6954201ac360251d5c69bca25820e85d89f0"
+    },
+    {
+      "bytes": 9442,
+      "path": "scripts/model-comparison/input_execution_v1/recovery_answer_transport_v2.py",
+      "sha256": "0183c92607e37403cc925a197610fcb9b01f67361fc252d7668f2aeb299165d5"
+    },
+    {
+      "bytes": 3149,
+      "path": "scripts/model-comparison/input_execution_v1/recovery_relations_v2.py",
+      "sha256": "6132b91c0fa8de2ba28fc0e10f3076c4f2ea33a8537eb98a956b1b5ac5c069ed"
+    },
+    {
+      "bytes": 15462,
+      "path": "scripts/model-comparison/input_execution_v1/recovery_append_evidence_v2.py",
+      "sha256": "5c202f0abba19903523b908b0192da951dfd2e401eadd4b13c61514ab2fe40cc"
+    },
+    {
+      "bytes": 21521,
+      "path": "scripts/model-comparison/input_execution_v1/test_recovery_evaluation_v2.py",
+      "sha256": "95138a4b256811c30f333f9d7cd8fff448eb3b2906a5136cda555c1d0594e993"
+    },
+    {
+      "bytes": 14219,
+      "path": "scripts/model-comparison/input_execution_v1/test_recovery_append_evidence_v2.py",
+      "sha256": "02c7e68d6f8b2b42f5c9428e6a75e07c5db33e10c2d57e5c7558659f474a3d4a"
+    },
+    {
+      "bytes": 6229,
+      "path": "scripts/model-comparison/input_execution_v1/test_recovery_relations_v2.py",
+      "sha256": "d4767a2840f4083cff9e658f704d9d6add4a834383d8fc55b2b23e38a2458f52"
+    },
+    {
+      "bytes": 10211,
+      "path": "scripts/model-comparison/input_execution_v1/test_recovery_v2_boundaries.py",
+      "sha256": "9bdc9f01168b0908eac725776a47479305d3a5428619fdb798b9a64e18b09f30"
+    },
+    {
+      "bytes": 8536,
+      "path": "scripts/model-comparison/input_execution_v1/RECOVERY_EVALUATION_V2.md",
+      "sha256": "0850df96d525415a7871a7cc13f0d1c2cf9e1e6033810cd3d44fdc97cf9dd2e4"
+    },
+    {
+      "bytes": 11306,
+      "path": "scripts/model-comparison/input_execution_v1/recovery_cohort_v2.py",
+      "sha256": "6d85db3a2e4403005fcf1351fba41b246d33d20fd795d70554376c8ef954a138"
+    },
+    {
+      "bytes": 11260,
+      "path": "scripts/model-comparison/input_execution_v1/test_recovery_cohort_v2.py",
+      "sha256": "9cbfecaf9c008df167ed049a1bbb4061776179b722de8573ed3761166694f0a8"
+    },
+    {
+      "bytes": 2819,
+      "path": "content/model-comparison/input-execution-v1/RECOVERY_COHORT_VALIDATION_V2.md",
+      "sha256": "d75fcbe1b1fe7297f75fa6e85c3215f4099beba15e8dc52cb2c368e4e87ed198"
+    }
+  ],
+  "implementationVerification": {
+    "bytes": 3522,
+    "path": ".training/verifications/recovery-evaluation-v2-implementation-20260914.json",
+    "sha256": "c35e1093bf4fd1c2857dded79342a8737013c2a8e041477ea548bfc6d4e6c5c7"
+  },
+  "originalFrozenFilesChanged": false,
+  "questionAnswers": 0,
+  "scores": 0,
+  "version": "input-execution-v1-recovery-postvalidation-evaluation-freeze-v2"
+}

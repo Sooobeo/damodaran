@@ -1,0 +1,273 @@
+{
+  "schemaVersion": "input-preparation-source-v1",
+  "inputUnits": [
+    {
+      "id": "IP1-F05",
+      "domain": "finance",
+      "provenance": {
+        "kind": "assistant-authored-structured-fixture",
+        "humanReviewed": false,
+        "createdAt": "2026-09-13",
+        "purpose": "development-diagnostic-known-error-family",
+        "notInvestmentAdvice": true
+      },
+      "document": {
+        "resourceId": "fixture-ip1-f05",
+        "sourceVersionId": "fixture-ip1-f05-v1",
+        "title": "Quarterly lending worksheet",
+        "titleKo": "",
+        "format": "html",
+        "extractorVersion": "structured-v2-compatible-fixture",
+        "blocks": [
+          {
+            "id": "fixture-ip1-f05-h",
+            "order": 0,
+            "kind": "heading",
+            "text": "Revision of the annual lending rate",
+            "metadata": {
+              "schemaVersion": 1,
+              "level": 2,
+              "links": []
+            },
+            "textSha256": "79f17f342770a610d702d5d22cd68f0eea05b737826f59eeb9065b1447ad012e"
+          },
+          {
+            "id": "fixture-ip1-f05-b",
+            "order": 1,
+            "kind": "paragraph",
+            "text": "The worksheet separates an annual lending rate from the fee charged for preparing a loan. The starting rate for the revision is 4%.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "52bf16c2aea059f01ffdd6f022097b0c026f4291ee79bc9e0f5c3f2bda492867"
+          },
+          {
+            "id": "fixture-ip1-f05-t",
+            "order": 2,
+            "kind": "paragraph",
+            "text": "The credit committee increased the annual lending rate by 2 percentage points. The revision describes the size of the change, not a replacement label for the original rate. The preparation fee remains unchanged. Record the new rate only after applying the stated change to the starting rate; do not add the preparation fee to that calculation.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "8c24011f5151f36d969fd416fe7167cf0a2625ad7476589fbb37f7ed7e1c081b"
+          },
+          {
+            "id": "fixture-ip1-f05-a",
+            "order": 3,
+            "kind": "paragraph",
+            "text": "The preparation fee appears in a separate monetary column and is not expressed as an annual rate.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "5106547abdd96e88cfceff41bb59d25cf26f2df16fe660358f89670c048faa40"
+          }
+        ]
+      },
+      "targetBlockId": "fixture-ip1-f05-t"
+    },
+    {
+      "id": "IP1-F06",
+      "domain": "finance",
+      "provenance": {
+        "kind": "assistant-authored-structured-fixture",
+        "humanReviewed": false,
+        "createdAt": "2026-09-13",
+        "purpose": "development-diagnostic-known-error-family",
+        "notInvestmentAdvice": true
+      },
+      "document": {
+        "resourceId": "fixture-ip1-f06",
+        "sourceVersionId": "fixture-ip1-f06-v1",
+        "title": "Quarterly lending worksheet",
+        "titleKo": "",
+        "format": "html",
+        "extractorVersion": "structured-v2-compatible-fixture",
+        "blocks": [
+          {
+            "id": "fixture-ip1-f06-h",
+            "order": 0,
+            "kind": "heading",
+            "text": "Revision of the annual lending rate",
+            "metadata": {
+              "schemaVersion": 1,
+              "level": 2,
+              "links": []
+            },
+            "textSha256": "79f17f342770a610d702d5d22cd68f0eea05b737826f59eeb9065b1447ad012e"
+          },
+          {
+            "id": "fixture-ip1-f06-b",
+            "order": 1,
+            "kind": "paragraph",
+            "text": "The worksheet separates an annual lending rate from the fee charged for preparing a loan. The starting rate for the revision is 4%.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "52bf16c2aea059f01ffdd6f022097b0c026f4291ee79bc9e0f5c3f2bda492867"
+          },
+          {
+            "id": "fixture-ip1-f06-t",
+            "order": 2,
+            "kind": "paragraph",
+            "text": "The credit committee increased the annual lending rate by 2% of its starting level. The revision describes the size of the change, not a replacement label for the original rate. The preparation fee remains unchanged. Record the new rate only after applying the stated change to the starting rate; do not add the preparation fee to that calculation.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "d1b6f2fbe73c95e6e23c74705951ffd7ac908c35bffc5cea4ddb0a2c44f9ee19"
+          },
+          {
+            "id": "fixture-ip1-f06-a",
+            "order": 3,
+            "kind": "paragraph",
+            "text": "The preparation fee appears in a separate monetary column and is not expressed as an annual rate.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "5106547abdd96e88cfceff41bb59d25cf26f2df16fe660358f89670c048faa40"
+          }
+        ]
+      },
+      "targetBlockId": "fixture-ip1-f06-t"
+    },
+    {
+      "id": "IP1-F07",
+      "domain": "finance",
+      "provenance": {
+        "kind": "assistant-authored-structured-fixture",
+        "humanReviewed": false,
+        "createdAt": "2026-09-13",
+        "purpose": "development-diagnostic-known-error-family",
+        "notInvestmentAdvice": true
+      },
+      "document": {
+        "resourceId": "fixture-ip1-f07",
+        "sourceVersionId": "fixture-ip1-f07-v1",
+        "title": "Branch integration budget",
+        "titleKo": "",
+        "format": "html",
+        "extractorVersion": "structured-v2-compatible-fixture",
+        "blocks": [
+          {
+            "id": "fixture-ip1-f07-h",
+            "order": 0,
+            "kind": "heading",
+            "text": "Timing of shared operating costs",
+            "metadata": {
+              "schemaVersion": 1,
+              "level": 2,
+              "links": []
+            },
+            "textSha256": "4237275bb55ccd388bf9737674a4f43edf398b01e6e3bc31c97a0964f7e0675d"
+          },
+          {
+            "id": "fixture-ip1-f07-b",
+            "order": 1,
+            "kind": "paragraph",
+            "text": "Two branches will combine their records in a planned integration. Their overhead consists of shared rent and administrative salaries; those costs are required to operate the branches.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "2613ba7debf64c4b3ec3a3d6303d29083305f62617064d80d45236ea2d468aa8"
+          },
+          {
+            "id": "fixture-ip1-f07-t",
+            "order": 2,
+            "kind": "paragraph",
+            "text": "The budget assumes that overhead will decline after the integration of the two branches. This timing assumption applies to the shared operating costs, not to the equity raised to finance the project. The forecast does not describe the overhead as unnecessary spending. Keep the timing assumption separate from the question of how the project is financed.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "4591e9eea1bd3d17c06e96f8a246097a0209a94d1eddb301335f26546f551d68"
+          },
+          {
+            "id": "fixture-ip1-f07-a",
+            "order": 3,
+            "kind": "paragraph",
+            "text": "The financing schedule records new ordinary shares issued to investors. It does not change the operating-cost assumption.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "b0bde0f42c327818299db42e86243a30f40a58c1821098c406e4080fa12ecfbe"
+          }
+        ]
+      },
+      "targetBlockId": "fixture-ip1-f07-t"
+    },
+    {
+      "id": "IP1-F08",
+      "domain": "finance",
+      "provenance": {
+        "kind": "assistant-authored-structured-fixture",
+        "humanReviewed": false,
+        "createdAt": "2026-09-13",
+        "purpose": "development-diagnostic-known-error-family",
+        "notInvestmentAdvice": true
+      },
+      "document": {
+        "resourceId": "fixture-ip1-f08",
+        "sourceVersionId": "fixture-ip1-f08-v1",
+        "title": "Branch integration budget",
+        "titleKo": "",
+        "format": "html",
+        "extractorVersion": "structured-v2-compatible-fixture",
+        "blocks": [
+          {
+            "id": "fixture-ip1-f08-h",
+            "order": 0,
+            "kind": "heading",
+            "text": "Timing of shared operating costs",
+            "metadata": {
+              "schemaVersion": 1,
+              "level": 2,
+              "links": []
+            },
+            "textSha256": "4237275bb55ccd388bf9737674a4f43edf398b01e6e3bc31c97a0964f7e0675d"
+          },
+          {
+            "id": "fixture-ip1-f08-b",
+            "order": 1,
+            "kind": "paragraph",
+            "text": "Two branches will combine their records in a planned integration. Their overhead consists of shared rent and administrative salaries; those costs are required to operate the branches.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "2613ba7debf64c4b3ec3a3d6303d29083305f62617064d80d45236ea2d468aa8"
+          },
+          {
+            "id": "fixture-ip1-f08-t",
+            "order": 2,
+            "kind": "paragraph",
+            "text": "The budget assumes that overhead will decline during the integration of the two branches. This timing assumption applies to the shared operating costs, not to the equity raised to finance the project. The forecast does not describe the overhead as unnecessary spending. Keep the timing assumption separate from the question of how the project is financed.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "66717db485d389f777b6240e0825254a15ca09b88608b2f18f20d4978c84f135"
+          },
+          {
+            "id": "fixture-ip1-f08-a",
+            "order": 3,
+            "kind": "paragraph",
+            "text": "The financing schedule records new ordinary shares issued to investors. It does not change the operating-cost assumption.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "b0bde0f42c327818299db42e86243a30f40a58c1821098c406e4080fa12ecfbe"
+          }
+        ]
+      },
+      "targetBlockId": "fixture-ip1-f08-t"
+    }
+  ]
+}

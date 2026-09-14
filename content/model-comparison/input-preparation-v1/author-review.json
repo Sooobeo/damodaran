@@ -1,0 +1,231 @@
+{
+  "schemaVersion": 1,
+  "reviewId": "input-preparation-v1-source-review-20260913",
+  "status": "source_contract_review_complete",
+  "humanReviewed": false,
+  "modelOutputsAvailable": false,
+  "modelInferenceCalls": 0,
+  "evaluationKind": "assistant-source-grounded-development-annotation-review",
+  "verifierReview": {
+    "reviewer": "input_audit",
+    "scope": "read-only code review; no app/model calls",
+    "addressedBeforeFreeze": [
+      "필수 동결 파일 집합의 누락·추가·중복 거부",
+      "versionId→resourceId 및 blockId→versionId 전역 소속 일관성",
+      "공개 원문 snapshot과 실제 DB의 별도 읽기 전용 대조 receipt 보존",
+      "UTF-8 손상과 한국어 평가 필드 누락 거부"
+    ]
+  },
+  "reviewers": {
+    "root": "원문과 평가를 보는 작성/통합 검토자; 향후 Korean-only 답변자로 사용하지 않음",
+    "input_audit": "금융8의 정확 인용·해시·명제/질문/용어 대조 및 검증기 읽기 검토",
+    "general_dataset": "일반8 작성 및 별도 계약 정합성 검토",
+    "sense_dictionary": "공식/발행사 출처를 읽고 일반 사전 작성"
+  },
+  "correctionsBeforeFreeze": [
+    {
+      "scope": "IP1-F03",
+      "change": "부정 범위를 포함한 전체 source 문장을 P1 인용으로 사용"
+    },
+    {
+      "scope": "IP1-F04",
+      "change": "입력 수/각 입력의 오류 가능성과 개별 오류확률 증가를 구별"
+    },
+    {
+      "scope": "IP1-F06",
+      "change": "상대2%의 기준을 of its starting level로 명시; 관련 질문 인용과 SHA/span 갱신"
+    },
+    {
+      "scope": "IP1-F07/IP1-F08",
+      "change": "P1에 예산 가정이라는 양태와 전체 첫문장 인용 보존"
+    },
+    {
+      "scope": "contract/dictionary",
+      "change": "고정 금융전용 공통 지시에 맞춰 금융 뜻만 기존 source-target-definition 형식; 일반 뜻 직접 hint 억제"
+    },
+    {
+      "scope": "contract",
+      "change": "단위×후보별 fresh 답변 context로 최소대립/인접/타후보 노출 금지"
+    },
+    {
+      "scope": "general files",
+      "change": "단일 source/evaluation 스키마로 정합화; 본문은 agent 작성 바이트 유지"
+    },
+    {
+      "scope": "public source provenance",
+      "change": "기존 Marian train과 중복4대상을 회귀로 명시; 새/독립 원문으로 표시하지 않음"
+    },
+    {
+      "scope": "UTF-8 serialization",
+      "change": "PowerShell stdin의 한국어 치환 손상을 발견해 UTF-8 파일 실행으로 주석3곳과 이 검토 기록을 복원했다. 동결 전 전체 문자열의 손상 표식·한국어 필드를 재검사한다."
+    }
+  ],
+  "units": [
+    {
+      "id": "IP1-F01",
+      "targetTextSha256": "8e796e8c008fa97e62a3bacfe6c53d1a6152dae7d30e4e28e4fd481285039f53",
+      "sourceAndAnnotationRead": true,
+      "exactEvidenceValidated": true,
+      "reviewers": [
+        "root",
+        "input_audit"
+      ]
+    },
+    {
+      "id": "IP1-F02",
+      "targetTextSha256": "fe42e50720ec2afe7c2e58f8da4ff9240119211d3d930b5bb4d2599b6492d307",
+      "sourceAndAnnotationRead": true,
+      "exactEvidenceValidated": true,
+      "reviewers": [
+        "root",
+        "input_audit"
+      ]
+    },
+    {
+      "id": "IP1-F03",
+      "targetTextSha256": "af544302bd38aad62f1a9bd0cfec33c62b1f258a185b14b00f9ffd3b2b29219d",
+      "sourceAndAnnotationRead": true,
+      "exactEvidenceValidated": true,
+      "reviewers": [
+        "root",
+        "input_audit"
+      ]
+    },
+    {
+      "id": "IP1-F04",
+      "targetTextSha256": "59ea2bf2171cebc9b6ad414ce5341820a7b92607bbd5c5295b8bc26c68ed9310",
+      "sourceAndAnnotationRead": true,
+      "exactEvidenceValidated": true,
+      "reviewers": [
+        "root",
+        "input_audit"
+      ]
+    },
+    {
+      "id": "IP1-F05",
+      "targetTextSha256": "8c24011f5151f36d969fd416fe7167cf0a2625ad7476589fbb37f7ed7e1c081b",
+      "sourceAndAnnotationRead": true,
+      "exactEvidenceValidated": true,
+      "reviewers": [
+        "root",
+        "input_audit"
+      ]
+    },
+    {
+      "id": "IP1-F06",
+      "targetTextSha256": "d1b6f2fbe73c95e6e23c74705951ffd7ac908c35bffc5cea4ddb0a2c44f9ee19",
+      "sourceAndAnnotationRead": true,
+      "exactEvidenceValidated": true,
+      "reviewers": [
+        "root",
+        "input_audit"
+      ]
+    },
+    {
+      "id": "IP1-F07",
+      "targetTextSha256": "4591e9eea1bd3d17c06e96f8a246097a0209a94d1eddb301335f26546f551d68",
+      "sourceAndAnnotationRead": true,
+      "exactEvidenceValidated": true,
+      "reviewers": [
+        "root",
+        "input_audit"
+      ]
+    },
+    {
+      "id": "IP1-F08",
+      "targetTextSha256": "66717db485d389f777b6240e0825254a15ca09b88608b2f18f20d4978c84f135",
+      "sourceAndAnnotationRead": true,
+      "exactEvidenceValidated": true,
+      "reviewers": [
+        "root",
+        "input_audit"
+      ]
+    },
+    {
+      "id": "IP1-G01",
+      "targetTextSha256": "2e5c81bf79cc69b19605a5cf12e4b0d48c0e880c2d68dd4f241a8b8906a2671f",
+      "sourceAndAnnotationRead": true,
+      "exactEvidenceValidated": true,
+      "reviewers": [
+        "general_dataset",
+        "root"
+      ]
+    },
+    {
+      "id": "IP1-G02",
+      "targetTextSha256": "ae465d681147b1236421ed1bb0bfd285150244eb8606d1be4ecfb5a041ab1ff0",
+      "sourceAndAnnotationRead": true,
+      "exactEvidenceValidated": true,
+      "reviewers": [
+        "general_dataset",
+        "root"
+      ]
+    },
+    {
+      "id": "IP1-G03",
+      "targetTextSha256": "b0290c951448dfab3f7d31911c5ab2d958edf4e10ceb9c9e651e949fac690397",
+      "sourceAndAnnotationRead": true,
+      "exactEvidenceValidated": true,
+      "reviewers": [
+        "general_dataset",
+        "root"
+      ]
+    },
+    {
+      "id": "IP1-G04",
+      "targetTextSha256": "3a8a91644d18563b1c77e7044b15697c34e77e4aa06c74bd4a192becfd39b4b1",
+      "sourceAndAnnotationRead": true,
+      "exactEvidenceValidated": true,
+      "reviewers": [
+        "general_dataset",
+        "root"
+      ]
+    },
+    {
+      "id": "IP1-G05",
+      "targetTextSha256": "d32a5a20a1232ac399fcef81c419107f332ff697b965b8dfbed36d28f7daaa90",
+      "sourceAndAnnotationRead": true,
+      "exactEvidenceValidated": true,
+      "reviewers": [
+        "general_dataset",
+        "root"
+      ]
+    },
+    {
+      "id": "IP1-G06",
+      "targetTextSha256": "cf7a7de26923db9c7e6bdd56d601435a8eeee8bec15d75b895c845fd2bebafcb",
+      "sourceAndAnnotationRead": true,
+      "exactEvidenceValidated": true,
+      "reviewers": [
+        "general_dataset",
+        "root"
+      ]
+    },
+    {
+      "id": "IP1-G07",
+      "targetTextSha256": "d83ac319fe3b0e8f41355299e2d83493fa14f5b7e923eeb67cd8defdf24acf0a",
+      "sourceAndAnnotationRead": true,
+      "exactEvidenceValidated": true,
+      "reviewers": [
+        "general_dataset",
+        "root"
+      ]
+    },
+    {
+      "id": "IP1-G08",
+      "targetTextSha256": "9900f5dfb9516346d1a342fda5a70b425732d878d96f15b675d8e448988aceae",
+      "sourceAndAnnotationRead": true,
+      "exactEvidenceValidated": true,
+      "reviewers": [
+        "general_dataset",
+        "root"
+      ]
+    }
+  ],
+  "unresolvedLimitations": [
+    "도우미 작성 미검수 평가 주석이며 사람 gold 없음",
+    "실제 tokenizer·prompt 동일성·선택기·관계 검사기 미구현",
+    "독립80 내용 및 용어 분모는 후보 동결 뒤 별도 선정을 마칠 때 확정",
+    "현재 자원/AC 검사는 하지 않았으며 실행 preflight 대체 불가"
+  ]
+}

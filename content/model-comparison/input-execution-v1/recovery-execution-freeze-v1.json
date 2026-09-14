@@ -1,0 +1,84 @@
+{
+  "actualRecoveryGenerations": 0,
+  "checks": [
+    {
+      "command": [
+        "C:\\Users\\Insun\\damodaran\\.venv-training\\Scripts\\python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts/model-comparison/input_execution_v1",
+        "-p",
+        "test_recovery_producer.py",
+        "-v"
+      ],
+      "returnCode": 0,
+      "stderr": "test_ac_failure_never_starts_native_or_sends_completion (test_recovery_producer.RecoveryTests.test_ac_failure_never_starts_native_or_sends_completion) ... ok\ntest_changed_prior_fails_before_native (test_recovery_producer.RecoveryTests.test_changed_prior_fails_before_native) ... ok\ntest_interrupted_retry_failure_has_intent_no_automatic_retry (test_recovery_producer.RecoveryTests.test_interrupted_retry_failure_has_intent_no_automatic_retry) ... ok\ntest_last_parity_failure_preserves26missing_zero_calls (test_recovery_producer.RecoveryTests.test_last_parity_failure_preserves26missing_zero_calls) ... ok\ntest_missing_order_cannot_include_retained_or_omit_tail (test_recovery_producer.RecoveryTests.test_missing_order_cannot_include_retained_or_omit_tail) ... ok\ntest_numeric_warning_keeps_output_without_regeneration (test_recovery_producer.RecoveryTests.test_numeric_warning_keeps_output_without_regeneration) ... ok\ntest_only_tail26_called_after_all64_parity (test_recovery_producer.RecoveryTests.test_only_tail26_called_after_all64_parity) ... ok\ntest_original_runtime_and_limits_are_reused (test_recovery_producer.RecoveryTests.test_original_runtime_and_limits_are_reused) ... ok\ntest_preflight_only_attempt_allows_later_real_execution (test_recovery_producer.RecoveryTests.test_preflight_only_attempt_allows_later_real_execution) ... ok\ntest_recovery_writer_refuses_other_root_and_other_file (test_recovery_producer.RecoveryTests.test_recovery_writer_refuses_other_root_and_other_file) ... ok\ntest_second_recovery_after_any_request_intent_is_rejected (test_recovery_producer.RecoveryTests.test_second_recovery_after_any_request_intent_is_rejected) ... ok\ntest_unknown_original_run_completion_is_not_silently_ignored (test_recovery_producer.RecoveryTests.test_unknown_original_run_completion_is_not_silently_ignored) ... ok\n\n----------------------------------------------------------------------\nRan 12 tests in 0.660s\n\nOK\n",
+      "stdout": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\Insun\\damodaran\\.venv-training\\Scripts\\python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts/model-comparison/input_execution_v1",
+        "-p",
+        "test_recovery_cohort.py",
+        "-v"
+      ],
+      "returnCode": 0,
+      "stderr": "test_artifact_inventory_is_closed_and_bound (test_recovery_cohort.RecoveryCohortTests.test_artifact_inventory_is_closed_and_bound) ... ok\ntest_cohort_preserves_original_ndjson_and_failed_provenance (test_recovery_cohort.RecoveryCohortTests.test_cohort_preserves_original_ndjson_and_failed_provenance) ... ok\ntest_complete_recovery_run_validates_all64_parity_and26_real_contract_responses (test_recovery_cohort.RecoveryCohortTests.test_complete_recovery_run_validates_all64_parity_and26_real_contract_responses) ... ok\ntest_completion_before_all64_parity_is_rejected (test_recovery_cohort.RecoveryCohortTests.test_completion_before_all64_parity_is_rejected) ... ok\ntest_duplicate_json_keys_and_nonfinite_numbers_rejected (test_recovery_cohort.RecoveryCohortTests.test_duplicate_json_keys_and_nonfinite_numbers_rejected) ... ok\ntest_input_file_hash_is_streamed_and_checked (test_recovery_cohort.RecoveryCohortTests.test_input_file_hash_is_streamed_and_checked) ... ok\ntest_missing_or_extra_http_request_cannot_hide_in_counters (test_recovery_cohort.RecoveryCohortTests.test_missing_or_extra_http_request_cannot_hide_in_counters) ... ok\ntest_new_record_must_mark_only_interrupted_retry (test_recovery_cohort.RecoveryCohortTests.test_new_record_must_mark_only_interrupted_retry) ... ok\ntest_original_record_rewrite_with_updated_manifest_is_rejected (test_recovery_cohort.RecoveryCohortTests.test_original_record_rewrite_with_updated_manifest_is_rejected) ... ok\ntest_output_record_changes_are_rejected (test_recovery_cohort.RecoveryCohortTests.test_output_record_changes_are_rejected) ... ok\ntest_pinned_failed_summary_cannot_be_promoted_in_place (test_recovery_cohort.RecoveryCohortTests.test_pinned_failed_summary_cannot_be_promoted_in_place) ... ok\ntest_prediction_change_after_validation_blocks_build (test_recovery_cohort.RecoveryCohortTests.test_prediction_change_after_validation_blocks_build) ... ok\ntest_quality_warning_is_not_regeneration_permission (test_recovery_cohort.RecoveryCohortTests.test_quality_warning_is_not_regeneration_permission) ... ok\ntest_raw_response_and_receipt_corruption_are_rejected (test_recovery_cohort.RecoveryCohortTests.test_raw_response_and_receipt_corruption_are_rejected) ... ok\ntest_request_timeout_and_other_recovery_calls_are_rejected (test_recovery_cohort.RecoveryCohortTests.test_request_timeout_and_other_recovery_calls_are_rejected) ... ok\ntest_run_mutation_during_output_validation_is_rejected (test_recovery_cohort.RecoveryCohortTests.test_run_mutation_during_output_validation_is_rejected) ... ok\ntest_saved_sorted_payload_reconstructs_actual_wire_hash (test_recovery_cohort.RecoveryCohortTests.test_saved_sorted_payload_reconstructs_actual_wire_hash) ... ok\ntest_valid_record_preserves_raw_outer_whitespace (test_recovery_cohort.RecoveryCohortTests.test_valid_record_preserves_raw_outer_whitespace) ... ok\n\n----------------------------------------------------------------------\nRan 18 tests in 12.170s\n\nOK\n",
+      "stdout": ""
+    }
+  ],
+  "createdAtUtc": "2026-09-14T00:14:00.808365+00:00",
+  "criteriaAuthority": "Original S1 frozen contract; technical recovery only",
+  "files": [
+    {
+      "bytes": 19203,
+      "path": "scripts/model-comparison/input_execution_v1/recovery_producer.py",
+      "sha256": "be57b90542f26fed7cc5e5f3f0b75430b820e58bfd4bba448e5d9c9447910739"
+    },
+    {
+      "bytes": 13230,
+      "path": "scripts/model-comparison/input_execution_v1/test_recovery_producer.py",
+      "sha256": "e2708dc32e2abfb557e5805125237b20d973cf2a04d49c39daa5751a8d8da152"
+    },
+    {
+      "bytes": 31711,
+      "path": "scripts/model-comparison/input_execution_v1/recovery_cohort.py",
+      "sha256": "f0aaf20c9cbb6a19e918d7ed9a7fdbb08114168493088ae7917cbb6e88a28b67"
+    },
+    {
+      "bytes": 19661,
+      "path": "scripts/model-comparison/input_execution_v1/test_recovery_cohort.py",
+      "sha256": "6ec41b7a4ade5fffb5bbdc4ac8d1f9de769fcb8759823e09a316fb8cfbde8bdd"
+    },
+    {
+      "bytes": 3314,
+      "path": "content/model-comparison/input-execution-v1/RECOVERY_V1.md",
+      "sha256": "c7a7d2d7b3d2f2c9f96820894d2a3208a921a8da558576f7b23f5206ba7eefc4"
+    },
+    {
+      "bytes": 721,
+      "path": "content/model-comparison/input-execution-v1/RECOVERY_PRIOR.json",
+      "sha256": "184bd982c40b7f8fb40a7fbaf822aecd36e062d522fb6f097daa98a99a4e7bfe"
+    }
+  ],
+  "humanReviewed": false,
+  "originalCompletedOutputs": 38,
+  "originalFailedRunPreserved": true,
+  "pendingOutputs": 26,
+  "s1FreezeSha256": "b70304bbd8a3961096f6d07116d51196ece3c4416977f0c0899cf712b7ada4cf",
+  "s2ManifestSha256": "b007e567881c1a6dfa556c775eda65916aa49d76559dedc14420c0e127866653",
+  "version": "input-execution-v1-recovery-execution-freeze-v1"
+}

@@ -1,0 +1,574 @@
+{
+  "schemaVersion": "input-preparation-source-v1",
+  "language": "en",
+  "inputUnits": [
+    {
+      "id": "IP1-G01",
+      "domain": "general",
+      "provenance": {
+        "kind": "assistant-authored-structured-fixture",
+        "synthetic": true,
+        "humanReviewed": false,
+        "createdOn": "2026-09-13",
+        "split": "development-diagnostic",
+        "independentEvaluation": false,
+        "externalSource": null,
+        "note": "새로 도우미가 작성한 미검수 합성 원문이다. 실제 공개 자료 인용이나 개인 기록이 아니다. 알려진 오류 유형을 진단하므로 독립 최종 평가로 사용하지 않는다."
+      },
+      "document": {
+        "resourceId": "IP1-general-document-01",
+        "sourceVersionId": "IP1-general-document-01-A",
+        "title": "Visitor pass coverage",
+        "format": "html",
+        "extractorVersion": "structured-v2-compatible-fixture",
+        "structureProvenance": "assistant-authored; not an extraction run",
+        "blocks": [
+          {
+            "id": "IP1-G01-B01",
+            "order": 0,
+            "kind": "heading",
+            "text": "Visitor pass coverage",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": [],
+              "level": 2
+            },
+            "textSha256": "32f14fb1e3959b23070cf5d58414332588835cc6d2b100cf8bfa807a3a2608cb"
+          },
+          {
+            "id": "IP1-G01-B02",
+            "order": 1,
+            "kind": "paragraph",
+            "text": "The museum issues a temporary pass to visiting researchers. The following paragraph defines the access granted by this pass, rather than by a permanent staff badge.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "5d4e81989e2083fb9cd9b1eb4a8503a59a1c7a6bef9ba75264dc3dd2dd72c1da"
+          },
+          {
+            "id": "IP1-G01-B03",
+            "order": 2,
+            "kind": "paragraph",
+            "text": "It does not exclude the temporary storage room from the areas a visitor may enter. The security check still applies to every visitor, regardless of the rooms listed on the permit. Holders may enter the reading room only with a guide. Staff must record the time when the pass is returned, even if its holder has visited just one room.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "2e5c81bf79cc69b19605a5cf12e4b0d48c0e880c2d68dd4f241a8b8906a2671f"
+          },
+          {
+            "id": "IP1-G01-B04",
+            "order": 3,
+            "kind": "paragraph",
+            "text": "At the end of each visit, the reception team files the access record with the daily attendance sheet.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "8ce77d1e1b2db1612dc3e2c3790f1c3e07054b272876a331c84bddf93941335b"
+          }
+        ],
+        "titleKo": ""
+      },
+      "targetBlockId": "IP1-G01-B03"
+    },
+    {
+      "id": "IP1-G02",
+      "domain": "general",
+      "provenance": {
+        "kind": "assistant-authored-structured-fixture",
+        "synthetic": true,
+        "humanReviewed": false,
+        "createdOn": "2026-09-13",
+        "split": "development-diagnostic",
+        "independentEvaluation": false,
+        "externalSource": null,
+        "note": "새로 도우미가 작성한 미검수 합성 원문이다. 실제 공개 자료 인용이나 개인 기록이 아니다. 알려진 오류 유형을 진단하므로 독립 최종 평가로 사용하지 않는다."
+      },
+      "document": {
+        "resourceId": "IP1-general-document-01",
+        "sourceVersionId": "IP1-general-document-01-B",
+        "title": "Visitor pass coverage",
+        "format": "html",
+        "extractorVersion": "structured-v2-compatible-fixture",
+        "structureProvenance": "assistant-authored; not an extraction run",
+        "blocks": [
+          {
+            "id": "IP1-G02-B01",
+            "order": 0,
+            "kind": "heading",
+            "text": "Visitor pass coverage",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": [],
+              "level": 2
+            },
+            "textSha256": "32f14fb1e3959b23070cf5d58414332588835cc6d2b100cf8bfa807a3a2608cb"
+          },
+          {
+            "id": "IP1-G02-B02",
+            "order": 1,
+            "kind": "paragraph",
+            "text": "The museum issues a temporary pass to visiting researchers. The following paragraph defines the access granted by this pass, rather than by a permanent staff badge.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "5d4e81989e2083fb9cd9b1eb4a8503a59a1c7a6bef9ba75264dc3dd2dd72c1da"
+          },
+          {
+            "id": "IP1-G02-B03",
+            "order": 2,
+            "kind": "paragraph",
+            "text": "It does not include the temporary storage room in the areas a visitor may enter. The security check still applies to every visitor, regardless of the rooms listed on the permit. Holders may enter the reading room only with a guide. Staff must record the time when the pass is returned, even if its holder has visited just one room.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "ae465d681147b1236421ed1bb0bfd285150244eb8606d1be4ecfb5a041ab1ff0"
+          },
+          {
+            "id": "IP1-G02-B04",
+            "order": 3,
+            "kind": "paragraph",
+            "text": "At the end of each visit, the reception team files the access record with the daily attendance sheet.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "8ce77d1e1b2db1612dc3e2c3790f1c3e07054b272876a331c84bddf93941335b"
+          }
+        ],
+        "titleKo": ""
+      },
+      "targetBlockId": "IP1-G02-B03"
+    },
+    {
+      "id": "IP1-G03",
+      "domain": "general",
+      "provenance": {
+        "kind": "assistant-authored-structured-fixture",
+        "synthetic": true,
+        "humanReviewed": false,
+        "createdOn": "2026-09-13",
+        "split": "development-diagnostic",
+        "independentEvaluation": false,
+        "externalSource": null,
+        "note": "새로 도우미가 작성한 미검수 합성 원문이다. 실제 공개 자료 인용이나 개인 기록이 아니다. 알려진 오류 유형을 진단하므로 독립 최종 평가로 사용하지 않는다."
+      },
+      "document": {
+        "resourceId": "IP1-general-document-02",
+        "sourceVersionId": "IP1-general-document-02-A",
+        "title": "Visitor access and maintenance",
+        "format": "html",
+        "extractorVersion": "structured-v2-compatible-fixture",
+        "structureProvenance": "assistant-authored; not an extraction run",
+        "blocks": [
+          {
+            "id": "IP1-G03-B01",
+            "order": 0,
+            "kind": "heading",
+            "text": "Visitor access and maintenance",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": [],
+              "level": 2
+            },
+            "textSha256": "674b485c893eb25f9f39a1fc38e4ce9472299006fd14fa7349a821931d28f9af"
+          },
+          {
+            "id": "IP1-G03-B02",
+            "order": 1,
+            "kind": "paragraph",
+            "text": "The museum has a public admission service at its main gate. A maintenance period is shown separately on the calendar, and the next paragraph explains when the admission service operates.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "1f234532aa04da6a43a94f5904ac19b4a941c76815ee18aa24b15a630d689980"
+          },
+          {
+            "id": "IP1-G03-B03",
+            "order": 2,
+            "kind": "paragraph",
+            "text": "It operates only after the maintenance period, according to the schedule issued by the museum. The security team supervises the main gate whenever the service is operating. The maintenance crew uses a separate entrance, so its arrival does not establish that the main gate is open. Visitors must consult the posted schedule rather than infer opening hours from the presence of workers.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "b0290c951448dfab3f7d31911c5ab2d958edf4e10ceb9c9e651e949fac690397"
+          },
+          {
+            "id": "IP1-G03-B04",
+            "order": 3,
+            "kind": "paragraph",
+            "text": "Questions about the calendar go to the reception office; equipment requests go to the maintenance supervisor.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "94ba7687e629dd4c52a23d34cf4e2eb277af059b09a39262105d797a419890f8"
+          }
+        ],
+        "titleKo": ""
+      },
+      "targetBlockId": "IP1-G03-B03"
+    },
+    {
+      "id": "IP1-G04",
+      "domain": "general",
+      "provenance": {
+        "kind": "assistant-authored-structured-fixture",
+        "synthetic": true,
+        "humanReviewed": false,
+        "createdOn": "2026-09-13",
+        "split": "development-diagnostic",
+        "independentEvaluation": false,
+        "externalSource": null,
+        "note": "새로 도우미가 작성한 미검수 합성 원문이다. 실제 공개 자료 인용이나 개인 기록이 아니다. 알려진 오류 유형을 진단하므로 독립 최종 평가로 사용하지 않는다."
+      },
+      "document": {
+        "resourceId": "IP1-general-document-02",
+        "sourceVersionId": "IP1-general-document-02-B",
+        "title": "Visitor access and maintenance",
+        "format": "html",
+        "extractorVersion": "structured-v2-compatible-fixture",
+        "structureProvenance": "assistant-authored; not an extraction run",
+        "blocks": [
+          {
+            "id": "IP1-G04-B01",
+            "order": 0,
+            "kind": "heading",
+            "text": "Visitor access and maintenance",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": [],
+              "level": 2
+            },
+            "textSha256": "674b485c893eb25f9f39a1fc38e4ce9472299006fd14fa7349a821931d28f9af"
+          },
+          {
+            "id": "IP1-G04-B02",
+            "order": 1,
+            "kind": "paragraph",
+            "text": "The museum has a public admission service at its main gate. A maintenance period is shown separately on the calendar, and the next paragraph explains when the admission service operates.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "1f234532aa04da6a43a94f5904ac19b4a941c76815ee18aa24b15a630d689980"
+          },
+          {
+            "id": "IP1-G04-B03",
+            "order": 2,
+            "kind": "paragraph",
+            "text": "It operates only during the maintenance period, according to the schedule issued by the museum. The security team supervises the main gate whenever the service is operating. The maintenance crew uses a separate entrance, so its arrival does not establish that the main gate is open. Visitors must consult the posted schedule rather than infer opening hours from the presence of workers.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "3a8a91644d18563b1c77e7044b15697c34e77e4aa06c74bd4a192becfd39b4b1"
+          },
+          {
+            "id": "IP1-G04-B04",
+            "order": 3,
+            "kind": "paragraph",
+            "text": "Questions about the calendar go to the reception office; equipment requests go to the maintenance supervisor.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "94ba7687e629dd4c52a23d34cf4e2eb277af059b09a39262105d797a419890f8"
+          }
+        ],
+        "titleKo": ""
+      },
+      "targetBlockId": "IP1-G04-B03"
+    },
+    {
+      "id": "IP1-G05",
+      "domain": "general",
+      "provenance": {
+        "kind": "assistant-authored-structured-fixture",
+        "synthetic": true,
+        "humanReviewed": false,
+        "createdOn": "2026-09-13",
+        "split": "development-diagnostic",
+        "independentEvaluation": false,
+        "externalSource": null,
+        "note": "새로 도우미가 작성한 미검수 합성 원문이다. 실제 공개 자료 인용이나 개인 기록이 아니다. 알려진 오류 유형을 진단하므로 독립 최종 평가로 사용하지 않는다."
+      },
+      "document": {
+        "resourceId": "IP1-general-document-03",
+        "sourceVersionId": "IP1-general-document-03-A",
+        "title": "Measuring a file-processing batch",
+        "format": "html",
+        "extractorVersion": "structured-v2-compatible-fixture",
+        "structureProvenance": "assistant-authored; not an extraction run",
+        "blocks": [
+          {
+            "id": "IP1-G05-B01",
+            "order": 0,
+            "kind": "heading",
+            "text": "Measuring a file-processing batch",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": [],
+              "level": 2
+            },
+            "textSha256": "5eed1d0ea691a2149135dbf87a9755a2c3c09d18867e8b6b61bba78bdbba3c09"
+          },
+          {
+            "id": "IP1-G05-B02",
+            "order": 1,
+            "kind": "paragraph",
+            "text": "The lab records the number of completed files and the processing time in minutes. Its active timer begins after setup. Loading the software before that timer starts is setup overhead.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "88f9d3dcc17b4e858ec76e2daaa5a758a0facb196b28f1c626be953a599dff4b"
+          },
+          {
+            "id": "IP1-G05-B03",
+            "order": 2,
+            "kind": "paragraph",
+            "text": "Divide the number of completed files by the processing time to obtain the measure in files per minute. This quotient uses only the interval recorded by the active timer. It excludes the setup overhead described above, even if setup takes longer than processing. The log records interrupted runs separately; do not combine an interrupted run with a completed batch when calculating this measure.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "d32a5a20a1232ac399fcef81c419107f332ff697b965b8dfbed36d28f7daaa90"
+          },
+          {
+            "id": "IP1-G05-B04",
+            "order": 3,
+            "kind": "paragraph",
+            "text": "The operator stores the raw counts and timer readings so another person can reproduce the reported measure.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "6b260274352851faf120630e18b84fa3bee409c98b088f885d10ea4747237042"
+          }
+        ],
+        "titleKo": ""
+      },
+      "targetBlockId": "IP1-G05-B03"
+    },
+    {
+      "id": "IP1-G06",
+      "domain": "general",
+      "provenance": {
+        "kind": "assistant-authored-structured-fixture",
+        "synthetic": true,
+        "humanReviewed": false,
+        "createdOn": "2026-09-13",
+        "split": "development-diagnostic",
+        "independentEvaluation": false,
+        "externalSource": null,
+        "note": "새로 도우미가 작성한 미검수 합성 원문이다. 실제 공개 자료 인용이나 개인 기록이 아니다. 알려진 오류 유형을 진단하므로 독립 최종 평가로 사용하지 않는다."
+      },
+      "document": {
+        "resourceId": "IP1-general-document-03",
+        "sourceVersionId": "IP1-general-document-03-B",
+        "title": "Measuring a file-processing batch",
+        "format": "html",
+        "extractorVersion": "structured-v2-compatible-fixture",
+        "structureProvenance": "assistant-authored; not an extraction run",
+        "blocks": [
+          {
+            "id": "IP1-G06-B01",
+            "order": 0,
+            "kind": "heading",
+            "text": "Measuring a file-processing batch",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": [],
+              "level": 2
+            },
+            "textSha256": "5eed1d0ea691a2149135dbf87a9755a2c3c09d18867e8b6b61bba78bdbba3c09"
+          },
+          {
+            "id": "IP1-G06-B02",
+            "order": 1,
+            "kind": "paragraph",
+            "text": "The lab records the number of completed files and the processing time in minutes. Its active timer begins after setup. Loading the software before that timer starts is setup overhead.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "88f9d3dcc17b4e858ec76e2daaa5a758a0facb196b28f1c626be953a599dff4b"
+          },
+          {
+            "id": "IP1-G06-B03",
+            "order": 2,
+            "kind": "paragraph",
+            "text": "Divide the processing time by the number of completed files to obtain the measure in minutes per file. This quotient uses only the interval recorded by the active timer. It excludes the setup overhead described above, even if setup takes longer than processing. The log records interrupted runs separately; do not combine an interrupted run with a completed batch when calculating this measure.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "cf7a7de26923db9c7e6bdd56d601435a8eeee8bec15d75b895c845fd2bebafcb"
+          },
+          {
+            "id": "IP1-G06-B04",
+            "order": 3,
+            "kind": "paragraph",
+            "text": "The operator stores the raw counts and timer readings so another person can reproduce the reported measure.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "6b260274352851faf120630e18b84fa3bee409c98b088f885d10ea4747237042"
+          }
+        ],
+        "titleKo": ""
+      },
+      "targetBlockId": "IP1-G06-B03"
+    },
+    {
+      "id": "IP1-G07",
+      "domain": "general",
+      "provenance": {
+        "kind": "assistant-authored-structured-fixture",
+        "synthetic": true,
+        "humanReviewed": false,
+        "createdOn": "2026-09-13",
+        "split": "development-diagnostic",
+        "independentEvaluation": false,
+        "externalSource": null,
+        "note": "새로 도우미가 작성한 미검수 합성 원문이다. 실제 공개 자료 인용이나 개인 기록이 아니다. 알려진 오류 유형을 진단하므로 독립 최종 평가로 사용하지 않는다."
+      },
+      "document": {
+        "resourceId": "IP1-general-document-04",
+        "sourceVersionId": "IP1-general-document-04-A",
+        "title": "Equity in workshop scheduling",
+        "format": "html",
+        "extractorVersion": "structured-v2-compatible-fixture",
+        "structureProvenance": "assistant-authored; not an extraction run",
+        "blocks": [
+          {
+            "id": "IP1-G07-B01",
+            "order": 0,
+            "kind": "heading",
+            "text": "Equity in workshop scheduling",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": [],
+              "level": 2
+            },
+            "textSha256": "29747da2504e44a1987a1c6829b0df224b91239c9e0d0f74e7718f1c15cf66a5"
+          },
+          {
+            "id": "IP1-G07-B02",
+            "order": 1,
+            "kind": "paragraph",
+            "text": "The workshop council is testing a session rule. In its report, equity concerns how fairly participants receive teaching time. The next paragraph states the requirement of this particular rule.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "7d6dbbfa1d00738f06db9f08dba9706db39f3e73e0520789a44faab6bfb1bd8b"
+          },
+          {
+            "id": "IP1-G07-B03",
+            "order": 2,
+            "kind": "paragraph",
+            "text": "Under this rule, equity requires identical session lengths for every participant. Their interest in the topic is recorded in a separate survey and does not change the rule. The coordinator uses this record to plan optional reading, while attendance is entered in another register. The report evaluates access to teaching; it does not describe an investment or a share of a company.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "d83ac319fe3b0e8f41355299e2d83493fa14f5b7e923eeb67cd8defdf24acf0a"
+          },
+          {
+            "id": "IP1-G07-B04",
+            "order": 3,
+            "kind": "paragraph",
+            "text": "The council will discuss the trial report at its next meeting before deciding whether to keep the rule.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "3ac6fd1a1e900286d505596b7634e11ba5d584604406034d8345465bcf81fe39"
+          }
+        ],
+        "titleKo": ""
+      },
+      "targetBlockId": "IP1-G07-B03"
+    },
+    {
+      "id": "IP1-G08",
+      "domain": "general",
+      "provenance": {
+        "kind": "assistant-authored-structured-fixture",
+        "synthetic": true,
+        "humanReviewed": false,
+        "createdOn": "2026-09-13",
+        "split": "development-diagnostic",
+        "independentEvaluation": false,
+        "externalSource": null,
+        "note": "새로 도우미가 작성한 미검수 합성 원문이다. 실제 공개 자료 인용이나 개인 기록이 아니다. 알려진 오류 유형을 진단하므로 독립 최종 평가로 사용하지 않는다."
+      },
+      "document": {
+        "resourceId": "IP1-general-document-04",
+        "sourceVersionId": "IP1-general-document-04-B",
+        "title": "Equity in workshop scheduling",
+        "format": "html",
+        "extractorVersion": "structured-v2-compatible-fixture",
+        "structureProvenance": "assistant-authored; not an extraction run",
+        "blocks": [
+          {
+            "id": "IP1-G08-B01",
+            "order": 0,
+            "kind": "heading",
+            "text": "Equity in workshop scheduling",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": [],
+              "level": 2
+            },
+            "textSha256": "29747da2504e44a1987a1c6829b0df224b91239c9e0d0f74e7718f1c15cf66a5"
+          },
+          {
+            "id": "IP1-G08-B02",
+            "order": 1,
+            "kind": "paragraph",
+            "text": "The workshop council is testing a session rule. In its report, equity concerns how fairly participants receive teaching time. The next paragraph states the requirement of this particular rule.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "7d6dbbfa1d00738f06db9f08dba9706db39f3e73e0520789a44faab6bfb1bd8b"
+          },
+          {
+            "id": "IP1-G08-B03",
+            "order": 2,
+            "kind": "paragraph",
+            "text": "Under this rule, equity does not require identical session lengths for every participant. Their interest in the topic is recorded in a separate survey and does not change the rule. The coordinator uses this record to plan optional reading, while attendance is entered in another register. The report evaluates access to teaching; it does not describe an investment or a share of a company.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "9900f5dfb9516346d1a342fda5a70b425732d878d96f15b675d8e448988aceae"
+          },
+          {
+            "id": "IP1-G08-B04",
+            "order": 3,
+            "kind": "paragraph",
+            "text": "The council will discuss the trial report at its next meeting before deciding whether to keep the rule.",
+            "metadata": {
+              "schemaVersion": 1,
+              "links": []
+            },
+            "textSha256": "3ac6fd1a1e900286d505596b7634e11ba5d584604406034d8345465bcf81fe39"
+          }
+        ],
+        "titleKo": ""
+      },
+      "targetBlockId": "IP1-G08-B03"
+    }
+  ]
+}

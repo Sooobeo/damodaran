@@ -1,8 +1,38 @@
 # 구현 상태 — 달모다란 (MoonModaran)
 
+**최신 S5 상태 — 질문9/64개 실제 저장, 남은55개 부분 복구 준비.** 배터리 v4는9개의 단일 호출과 소유 프로세스 종료를 마친 뒤 R010의 시작 메모리 검사에서 중단됐다. 배터리는72%였고, 첫 관측의 여유 메모리가9GiB보다30,420,992바이트 부족했다가 두 번째 관측에서 회복됐다. [부분 복구 v5](content/model-comparison/input-execution-v1/LOCAL_QUESTION_PARTIAL_RECOVERY_V5.md)는 원9개와 원래 failed 실행·claim을 보존하며 R010~R064만 새로 생성한다. 시작 메모리 기준을 유지하고 native 생성 전 최대300초 회복을 기다린다. 현재 복구 구현·검증을 준비 중이며, 전체64개 답변 동결·질문 채점·후보 선택·S6은 아직 미완료다. [실제 중단 감사](.training/verifications/question-battery-partial-stop-audit-20260914.json)를 기준으로 이어간다.
+
 작성일: 2026-09-10. 기준은 [제품 요구사항](DAMODARAN_KO_LEARNING_SPEC.md) P0와 [DB·페이지 설계](SYSTEM_DESIGN.md)다. 실행과 설정은 [README](README.md)를 따른다.
 
-## 2026-09-13 — 공통 입력 처리·의미 관계 검사 개선 계획
+## 2026-09-14 — S4 실제64개 완료·S5 질문9개 보존과 나머지55개 복구 준비
+
+최신 사용자 지시로 S4부터 조건부 S6까지 진행한다. 사용자는 2026-09-14 후속 지시로 충전기 없이 배터리 전원에서 계속 실행하도록 명시했다. [배터리 실행 v4](content/model-comparison/input-execution-v1/LOCAL_QUESTION_BATTERY_EXECUTION_V4.md)는 AC0/1과 알려진 배터리 잔량20% 초과를 허용하며 CPU4·메모리·소유 프로세스·시간 제한과 질문/평가 기준을 유지한다. 이전 AC 전용 실패·동결을 보존하고 새 실행 정체성으로 진행한다. 2026-09-14 17:10 KST에 배터리 실행 v4를 실제 시작했다. [39개 구현 검사와 동결 검증](.training/verifications/question-battery-freeze-verification-20260914.json)을 마쳤고 [실제 사전검사](.training/verifications/question-battery-preflight-20260914.json)는 배터리80%·AC0에서 통과했다. 첫 소유 native 프로세스의 입력/토큰 대조 후 질문 요청을 전달했다. 전체64개 답변 저장·종료·무결성 확인과 답변 동결 뒤 채점한다. 아직 완료나 후보 선택을 선언하지 않는다. 아래 AC0 중단은 그 승인 이전 이력이다. [새 실행 도구와 평가 안내](content/model-comparison/input-execution-v1/README.md)에 별도 producer·자원 guard·원시 HTTP 기록·원문 검토/독립 질문/후보 선택 계약을 연결했다. S1/S2/S3 동결 파일·활성 등록·운영 DB는 유지한다.
+
+S4 `attempt-001`은 실제64개 template/token 대조 후38개를 저장했고39번째 요청에서 응답 없이 전원 감시 중단을 기록했다. 원래 failed 상태·원시 응답·소유 종료·최종 무결성을 보존했다. [복구 계약](content/model-comparison/input-execution-v1/RECOVERY_V1.md)의 `s4-recovery/recovery-attempt-001`은 새 두 차례 AC1/자원 사전검사와64개 서버 입력 대조 후26개를 모두 저장했다. elapsed3,072.766초, 누락0, 소유 native 종료·임시 전원 요청 해제·입력/출력 무결성 통과다. 실행기12개·복구 검증18개 검사를 통과해 동결한6파일은 유지한다.
+
+임시 포트와 그에 대응하는 CORS origin 비교는 [별도 v2 검증 계약](content/model-comparison/input-execution-v1/RECOVERY_COHORT_VALIDATION_V2.md)으로 보완했다. 실제64개 논리 묶음 `s4-cohort-v2-20260914`와 정식 S5 packet `s5-formal-v2-20260914`를 만들고 재검증했다. 원래38개/새26개의 run ID와65회 요청 중1회 미확보를 그대로 기록한다. v2 코드 검사들은 서로 별도 실행으로 cohort17·평가/transport24·잠정/lineage13·관계7·원장13개가 통과했고 [13파일 동결](content/model-comparison/input-execution-v1/recovery-evaluation-freeze-v2.json)에 연결했다.
+
+새 질문 에이전트 생성 한도로 [Qwen 로컬 독립 질문 경로](content/model-comparison/input-execution-v1/LOCAL_QUESTION_REVIEW_PROTOCOL_V1.md)를 구현·동결했다. 고정 설치의 runtime51개+모델1개를 정확히 구분하는 별도 교정9파일은 runner13·transport17·평가24·원장17개 검사를 각각 통과했다. 실제 시도는 claim 작성 후 PowerRequest 진입에서 중단되어 native/질문 호출0이다. 후속 두 관측에서 AC0/ac_power_required를 확인했고, [실제 중단 증거와 별도 재개 조건](content/model-comparison/input-execution-v1/QUESTION_POWER_STOP_20260914.md)을 남겼다. 원래 실패 summary의 상세 원인은 ResourceGuardError까지만 남아 있어 후속 전원 관측과 구분한다. 후속 [0회 호출 복구 v3](content/model-comparison/input-execution-v1/LOCAL_QUESTION_ZERO_CALL_RECOVERY_V3.md)는 기존3파일 실패/claim을 보존하고 새9파일을 [동결](content/model-comparison/input-execution-v1/local-question-zero-call-recovery-freeze-v3.json)했다. 전원·자원 사전조건 실패는 별도 audit에 남기며 새 run/claim을 소비하지 않는다. [실제 v3 사전검사](.training/verifications/question-recovery-preflight-20260914.json)에서 기존 설치 전체 해시·Python·모델 metadata를 검증한 뒤 두 관측 모두 AC0/ac_power_required를 확인했다. 당시 v3의 native·질문 호출·새 run/claim은0이었다. 이후 v4 실제 실행을 시작했으며 채점은 전체 답변 동결을 기다린다. 한국어 packet마다 완전히 새 native 프로세스에서 한 번 답변하며 실제 생성·해시·격리·종료를 확인한 뒤 전체64개 답변을 먼저 동결한다. 도구의 합성 검사와 실제 QA 완료를 구분하며 S5 질문·채점·후보 선택과 S6은 아직 미완료다. 이번 작업에서 앱 build/E2E·HTML3문단/PDF1페이지 앱 생성/저장/캐시 검증은 실행하지 않았고 운영 DB·활성 등록·기존 번역 검토146개는 유지했다.
+
+## 2026-09-13 — S2 입력 준비·S3 저장 출력 진단 완료 당시 기록
+
+[S2/S3 완료 기록](content/model-comparison/input-preparation-v1-s2s3/README.md)에 새 문맥·출현별 뜻 선택기·비교 입력 연결·어휘 전용 native tokenizer·관계 검사기를 정리했다. 운영 경로와 별도 Python 코드이며 S1 동결 자료·등록 사전/코드·가중치·개인 DB·원문 버전은 보존했다. Windows 코드 검사78개(문맥22·사전24·통합13·관계v1 6/v2 8·원장5)가 통과했다. 앱 build/E2E는 실행하지 않았다.
+
+S2는16단위×C0~C3의64개 입력을 `s2-prepared/attempt-002/`에 확정했다. 실제 native tokenizer88요청·전체 prompt281~621토큰,4095상한 내이며 C0의 실제 Node 문맥 식16/16과 등록 builder/Jinja를 대조했다. 성공 실행11.750초·최대 working set103,772,160바이트·어휘 로드1·context/가중치 tensor/생성0·소유 종료 exit0이다. 앞선 smoke와 저장 직전 경로 처리 오류가 난 attempt-001도 보존했고, 해당 기술 오류 수정 후 새 attempt에서 완료했다. 새 사전은 이번16단위에서 금융 힌트0개이며 C2/C3의 의미 분별 효과가 실증된 것은 아니다. 사전 변경이 실제 prompt에 영향을 준 대상은 기존3힌트를 제거한 F02/F04뿐이다.
+
+S3는 기존98출력·122판정과930근거 파일 해시를 보존한 진단이다. 합성64반례가 통과했고 실제 경고는 기존 TG27 상대%→%p 오류1건 재검출이다. 일부 관계가 지원된 출력36/98, 관계 상태40/588이며 미지원·보류는 통과가 아니다. 초기v1 표기 오탐5와 결과를 보존한 뒤 새v2에서 보완했다. 원장에는 relation_observation98개만 추가하여738→836사건, 반복 추가0/재사용98, 번역 검토146개 그대로다. 관계별 독립gold·QE95/95·생성 품질 개선·독립 holdout·앱 적용은 미완료다.
+
+S4 읽기 전용 점검은2026-09-13 07:31 UTC 기준 ACLineStatus=0, 가용 physical11.535GiB/commit19.850GiB였다. native 이름 일치0·명시worker0이지만 미분류Node가 있어 모든 실행기 부재를 확정하지 않았다. 새 생성기·상호 배제·실행 중 자원 감시 구현과 Hy7 전용 자원 조건 동결, 실제 AC/자원 재확인·서버 endpoint 대조가 남아 있다. 이 점검으로 모델을 시작하지 않았다. S4~S6와 후순위 TG27 읽기6은 미완료다.
+
+## 2026-09-13 — 공통 입력 준비 S1 완료 당시 기록
+
+[S1 완료 자료](content/model-comparison/input-preparation-v1/README.md)에 현재 Hy7 입력 감사·입력/평가 계약·별도 사전과 자료를 고정했다. 개발16단위(금융8/일반8)는 실제 공개 회귀4·새 합성12이며, 핵심 명제48·질문32(핵심16)·선정 용어39출현이다. 사전8개념·24뜻·11출처, C0~C3의 정책/공통 생성 조건·4095입력토큰 한도·완료/중단·정답 격리, 후속 독립 금융60/일반20의 선정 절차를 먼저 정했다.
+
+Windows에서 새 S1 검증기로 JSON·묶음 내부 소속·인용·용어 위치·분모·원문/자료 해시를 확인했다. 별도 읽기 전용 DB 대조로 공개 원문 snapshot의 실제 소속·텍스트·구조를 확인했다. 현재 등록·모델 전체·runtime/code 등104파일 및 기존14데이터 파일의2,345원문/문맥 행을 대조했고 소비 test와의 중복0·새 그룹 밖 중복0이었다. 공개4대상은 모두 Marian train과 겹쳐 회귀로 명시했고 공개 본문과 평가 인용은 Git 제외 로컬 source-bundles에 보존했다. 별도 도우미 원문/계약 검토에서 발견한 부정·가정·상대%와 질문 격리 문제를 동결 전에 보완했다.
+
+이 결과는 입력·평가 자료 검증이다. **S2~S6 미착수, 모델/실제 tokenizer 호출0, 앱 build/E2E 미실행**이다. 새 선택기·관계 검사기의 구현 완료나 생성/탐지 품질 향상을 주장하지 않는다. 운영 DB·개인 기록·원문 버전·등록·기존 원장은 변경하지 않았다. 현재 전원/RAM과 향후 독립 답변자 확보는 이번에 확인하지 않았으며 실행 전에 별도 확인한다.
+
+## 2026-09-13 — S1 착수 전 계획 기록
 
 최신 작업 순서는 [인수인계28절](TRANSLATION_HANDOFF_20260911.md#28-공통-입력-처리와-의미-관계-검사-개선-실행-계획)이다. 구조 문맥·문맥별 의미 사전·관계 검사 준비를 우선하고, 동일 Hy7의 현재/문맥/사전/결합 네 구성 비교·일반 회귀·독립 평가 이후 통과한 구성만 앱 검증으로 진행한다. TG27 읽기6·57용어·독립 질문은 후순위 미완료로 보존한다. 아래27절의 프로세스 부재·RAM·사용량 제한은2026-09-12 당시 관측이며 이번에 재측정하지 않았다.
 

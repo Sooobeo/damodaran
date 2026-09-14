@@ -1,0 +1,1459 @@
+{
+  "schemaVersion": 1,
+  "auditId": "input-preparation-v1-s1-current-input-20260913",
+  "startedAt": "2026-09-13T01:14:51.866429+00:00",
+  "completedAt": "2026-09-13T01:15:01.366230+00:00",
+  "mode": "read-only local files and source structure metadata; new artifacts only",
+  "inferenceRequests": 0,
+  "nativeModelStarts": 0,
+  "tokenizerRuntimeInvocations": 0,
+  "modelTensorLoads": 0,
+  "personalRecordTablesRead": false,
+  "consumedTestContentRead": false,
+  "modelHashReadScope": "complete 7981928896 bytes SHA-256, then first 8388608 bytes only for GGUF metadata/tensor-descriptor parsing; no tensor allocation",
+  "activeProviderObservedViaCommonConfig": "hymt",
+  "registeredIdentity": {
+    "manifestSha256": "cb3031d87372fbb1b0c3dcaf2071064bb59a8a21bd96480ef2d5a66752ae52bd",
+    "identity": "hymt:58b3ad55dd6f6fa08c695cddc34fb5f8f708a844f78ae10508071914b0ed67c0:cb3031d87372fbb1b0c3dcaf2071064bb59a8a21bd96480ef2d5a66752ae52bd",
+    "registrationId": "hymt-contextual-q26-20260910-nativejob",
+    "model": "tencent/Hy-MT2-7B-GGUF",
+    "profile": "contextual",
+    "runtimeVersion": "hymt-local-v1:7a54164a4bded0f10fd538be4b47f9f310a53da3849dbcab5a07ae5607ea7953",
+    "execution": {
+      "contextPolicyVersion": "existing-title-neighbors-v1",
+      "contextSize": 8192,
+      "cpuOnly": true,
+      "jinjaVersion": "3.1.6",
+      "pythonVersion": "3.11.9",
+      "revision": "ab8472660ac61fac25f1af43fac2599d52a8a775",
+      "runtimeOverrides": {
+        "tokenizer.ggml.add_bos_token": "bool:false",
+        "tokenizer.ggml.add_eos_token": "bool:false",
+        "tokenizer.ggml.eos_token_id": "int:127960",
+        "tokenizer.ggml.eot_token_id": "int:127967"
+      },
+      "sampling": {
+        "cache_prompt": false,
+        "dry_multiplier": 0.0,
+        "dynatemp_range": 0.0,
+        "frequency_penalty": 0.0,
+        "id_slot": 0,
+        "ignore_eos": false,
+        "min_p": 0.0,
+        "mirostat": 0,
+        "n_keep": 0,
+        "n_predict": 4096,
+        "presence_penalty": 0.0,
+        "repeat_last_n": 8192,
+        "repeat_penalty": 1.05,
+        "return_tokens": true,
+        "samplers": [
+          "penalties",
+          "temperature",
+          "top_k",
+          "top_p"
+        ],
+        "seed": 42,
+        "stop": [
+          "<|eos|>",
+          "<|extra_5|>"
+        ],
+        "stream": false,
+        "temperature": 0.7,
+        "top_k": 20,
+        "top_n_sigma": -1.0,
+        "top_p": 0.6,
+        "typical_p": 1.0,
+        "xtc_probability": 0.0
+      },
+      "templateSha256": "788ac16c5d7bfefc28655928ad524c8f378a44cb24d24fb125d6a5859b167677",
+      "threads": 4
+    }
+  },
+  "catalog": {
+    "path": ".translation/hymt/registrations/hymt-contextual-q26-20260910-nativejob/catalog.json",
+    "count": 54,
+    "version": "finance-v5-canonical-catalog-v1",
+    "standaloneEquityEntries": []
+  },
+  "tokenizer": {
+    "ggufContract": {
+      "architecture": "hunyuan-dense",
+      "metadataSha256": "cc88c338a3aae5e90d69acfa0ed7c47c433d0eee02a58363440563681556baff",
+      "templateSha256": "788ac16c5d7bfefc28655928ad524c8f378a44cb24d24fb125d6a5859b167677",
+      "tokenStrings": {
+        "3": "$",
+        "127957": "<|endoftext|>",
+        "127958": "<|startoftext|>",
+        "127960": "<|eos|>",
+        "127961": "<|pad|>",
+        "127962": "<|extra_0|>",
+        "127967": "<|extra_5|>"
+      },
+      "originalMetadata": {
+        "tokenizer.ggml.bos_token_id": 127958,
+        "tokenizer.ggml.eos_token_id": 3,
+        "tokenizer.ggml.eot_token_id": 127960,
+        "tokenizer.ggml.padding_token_id": 127961,
+        "tokenizer.ggml.seperator_token_id": 127962
+      },
+      "originalAddBos": null,
+      "originalAddEos": null,
+      "runtimeOverrides": {
+        "tokenizer.ggml.eos_token_id": "int:127960",
+        "tokenizer.ggml.eot_token_id": "int:127967",
+        "tokenizer.ggml.add_bos_token": "bool:false",
+        "tokenizer.ggml.add_eos_token": "bool:false"
+      },
+      "tensorTypes": {
+        "F32": 129,
+        "Q8_0": 225
+      },
+      "expectedEogIds": [
+        127957,
+        127960,
+        127967
+      ],
+      "additionalRuntimeEog": {
+        "127957": "<|endoftext|>"
+      }
+    },
+    "vocabularySize": 128167,
+    "runtimeInvoked": false,
+    "jinjaRenderSentinelPassed": true,
+    "promptTokenCountActual": null,
+    "runtimeNativeTokenParityVerifiedNow": false,
+    "maximumPromptTokens": 4095,
+    "reserveOutputTokens": 4096,
+    "contextTokens": 8192,
+    "strictBudgetPredicate": "len(prompt_tokens) + 4096 < 8192",
+    "tokenizePayload": {
+      "content": "full rendered prompt",
+      "add_special": false,
+      "parse_special": true
+    }
+  },
+  "pythonJinja": {
+    "pythonVersion": "3.11.9",
+    "jinjaVersion": "3.1.6",
+    "jinjaPyInventoryCount": 25,
+    "extraOrMissingPyFiles": false,
+    "scopeLimitation": "Registered venv python.exe launcher and Jinja .py bytes are verified; base CPython executable/DLL/stdlib and every other dependency are not newly byte-attested."
+  },
+  "sourceStructureAudit": {
+    "databaseRelativePath": "data/library.sqlite",
+    "resolvedVia": "lib/config.ts common environment loader (only DATA_DIR and provider printed)",
+    "connection": "URI mode=ro; PRAGMA query_only=ON; explicit read transaction rolled back",
+    "readColumnsOnly": [
+      "source_versions.format",
+      "source_versions.extractor_version",
+      "source_blocks.type",
+      "source_blocks.page_index IS NOT NULL",
+      "source_blocks.bbox_json IS NOT NULL",
+      "source_blocks.structure_json"
+    ],
+    "contentsRetained": "aggregate counts and top-level structure key names only; no source text, title, IDs, translations, notes, or reviews exported",
+    "versionCounts": [
+      {
+        "format": "html",
+        "extractorVersion": "structured-v1",
+        "count": 3
+      },
+      {
+        "format": "html",
+        "extractorVersion": "structured-v2",
+        "count": 4
+      },
+      {
+        "format": "xls",
+        "extractorVersion": "structured-v2",
+        "count": 2
+      }
+    ],
+    "blockCounts": [
+      {
+        "format": "html",
+        "extractorVersion": "structured-v1",
+        "blockType": "heading",
+        "count": 40,
+        "withPageIndex": 0,
+        "withBbox": 0,
+        "withStructure": 40
+      },
+      {
+        "format": "html",
+        "extractorVersion": "structured-v1",
+        "blockType": "image",
+        "count": 47,
+        "withPageIndex": 0,
+        "withBbox": 0,
+        "withStructure": 47
+      },
+      {
+        "format": "html",
+        "extractorVersion": "structured-v1",
+        "blockType": "list_item",
+        "count": 18,
+        "withPageIndex": 0,
+        "withBbox": 0,
+        "withStructure": 18
+      },
+      {
+        "format": "html",
+        "extractorVersion": "structured-v1",
+        "blockType": "paragraph",
+        "count": 357,
+        "withPageIndex": 0,
+        "withBbox": 0,
+        "withStructure": 357
+      },
+      {
+        "format": "html",
+        "extractorVersion": "structured-v2",
+        "blockType": "heading",
+        "count": 40,
+        "withPageIndex": 0,
+        "withBbox": 0,
+        "withStructure": 40
+      },
+      {
+        "format": "html",
+        "extractorVersion": "structured-v2",
+        "blockType": "image",
+        "count": 47,
+        "withPageIndex": 0,
+        "withBbox": 0,
+        "withStructure": 47
+      },
+      {
+        "format": "html",
+        "extractorVersion": "structured-v2",
+        "blockType": "list_item",
+        "count": 18,
+        "withPageIndex": 0,
+        "withBbox": 0,
+        "withStructure": 18
+      },
+      {
+        "format": "html",
+        "extractorVersion": "structured-v2",
+        "blockType": "paragraph",
+        "count": 350,
+        "withPageIndex": 0,
+        "withBbox": 0,
+        "withStructure": 350
+      },
+      {
+        "format": "html",
+        "extractorVersion": "structured-v2",
+        "blockType": "table",
+        "count": 8,
+        "withPageIndex": 0,
+        "withBbox": 0,
+        "withStructure": 8
+      }
+    ],
+    "structureKeyCounts": {
+      "html|structured-v1|paragraph": {
+        "schemaVersion": 357,
+        "links": 355
+      },
+      "html|structured-v1|image": {
+        "schemaVersion": 47,
+        "sourceUrl": 47,
+        "alt": 47,
+        "assetId": 47
+      },
+      "html|structured-v1|list_item": {
+        "schemaVersion": 18,
+        "links": 18
+      },
+      "html|structured-v1|heading": {
+        "schemaVersion": 40,
+        "level": 40,
+        "links": 40
+      },
+      "html|structured-v2|paragraph": {
+        "schemaVersion": 350,
+        "links": 340
+      },
+      "html|structured-v2|image": {
+        "schemaVersion": 47,
+        "sourceUrl": 47,
+        "alt": 47,
+        "assetId": 47,
+        "assetStatus": 47
+      },
+      "html|structured-v2|list_item": {
+        "schemaVersion": 18,
+        "links": 18
+      },
+      "html|structured-v2|table": {
+        "schemaVersion": 8,
+        "rows": 8
+      },
+      "html|structured-v2|heading": {
+        "schemaVersion": 40,
+        "level": 40,
+        "links": 40
+      }
+    }
+  },
+  "checks": {
+    "allExpectedHashesAndSizesMatch": true,
+    "activeMatchesRegistrationBytes": true,
+    "executionMatchesPinnedCode": true,
+    "runtimeVersionCanonicalShaMatches": true,
+    "ggufHeaderAndTemplateVerified": true,
+    "jinjaInventoryMatches": true,
+    "nativeRuntimeHealthChecked": false,
+    "applicationTestsRun": false
+  },
+  "verifiedFileCount": 104,
+  "files": [
+    {
+      "path": ".translation/hymt/manifest.json",
+      "category": "active-manifest",
+      "size": 11876,
+      "sha256": "cb3031d87372fbb1b0c3dcaf2071064bb59a8a21bd96480ef2d5a66752ae52bd",
+      "expectedSha256": null,
+      "sha256Matches": null,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".translation/hymt/registrations/hymt-contextual-q26-20260910-nativejob/manifest.json",
+      "category": "registration-manifest",
+      "size": 11876,
+      "sha256": "cb3031d87372fbb1b0c3dcaf2071064bb59a8a21bd96480ef2d5a66752ae52bd",
+      "expectedSha256": "cb3031d87372fbb1b0c3dcaf2071064bb59a8a21bd96480ef2d5a66752ae52bd",
+      "sha256Matches": true,
+      "expectedSize": 11876,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/HY-MT2-7B-Q8_0.gguf",
+      "category": "modelFiles",
+      "size": 7981928896,
+      "sha256": "58b3ad55dd6f6fa08c695cddc34fb5f8f708a844f78ae10508071914b0ed67c0",
+      "expectedSha256": "58b3ad55dd6f6fa08c695cddc34fb5f8f708a844f78ae10508071914b0ed67c0",
+      "sha256Matches": true,
+      "expectedSize": 7981928896,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/LICENSE-LLVM-OpenMP",
+      "category": "runtimeFiles",
+      "size": 19741,
+      "sha256": "fdad1758a9e1f9d5a81e18879b3406772115edc92c24bfa36b70c654f325e8e4",
+      "expectedSha256": "fdad1758a9e1f9d5a81e18879b3406772115edc92c24bfa36b70c654f325e8e4",
+      "sha256Matches": true,
+      "expectedSize": 19741,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/ggml-base.dll",
+      "category": "runtimeFiles",
+      "size": 796160,
+      "sha256": "a4bc0dee94145b8beeb794f0ab0a7d47e5d7a5af496194336e376ec9a098a459",
+      "expectedSha256": "a4bc0dee94145b8beeb794f0ab0a7d47e5d7a5af496194336e376ec9a098a459",
+      "sha256Matches": true,
+      "expectedSize": 796160,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/ggml-cpu-alderlake.dll",
+      "category": "runtimeFiles",
+      "size": 1230336,
+      "sha256": "a48405e786ee635703e5f7729ad6dfc6484c6731c1deef1e1bfd9a889466a803",
+      "expectedSha256": "a48405e786ee635703e5f7729ad6dfc6484c6731c1deef1e1bfd9a889466a803",
+      "sha256Matches": true,
+      "expectedSize": 1230336,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/ggml-cpu-cannonlake.dll",
+      "category": "runtimeFiles",
+      "size": 1448448,
+      "sha256": "f28bf9f886e3c56183c024401db6b3e07ca990d444b7baa5ba3a31959b54f232",
+      "expectedSha256": "f28bf9f886e3c56183c024401db6b3e07ca990d444b7baa5ba3a31959b54f232",
+      "sha256Matches": true,
+      "expectedSize": 1448448,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/ggml-cpu-cascadelake.dll",
+      "category": "runtimeFiles",
+      "size": 1434112,
+      "sha256": "b097c5a4c5ff3b1299f8550928efe38d68d5059cc317608d356df1290d969837",
+      "expectedSha256": "b097c5a4c5ff3b1299f8550928efe38d68d5059cc317608d356df1290d969837",
+      "sha256Matches": true,
+      "expectedSize": 1434112,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/ggml-cpu-cooperlake.dll",
+      "category": "runtimeFiles",
+      "size": 1434624,
+      "sha256": "bb2d97acf31d2f9a693c7046c363aa5920aa0b8d80ba2fb8b2b0a00a114b6625",
+      "expectedSha256": "bb2d97acf31d2f9a693c7046c363aa5920aa0b8d80ba2fb8b2b0a00a114b6625",
+      "sha256Matches": true,
+      "expectedSize": 1434624,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/ggml-cpu-haswell.dll",
+      "category": "runtimeFiles",
+      "size": 1235968,
+      "sha256": "3f9774f4f87fe381adeb786f66173ccf6aa944cbd2c18bd01e7cd4156d78607c",
+      "expectedSha256": "3f9774f4f87fe381adeb786f66173ccf6aa944cbd2c18bd01e7cd4156d78607c",
+      "sha256Matches": true,
+      "expectedSize": 1235968,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/ggml-cpu-icelake.dll",
+      "category": "runtimeFiles",
+      "size": 1440768,
+      "sha256": "7ad535cdd3013b9637f925f4b1b03f1232b1701b3ea1d6346dcea85a21b0c2bf",
+      "expectedSha256": "7ad535cdd3013b9637f925f4b1b03f1232b1701b3ea1d6346dcea85a21b0c2bf",
+      "sha256Matches": true,
+      "expectedSize": 1440768,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/ggml-cpu-ivybridge.dll",
+      "category": "runtimeFiles",
+      "size": 1127424,
+      "sha256": "4b89e43fcee7fbf33aba271ebafd4659e2b2539521885d8e25b51fc88115e509",
+      "expectedSha256": "4b89e43fcee7fbf33aba271ebafd4659e2b2539521885d8e25b51fc88115e509",
+      "sha256Matches": true,
+      "expectedSize": 1127424,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/ggml-cpu-piledriver.dll",
+      "category": "runtimeFiles",
+      "size": 1131520,
+      "sha256": "d936a93b99e84ce133831b7f4fcc8055530b4a97e07da3905ba4ff4444ceacb0",
+      "expectedSha256": "d936a93b99e84ce133831b7f4fcc8055530b4a97e07da3905ba4ff4444ceacb0",
+      "sha256Matches": true,
+      "expectedSize": 1131520,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/ggml-cpu-sandybridge.dll",
+      "category": "runtimeFiles",
+      "size": 1107968,
+      "sha256": "88b45eb59852546cc116d050aafc0ab891330285d473d7ded5ba77d2ec1d50a9",
+      "expectedSha256": "88b45eb59852546cc116d050aafc0ab891330285d473d7ded5ba77d2ec1d50a9",
+      "sha256Matches": true,
+      "expectedSize": 1107968,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/ggml-cpu-sapphirerapids.dll",
+      "category": "runtimeFiles",
+      "size": 1711616,
+      "sha256": "785de0ad783e4b11eb9671f1f82559fb31e0f8d1e2aee1316d9b0fbe3080c542",
+      "expectedSha256": "785de0ad783e4b11eb9671f1f82559fb31e0f8d1e2aee1316d9b0fbe3080c542",
+      "sha256Matches": true,
+      "expectedSize": 1711616,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/ggml-cpu-skylakex.dll",
+      "category": "runtimeFiles",
+      "size": 1441792,
+      "sha256": "e1b6e28236305c376d789a25bebac22b554c8385d1607198a355166120425ea8",
+      "expectedSha256": "e1b6e28236305c376d789a25bebac22b554c8385d1607198a355166120425ea8",
+      "sha256Matches": true,
+      "expectedSize": 1441792,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/ggml-cpu-sse42.dll",
+      "category": "runtimeFiles",
+      "size": 932352,
+      "sha256": "4c73bcc7c80bdfd8dd58227fcf5ad87af34bd54529c1207585453087a75e8dd8",
+      "expectedSha256": "4c73bcc7c80bdfd8dd58227fcf5ad87af34bd54529c1207585453087a75e8dd8",
+      "sha256Matches": true,
+      "expectedSize": 932352,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/ggml-cpu-x64.dll",
+      "category": "runtimeFiles",
+      "size": 924160,
+      "sha256": "b8de33c7316af3c7adaaf474a8ee1c3b36ed1c38f0b757492ee3de0cbf258514",
+      "expectedSha256": "b8de33c7316af3c7adaaf474a8ee1c3b36ed1c38f0b757492ee3de0cbf258514",
+      "sha256Matches": true,
+      "expectedSize": 924160,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/ggml-cpu-zen4.dll",
+      "category": "runtimeFiles",
+      "size": 1441280,
+      "sha256": "f4a54ab1c6b35519dc4062d3d4602aa75980adce6045e11590a1e2f083ee8199",
+      "expectedSha256": "f4a54ab1c6b35519dc4062d3d4602aa75980adce6045e11590a1e2f083ee8199",
+      "sha256Matches": true,
+      "expectedSize": 1441280,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/ggml-rpc-server.exe",
+      "category": "runtimeFiles",
+      "size": 101376,
+      "sha256": "d733abd69ee70cc0c06c1fbf9c89339d7c52edb481310f4c097760e074b87526",
+      "expectedSha256": "d733abd69ee70cc0c06c1fbf9c89339d7c52edb481310f4c097760e074b87526",
+      "sha256Matches": true,
+      "expectedSize": 101376,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/ggml-rpc.dll",
+      "category": "runtimeFiles",
+      "size": 168448,
+      "sha256": "23a6c049297b42d432433a94830d7e53ea8d6670141412481c910f8fe7f026b8",
+      "expectedSha256": "23a6c049297b42d432433a94830d7e53ea8d6670141412481c910f8fe7f026b8",
+      "sha256Matches": true,
+      "expectedSize": 168448,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/ggml-vulkan.dll",
+      "category": "runtimeFiles",
+      "size": 57577984,
+      "sha256": "0001238bf34fd0ccefcaafebe53c052a0a48ea1cf2762e53e74a9b25516bc39e",
+      "expectedSha256": "0001238bf34fd0ccefcaafebe53c052a0a48ea1cf2762e53e74a9b25516bc39e",
+      "sha256Matches": true,
+      "expectedSize": 57577984,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/ggml.dll",
+      "category": "runtimeFiles",
+      "size": 79872,
+      "sha256": "a0b47c274f2283709c3705f9b59cd37fe77e8eb04522f26d72a59a995e441ff0",
+      "expectedSha256": "a0b47c274f2283709c3705f9b59cd37fe77e8eb04522f26d72a59a995e441ff0",
+      "sha256Matches": true,
+      "expectedSize": 79872,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/libomp.dll",
+      "category": "runtimeFiles",
+      "size": 768000,
+      "sha256": "a12116ba72d1d6820407cf30be23da04ce79d6bb8a71a5ee71759c5a1faa6f1c",
+      "expectedSha256": "a12116ba72d1d6820407cf30be23da04ce79d6bb8a71a5ee71759c5a1faa6f1c",
+      "sha256Matches": true,
+      "expectedSize": 768000,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-batched-bench-impl.dll",
+      "category": "runtimeFiles",
+      "size": 61440,
+      "sha256": "52d6772b86d63ad681c50f9df9fd5b8e26462f33547d31653df6f51ac81658ea",
+      "expectedSha256": "52d6772b86d63ad681c50f9df9fd5b8e26462f33547d31653df6f51ac81658ea",
+      "sha256Matches": true,
+      "expectedSize": 61440,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-batched-bench.exe",
+      "category": "runtimeFiles",
+      "size": 9216,
+      "sha256": "975e7dae9860117c3c1bf4346499c1d216e4d3d716441e58cbcfa4f34d87183c",
+      "expectedSha256": "975e7dae9860117c3c1bf4346499c1d216e4d3d716441e58cbcfa4f34d87183c",
+      "sha256Matches": true,
+      "expectedSize": 9216,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-bench-impl.dll",
+      "category": "runtimeFiles",
+      "size": 399872,
+      "sha256": "05679a6622dc06e08df3c74f3194affb25f1a331da6d2a6da07b5fee75fcbc17",
+      "expectedSha256": "05679a6622dc06e08df3c74f3194affb25f1a331da6d2a6da07b5fee75fcbc17",
+      "sha256Matches": true,
+      "expectedSize": 399872,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-bench.exe",
+      "category": "runtimeFiles",
+      "size": 9216,
+      "sha256": "12579b467fa4cb84697000276d007112a5b659f541dfb65acde94197285d6ade",
+      "expectedSha256": "12579b467fa4cb84697000276d007112a5b659f541dfb65acde94197285d6ade",
+      "sha256Matches": true,
+      "expectedSize": 9216,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-cli-impl.dll",
+      "category": "runtimeFiles",
+      "size": 3296256,
+      "sha256": "fb24f208ef6da6f8b31e104eee678b17f472332be6c9ad7f1eedaa96bfbe77db",
+      "expectedSha256": "fb24f208ef6da6f8b31e104eee678b17f472332be6c9ad7f1eedaa96bfbe77db",
+      "sha256Matches": true,
+      "expectedSize": 3296256,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-cli.exe",
+      "category": "runtimeFiles",
+      "size": 9216,
+      "sha256": "692904f8c191e21274396a6fa13c54b1450a6497723f8c782aab976efa187e2f",
+      "expectedSha256": "692904f8c191e21274396a6fa13c54b1450a6497723f8c782aab976efa187e2f",
+      "sha256Matches": true,
+      "expectedSize": 9216,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-common.dll",
+      "category": "runtimeFiles",
+      "size": 7804928,
+      "sha256": "91324d27c692d28032b46e48265f3a848a67f3549d0b4efc847f72638b1f27e0",
+      "expectedSha256": "91324d27c692d28032b46e48265f3a848a67f3549d0b4efc847f72638b1f27e0",
+      "sha256Matches": true,
+      "expectedSize": 7804928,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-completion-impl.dll",
+      "category": "runtimeFiles",
+      "size": 133632,
+      "sha256": "a89c49ccfd106c78260c4d93e91919bbf354009754a15d9a131ebe638ec7c877",
+      "expectedSha256": "a89c49ccfd106c78260c4d93e91919bbf354009754a15d9a131ebe638ec7c877",
+      "sha256Matches": true,
+      "expectedSize": 133632,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-completion.exe",
+      "category": "runtimeFiles",
+      "size": 9216,
+      "sha256": "2e4c8b484c4b94ad27cd8dd6b92cb5686c39145221b10ddf6f52221ad6bf65a6",
+      "expectedSha256": "2e4c8b484c4b94ad27cd8dd6b92cb5686c39145221b10ddf6f52221ad6bf65a6",
+      "sha256Matches": true,
+      "expectedSize": 9216,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-fit-params-impl.dll",
+      "category": "runtimeFiles",
+      "size": 41472,
+      "sha256": "51fa5bcf1229e6b023d8c2321febe59e410a3d5fd057270c55332a3f8469b09f",
+      "expectedSha256": "51fa5bcf1229e6b023d8c2321febe59e410a3d5fd057270c55332a3f8469b09f",
+      "sha256Matches": true,
+      "expectedSize": 41472,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-fit-params.exe",
+      "category": "runtimeFiles",
+      "size": 9216,
+      "sha256": "3ce9d580453d39f6c9ad5d3aaeb05022f46228e23df43d581de1c94ed3c99880",
+      "expectedSha256": "3ce9d580453d39f6c9ad5d3aaeb05022f46228e23df43d581de1c94ed3c99880",
+      "sha256Matches": true,
+      "expectedSize": 9216,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-gemma3-cli.exe",
+      "category": "runtimeFiles",
+      "size": 27136,
+      "sha256": "b988e8f5549eb042eafdf20fa8f8cb303e782b7f044b9d7e33eacc0db37661bc",
+      "expectedSha256": "b988e8f5549eb042eafdf20fa8f8cb303e782b7f044b9d7e33eacc0db37661bc",
+      "sha256Matches": true,
+      "expectedSize": 27136,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-gguf-split.exe",
+      "category": "runtimeFiles",
+      "size": 60416,
+      "sha256": "a221b23a6388b9fa32681694f23b06d222890293e8d8913ecfa29c833b0e6090",
+      "expectedSha256": "a221b23a6388b9fa32681694f23b06d222890293e8d8913ecfa29c833b0e6090",
+      "sha256Matches": true,
+      "expectedSize": 60416,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-imatrix.exe",
+      "category": "runtimeFiles",
+      "size": 255488,
+      "sha256": "2fb9729cea8390922a77f09149517a9d61355fa07d5d49aec31c3eba04d67bbc",
+      "expectedSha256": "2fb9729cea8390922a77f09149517a9d61355fa07d5d49aec31c3eba04d67bbc",
+      "sha256Matches": true,
+      "expectedSize": 255488,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-llava-cli.exe",
+      "category": "runtimeFiles",
+      "size": 27136,
+      "sha256": "b988e8f5549eb042eafdf20fa8f8cb303e782b7f044b9d7e33eacc0db37661bc",
+      "expectedSha256": "b988e8f5549eb042eafdf20fa8f8cb303e782b7f044b9d7e33eacc0db37661bc",
+      "sha256Matches": true,
+      "expectedSize": 27136,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-minicpmv-cli.exe",
+      "category": "runtimeFiles",
+      "size": 27136,
+      "sha256": "b988e8f5549eb042eafdf20fa8f8cb303e782b7f044b9d7e33eacc0db37661bc",
+      "expectedSha256": "b988e8f5549eb042eafdf20fa8f8cb303e782b7f044b9d7e33eacc0db37661bc",
+      "sha256Matches": true,
+      "expectedSize": 27136,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-mtmd-cli.exe",
+      "category": "runtimeFiles",
+      "size": 90112,
+      "sha256": "e621fa754215392b964427e4cda7817d4fe65724544f2b87e7137a1f3e1e6825",
+      "expectedSha256": "e621fa754215392b964427e4cda7817d4fe65724544f2b87e7137a1f3e1e6825",
+      "sha256Matches": true,
+      "expectedSize": 90112,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-mtmd-debug.exe",
+      "category": "runtimeFiles",
+      "size": 55296,
+      "sha256": "8789002103899d1998b5c0df5247283f68780085d9839ad548afc01c46d80e6e",
+      "expectedSha256": "8789002103899d1998b5c0df5247283f68780085d9839ad548afc01c46d80e6e",
+      "sha256Matches": true,
+      "expectedSize": 55296,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-perplexity-impl.dll",
+      "category": "runtimeFiles",
+      "size": 194048,
+      "sha256": "33aca76c50b4729023feecd586968894d08630f6126b99e84cdb5b832c15f834",
+      "expectedSha256": "33aca76c50b4729023feecd586968894d08630f6126b99e84cdb5b832c15f834",
+      "sha256Matches": true,
+      "expectedSize": 194048,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-perplexity.exe",
+      "category": "runtimeFiles",
+      "size": 9216,
+      "sha256": "ad94240902f6740fcd040f1bb8a22b4e7c9ef506e8b8084a6816ff0e971152bf",
+      "expectedSha256": "ad94240902f6740fcd040f1bb8a22b4e7c9ef506e8b8084a6816ff0e971152bf",
+      "sha256Matches": true,
+      "expectedSize": 9216,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-quantize-impl.dll",
+      "category": "runtimeFiles",
+      "size": 137216,
+      "sha256": "122c69560390494e3369ec9d3fe303a66bb7f2e19c0ff36a9d9469c7588bb0e1",
+      "expectedSha256": "122c69560390494e3369ec9d3fe303a66bb7f2e19c0ff36a9d9469c7588bb0e1",
+      "sha256Matches": true,
+      "expectedSize": 137216,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-quantize.exe",
+      "category": "runtimeFiles",
+      "size": 9216,
+      "sha256": "905050f6633a49a87f968b437f7f60fa6edce4738e75bf3c76018a417fef37f0",
+      "expectedSha256": "905050f6633a49a87f968b437f7f60fa6edce4738e75bf3c76018a417fef37f0",
+      "sha256Matches": true,
+      "expectedSize": 9216,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-qwen2vl-cli.exe",
+      "category": "runtimeFiles",
+      "size": 27136,
+      "sha256": "9662daa42599be5bbc88b25a52b8f284ed667a5fb32e303f2509e3c38195a580",
+      "expectedSha256": "9662daa42599be5bbc88b25a52b8f284ed667a5fb32e303f2509e3c38195a580",
+      "sha256Matches": true,
+      "expectedSize": 27136,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-results.exe",
+      "category": "runtimeFiles",
+      "size": 46080,
+      "sha256": "a67d62caf1128e74ccc264a082a44ff2ccdb6af8298bef5c263936ca6ecce572",
+      "expectedSha256": "a67d62caf1128e74ccc264a082a44ff2ccdb6af8298bef5c263936ca6ecce572",
+      "sha256Matches": true,
+      "expectedSize": 46080,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-server-impl.dll",
+      "category": "runtimeFiles",
+      "size": 8893440,
+      "sha256": "5afbc249b5b08557fcf2c013a89d1536b2d714281f3f1a0ab8d93968dde5515a",
+      "expectedSha256": "5afbc249b5b08557fcf2c013a89d1536b2d714281f3f1a0ab8d93968dde5515a",
+      "sha256Matches": true,
+      "expectedSize": 8893440,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-server.exe",
+      "category": "runtimeFiles",
+      "size": 9216,
+      "sha256": "a0c82a3b16dbee57c5e95e932c5efa833f3f71d63543c7ec3cdb90f77cdc6343",
+      "expectedSha256": "a0c82a3b16dbee57c5e95e932c5efa833f3f71d63543c7ec3cdb90f77cdc6343",
+      "sha256Matches": true,
+      "expectedSize": 9216,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-tokenize.exe",
+      "category": "runtimeFiles",
+      "size": 58368,
+      "sha256": "7643e059ec6bb3532f2cb2e58ced191c5285c59d0916633510035ba7e26e2149",
+      "expectedSha256": "7643e059ec6bb3532f2cb2e58ced191c5285c59d0916633510035ba7e26e2149",
+      "sha256Matches": true,
+      "expectedSize": 58368,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama-tts.exe",
+      "category": "runtimeFiles",
+      "size": 41472,
+      "sha256": "057eff134087c4c8317ac7f9f16543a732c56c1d3b39ba365036283612a24ab0",
+      "expectedSha256": "057eff134087c4c8317ac7f9f16543a732c56c1d3b39ba365036283612a24ab0",
+      "sha256Matches": true,
+      "expectedSize": 41472,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama.dll",
+      "category": "runtimeFiles",
+      "size": 3152896,
+      "sha256": "8003f9ce42f92d29cf360592109a2fd0439f2c03bd2a042ade2c760e3a1485d6",
+      "expectedSha256": "8003f9ce42f92d29cf360592109a2fd0439f2c03bd2a042ade2c760e3a1485d6",
+      "sha256Matches": true,
+      "expectedSize": 3152896,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/llama.exe",
+      "category": "runtimeFiles",
+      "size": 103936,
+      "sha256": "5c7e8181a95cd2ca617d2120673bc27dee795c0cad160c9d93852bbbdaba56da",
+      "expectedSha256": "5c7e8181a95cd2ca617d2120673bc27dee795c0cad160c9d93852bbbdaba56da",
+      "sha256Matches": true,
+      "expectedSize": 103936,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/hy-mt2-7b-q8/runtime/mtmd.dll",
+      "category": "runtimeFiles",
+      "size": 1772032,
+      "sha256": "91c66a35804509119bdc5f6bb8decfb64269290ae9e2762491ebd34fa530dafa",
+      "expectedSha256": "91c66a35804509119bdc5f6bb8decfb64269290ae9e2762491ebd34fa530dafa",
+      "sha256Matches": true,
+      "expectedSize": 1772032,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": "scripts/local-hymt/bridge.py",
+      "category": "codeFiles",
+      "size": 6502,
+      "sha256": "0fc38eae602363742ab8b6dc74d6464c514789899db83b4854140099b894947e",
+      "expectedSha256": "0fc38eae602363742ab8b6dc74d6464c514789899db83b4854140099b894947e",
+      "sha256Matches": true,
+      "expectedSize": 6502,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": "scripts/local-hymt/deployment.py",
+      "category": "codeFiles",
+      "size": 24606,
+      "sha256": "75969ccc6d14bce57099c8c1bb38c6de5b713ecd456351e8c9e273ae7260a14b",
+      "expectedSha256": "75969ccc6d14bce57099c8c1bb38c6de5b713ecd456351e8c9e273ae7260a14b",
+      "sha256Matches": true,
+      "expectedSize": 24606,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": "scripts/local-hymt/engine.py",
+      "category": "codeFiles",
+      "size": 9093,
+      "sha256": "9403c8f1920408564e91285ad94a484a8e7810c9cc95d1064f456997ba17b074",
+      "expectedSha256": "9403c8f1920408564e91285ad94a484a8e7810c9cc95d1064f456997ba17b074",
+      "sha256Matches": true,
+      "expectedSize": 9093,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": "scripts/local-hymt/process_owner.py",
+      "category": "codeFiles",
+      "size": 21902,
+      "sha256": "9a00d809466e304359fb47c374c8fc2464ce31cdbc9557fbc9eee089bfe9d8b2",
+      "expectedSha256": "9a00d809466e304359fb47c374c8fc2464ce31cdbc9557fbc9eee089bfe9d8b2",
+      "sha256Matches": true,
+      "expectedSize": 21902,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": "scripts/model-comparison/run_hymt.py",
+      "category": "codeFiles",
+      "size": 35568,
+      "sha256": "a80c431e51c17d510273457d0991e2febba57bac33a8f89a067e1f571387a410",
+      "expectedSha256": "a80c431e51c17d510273457d0991e2febba57bac33a8f89a067e1f571387a410",
+      "sha256Matches": true,
+      "expectedSize": 35568,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": "scripts/model-comparison/setup_hymt.py",
+      "category": "codeFiles",
+      "size": 13307,
+      "sha256": "c6f9a33ef0fce4a8eea4d042c233c7d1f89337d0ef128b0d5ca2fe632fa6d8d4",
+      "expectedSha256": "c6f9a33ef0fce4a8eea4d042c233c7d1f89337d0ef128b0d5ca2fe632fa6d8d4",
+      "sha256Matches": true,
+      "expectedSize": 13307,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/finance-quality-20260910/prepared-review/manifest.json",
+      "category": "evidenceFiles",
+      "size": 27555,
+      "sha256": "8c833e41c56a5433dff267496e411ebd88ece52607ea742165aa723b6b99f7c1",
+      "expectedSha256": "8c833e41c56a5433dff267496e411ebd88ece52607ea742165aa723b6b99f7c1",
+      "sha256Matches": true,
+      "expectedSize": 27555,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/finance-quality-20260910/prepared-review/comparison-metrics.json",
+      "category": "evidenceFiles",
+      "size": 68702,
+      "sha256": "cc91fb23bab997b25729bb74f6706ad7cc3bc630bb685793b84462ffcbe28231",
+      "expectedSha256": "cc91fb23bab997b25729bb74f6706ad7cc3bc630bb685793b84462ffcbe28231",
+      "sha256Matches": true,
+      "expectedSize": 68702,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/finance-quality-20260910/assistant-review-summary.json",
+      "category": "evidenceFiles",
+      "size": 116619,
+      "sha256": "77c31aae63260b45332343621bb24d3801a8433d1ce1035c886387cf2673d053",
+      "expectedSha256": "77c31aae63260b45332343621bb24d3801a8433d1ce1035c886387cf2673d053",
+      "sha256Matches": true,
+      "expectedSize": 116619,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".training/comparisons/finance-quality-20260910/selection.json",
+      "category": "evidenceFiles",
+      "size": 1547,
+      "sha256": "09276f371497b4d6b53a862d0cc62c143caa47bc86091046c16ed293ba76c6e2",
+      "expectedSha256": "09276f371497b4d6b53a862d0cc62c143caa47bc86091046c16ed293ba76c6e2",
+      "sha256Matches": true,
+      "expectedSize": 1547,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".translation/hymt/registrations/hymt-contextual-q26-20260910-nativejob/catalog.json",
+      "category": "catalog",
+      "size": 33427,
+      "sha256": "d4af6a9fed8c6dba4c528abc52c64c19621c5fac98fd2bdb09e035769963de67",
+      "expectedSha256": "d4af6a9fed8c6dba4c528abc52c64c19621c5fac98fd2bdb09e035769963de67",
+      "sha256Matches": true,
+      "expectedSize": 33427,
+      "sizeMatches": true,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/__init__.py",
+      "category": "python-jinja",
+      "size": 1928,
+      "sha256": "c717a93bd8bb0c7b2a910ae004476e2ed7e8cf6402b93ebf81b2f85d237585b5",
+      "expectedSha256": "c717a93bd8bb0c7b2a910ae004476e2ed7e8cf6402b93ebf81b2f85d237585b5",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/_identifier.py",
+      "category": "python-jinja",
+      "size": 1958,
+      "sha256": "ff361cb4d2b346a964fe6bab4cd973ae3bb514524bed56bf223aaa77b8a2da55",
+      "expectedSha256": "ff361cb4d2b346a964fe6bab4cd973ae3bb514524bed56bf223aaa77b8a2da55",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/async_utils.py",
+      "category": "python-jinja",
+      "size": 2834,
+      "sha256": "bcaf8f76cba8ace3275929c4913de25094489139d880ed93e8c9c6c43807239a",
+      "expectedSha256": "bcaf8f76cba8ace3275929c4913de25094489139d880ed93e8c9c6c43807239a",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/bccache.py",
+      "category": "python-jinja",
+      "size": 14061,
+      "sha256": "821d2ab3daee9675e8d0f857e634c9cb6507cc8f3016743ade8fefc3b9e1cd18",
+      "expectedSha256": "821d2ab3daee9675e8d0f857e634c9cb6507cc8f3016743ade8fefc3b9e1cd18",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/compiler.py",
+      "category": "python-jinja",
+      "size": 74131,
+      "sha256": "f51a42425e57f3c0479652623ec1cf876f791e1d2e029bf0149350baeb542de3",
+      "expectedSha256": "f51a42425e57f3c0479652623ec1cf876f791e1d2e029bf0149350baeb542de3",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/constants.py",
+      "category": "python-jinja",
+      "size": 1433,
+      "sha256": "18ca05c9d045fe476969128fa0ce5c97932f8aab9544b57266d7e9e7ed7a8e0d",
+      "expectedSha256": "18ca05c9d045fe476969128fa0ce5c97932f8aab9544b57266d7e9e7ed7a8e0d",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/debug.py",
+      "category": "python-jinja",
+      "size": 6297,
+      "sha256": "0a71ea0831ddf81546bed8bff19b13a259d7361037102b18fba9ffda9c14f07c",
+      "expectedSha256": "0a71ea0831ddf81546bed8bff19b13a259d7361037102b18fba9ffda9c14f07c",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/defaults.py",
+      "category": "python-jinja",
+      "size": 1267,
+      "sha256": "6e805c4b0efc87e969db461b697489b2a900236b8dfe60ff4ed0b27697aae705",
+      "expectedSha256": "6e805c4b0efc87e969db461b697489b2a900236b8dfe60ff4ed0b27697aae705",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/environment.py",
+      "category": "python-jinja",
+      "size": 61513,
+      "sha256": "f6786b3fb0a1f8d6c65f4d30bf2af8cb2fae84d1ead8e09ceb48201ab9e2fdf9",
+      "expectedSha256": "f6786b3fb0a1f8d6c65f4d30bf2af8cb2fae84d1ead8e09ceb48201ab9e2fdf9",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/exceptions.py",
+      "category": "python-jinja",
+      "size": 5071,
+      "sha256": "8a81de1eb5b009635a5d7d629c798755b96f73885a3bb017b230a9dc67d6bf1d",
+      "expectedSha256": "8a81de1eb5b009635a5d7d629c798755b96f73885a3bb017b230a9dc67d6bf1d",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/ext.py",
+      "category": "python-jinja",
+      "size": 31875,
+      "sha256": "e4f1797877e1f265c02315c71d1076c576d7a218bca44de71d23b16baeae4bb1",
+      "expectedSha256": "e4f1797877e1f265c02315c71d1076c576d7a218bca44de71d23b16baeae4bb1",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/filters.py",
+      "category": "python-jinja",
+      "size": 55212,
+      "sha256": "3d0fc481df67f634a0b671906321782b98f69d8c21508ba584f9f28a691dafe9",
+      "expectedSha256": "3d0fc481df67f634a0b671906321782b98f69d8c21508ba584f9f28a691dafe9",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/idtracking.py",
+      "category": "python-jinja",
+      "size": 10555,
+      "sha256": "fa5979948a7bde930bdc4ad46222098fbb5d996c5c1ff2250efdf203f862658a",
+      "expectedSha256": "fa5979948a7bde930bdc4ad46222098fbb5d996c5c1ff2250efdf203f862658a",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/lexer.py",
+      "category": "python-jinja",
+      "size": 29786,
+      "sha256": "2d88988a8e9bafe4dea7d9cf72ea565ec3c4b6396ec37a75994fa534155151f9",
+      "expectedSha256": "2d88988a8e9bafe4dea7d9cf72ea565ec3c4b6396ec37a75994fa534155151f9",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/loaders.py",
+      "category": "python-jinja",
+      "size": 24055,
+      "sha256": "c08ae7c63bdc6ea8795705b6f0d4a47e8b620eaf2a342c4839215b1948922c1e",
+      "expectedSha256": "c08ae7c63bdc6ea8795705b6f0d4a47e8b620eaf2a342c4839215b1948922c1e",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/meta.py",
+      "category": "python-jinja",
+      "size": 4397,
+      "sha256": "3930cf91a16f5361e0bf1fba6a4cfbd79e05f012166919af25c045bf0a291f0c",
+      "expectedSha256": "3930cf91a16f5361e0bf1fba6a4cfbd79e05f012166919af25c045bf0a291f0c",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/nativetypes.py",
+      "category": "python-jinja",
+      "size": 4210,
+      "sha256": "ec620600b54981dc8bf34a1925d4146947f04ade6ada549265b5edd1d35ffcce",
+      "expectedSha256": "ec620600b54981dc8bf34a1925d4146947f04ade6ada549265b5edd1d35ffcce",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/nodes.py",
+      "category": "python-jinja",
+      "size": 34579,
+      "sha256": "9b50eecdcafaaa1648f0943a57226050d8a78c07f96d0ce28d29839ccb2f531f",
+      "expectedSha256": "9b50eecdcafaaa1648f0943a57226050d8a78c07f96d0ce28d29839ccb2f531f",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/optimizer.py",
+      "category": "python-jinja",
+      "size": 1651,
+      "sha256": "ac99c246543ba59b04126321b100e00bfa4ac831f13f94cf4bacd53c6b2072ef",
+      "expectedSha256": "ac99c246543ba59b04126321b100e00bfa4ac831f13f94cf4bacd53c6b2072ef",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/parser.py",
+      "category": "python-jinja",
+      "size": 40383,
+      "sha256": "94b385cb7b0498773921a1074621f5b1056721dda6a14433872789653b5d637d",
+      "expectedSha256": "94b385cb7b0498773921a1074621f5b1056721dda6a14433872789653b5d637d",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/runtime.py",
+      "category": "python-jinja",
+      "size": 34249,
+      "sha256": "80393e1af76b8895ea82c19b1e0adc2933f4629eb33d7ce1ceb2290851f78c05",
+      "expectedSha256": "80393e1af76b8895ea82c19b1e0adc2933f4629eb33d7ce1ceb2290851f78c05",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/sandbox.py",
+      "category": "python-jinja",
+      "size": 15009,
+      "sha256": "330d9a8ad958d88f256bb15885c5f6606f41b5461c2e70f41a1ddddbd7035ab6",
+      "expectedSha256": "330d9a8ad958d88f256bb15885c5f6606f41b5461c2e70f41a1ddddbd7035ab6",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/tests.py",
+      "category": "python-jinja",
+      "size": 5926,
+      "sha256": "54bb018551675a0f8fc52073d4c8519cd5a03f5a2f5e4de778ed452d031e0bd4",
+      "expectedSha256": "54bb018551675a0f8fc52073d4c8519cd5a03f5a2f5e4de778ed452d031e0bd4",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/utils.py",
+      "category": "python-jinja",
+      "size": 24129,
+      "sha256": "ad1a77a3d7bb64a4b87f2ad645b10bc8b729b8655315c9e8a1a39ad6ac7f1489",
+      "expectedSha256": "ad1a77a3d7bb64a4b87f2ad645b10bc8b729b8655315c9e8a1a39ad6ac7f1489",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Lib/site-packages/jinja2/visitor.py",
+      "category": "python-jinja",
+      "size": 3557,
+      "sha256": "11c9cbd4f2307ffe1154238cc6c44db91f005c76d2d6a7c074c384da780a273e",
+      "expectedSha256": "11c9cbd4f2307ffe1154238cc6c44db91f005c76d2d6a7c074c384da780a273e",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": ".venv-training/Scripts/python.exe",
+      "category": "python-jinja",
+      "size": 274712,
+      "sha256": "21bb438c0d4a6f1f164b9a646f6ee000340185e5871180aec06db8d3f07c0082",
+      "expectedSha256": "21bb438c0d4a6f1f164b9a646f6ee000340185e5871180aec06db8d3f07c0082",
+      "sha256Matches": true,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": "lib/translation/index.ts",
+      "category": "input-path-code",
+      "size": 13402,
+      "sha256": "ccb5014f4c1d82f76517f0a1cdad1e06addf075ea3adf512b8f82008386f1883",
+      "expectedSha256": null,
+      "sha256Matches": null,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": "lib/translation/local.ts",
+      "category": "input-path-code",
+      "size": 12649,
+      "sha256": "b938a22ee3d30076133cca211658253aaab8986c63d87793387931ddd0bc919e",
+      "expectedSha256": null,
+      "sha256Matches": null,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": "lib/translation/runtime.ts",
+      "category": "input-path-code",
+      "size": 8811,
+      "sha256": "2e0844dfb167b68d2b630eb4a90fd7ec9de4b8deddde85de6bacacba265cada8",
+      "expectedSha256": null,
+      "sha256Matches": null,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": "lib/translation/hymt-runtime.ts",
+      "category": "input-path-code",
+      "size": 10665,
+      "sha256": "f9cfc82106e5008dae64e1e8f1075bd8d6ca1f050f41ab673bca3672c6178204",
+      "expectedSha256": null,
+      "sha256Matches": null,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": "lib/translation/glossary.ts",
+      "category": "input-path-code",
+      "size": 3227,
+      "sha256": "fd30a32d19334bf9c9a6093eef8311c69325fd69df6267d8210ab4990366285d",
+      "expectedSha256": null,
+      "sha256Matches": null,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": "lib/translation/memory.ts",
+      "category": "input-path-code",
+      "size": 6678,
+      "sha256": "273974b48309df52daf9f1e9607439d5839d70e448fb9abc8a3a0609196ffe71",
+      "expectedSha256": null,
+      "sha256Matches": null,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": "lib/config.ts",
+      "category": "input-path-code",
+      "size": 2288,
+      "sha256": "b6072dd2844e109b2ffe9b149509df5aa7c3259cccbeaffba185741dde402d67",
+      "expectedSha256": null,
+      "sha256Matches": null,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": "lib/extraction/index.ts",
+      "category": "input-path-code",
+      "size": 10853,
+      "sha256": "932a9acc81f7be0a1939878d329260b98febf71774bcb58f6697f89473688a2b",
+      "expectedSha256": null,
+      "sha256Matches": null,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": "lib/extraction/pdf-paragraphs.ts",
+      "category": "input-path-code",
+      "size": 9363,
+      "sha256": "42655061be8a91e97cb44ace8c7406ab4c4b48f1a6436e5871ee6f2ef0285b69",
+      "expectedSha256": null,
+      "sha256Matches": null,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": "lib/db/migrations/001_initial.sql",
+      "category": "input-path-code",
+      "size": 8155,
+      "sha256": "a1fa57f220aef879232ec9311dbc4afb9d1ab9b07fea7d85bc13f1137bd489a5",
+      "expectedSha256": null,
+      "sha256Matches": null,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": "package.json",
+      "category": "input-path-code",
+      "size": 2159,
+      "sha256": "fbe2d76274666644485f7e24b3ebc616bb3597daa1163f17b17f40de28fb386a",
+      "expectedSha256": null,
+      "sha256Matches": null,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    },
+    {
+      "path": "package-lock.json",
+      "category": "input-path-code",
+      "size": 86356,
+      "sha256": "de3e42b84aba891779959437897dd0b0fa11f3ab9ab9d1a6201058e88bdc5665",
+      "expectedSha256": null,
+      "sha256Matches": null,
+      "expectedSize": null,
+      "sizeMatches": null,
+      "statUnchangedDuringRead": true
+    }
+  ]
+}

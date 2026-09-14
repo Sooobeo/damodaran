@@ -1,0 +1,19 @@
+{
+  "childProcessStopped": true,
+  "completedOutputs": 38,
+  "completionRequestsSent": 39,
+  "failure": {
+    "code": "ac_power_lost_or_unknown",
+    "configuration": "C2",
+    "id": "IP1-G02",
+    "type": "ResourceGuardError"
+  },
+  "integrityVerified": true,
+  "missingOutputs": 26,
+  "originalStatus": "failed",
+  "planSha256": "479b3ec44cc7a7c20662507484589bf1dc2f02eee5bf964f57aac3830305a054",
+  "predictionsSha256": "d4abc1c87dc7969476a0777a2e0a5c016cccd360174c90ef84731c3797b7cd67",
+  "priorRunPath": ".training/comparisons/input-preparation-v1/s4-generation/attempt-001",
+  "summarySha256": "229c0e749e4838ebac51ea1b714e2b9d753a75f5e993988317871777b6534fa1",
+  "version": "input-execution-v1-recovery-prior-v1"
+}

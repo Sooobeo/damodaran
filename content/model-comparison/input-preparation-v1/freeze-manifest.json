@@ -1,0 +1,761 @@
+{
+  "schemaVersion": 1,
+  "policyId": "input-preparation-v1-s1-20260913",
+  "status": "frozen",
+  "frozenAt": "2026-09-13T01:40:34.288140+00:00",
+  "stage": "S1",
+  "humanReviewed": false,
+  "modelInferenceCalls": 0,
+  "tokenizerCalls": 0,
+  "appDeploymentChanged": false,
+  "counts": {
+    "units": 16,
+    "corePropositions": 48,
+    "questions": 32,
+    "coreQuestions": 16,
+    "termOccurrences": 39
+  },
+  "inputInventory": [
+    {
+      "id": "IP1-F01",
+      "domain": "finance",
+      "provenance": "stored-public-source",
+      "resourceId": "R01",
+      "sourceVersionId": "7d350f79-0b36-4ac3-a89f-73b965b463ed",
+      "targetBlockId": "adc2ffb4-da90-456b-9646-2f93b86c8adc",
+      "targetOrder": 33,
+      "targetTextSha256": "8e796e8c008fa97e62a3bacfe6c53d1a6152dae7d30e4e28e4fd481285039f53",
+      "words": 37,
+      "blockCount": 3,
+      "terms": 3,
+      "publicSourceUrl": "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/AccPrimer/accstate.htm",
+      "sourceGroup": "public-R01"
+    },
+    {
+      "id": "IP1-F02",
+      "domain": "finance",
+      "provenance": "stored-public-source",
+      "resourceId": "R01",
+      "sourceVersionId": "7d350f79-0b36-4ac3-a89f-73b965b463ed",
+      "targetBlockId": "d9585e10-5f3f-4ff4-ad7a-c1c6448de01f",
+      "targetOrder": 38,
+      "targetTextSha256": "fe42e50720ec2afe7c2e58f8da4ff9240119211d3d930b5bb4d2599b6492d307",
+      "words": 94,
+      "blockCount": 3,
+      "terms": 3,
+      "publicSourceUrl": "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/AccPrimer/accstate.htm",
+      "sourceGroup": "public-R01"
+    },
+    {
+      "id": "IP1-F03",
+      "domain": "finance",
+      "provenance": "stored-public-source",
+      "resourceId": "R05",
+      "sourceVersionId": "6c868b56-d0f7-45f5-8863-50b6de627ec3",
+      "targetBlockId": "acf4804f-1446-4303-b3c0-1853b04a187f",
+      "targetOrder": 53,
+      "targetTextSha256": "af544302bd38aad62f1a9bd0cfec33c62b1f258a185b14b00f9ffd3b2b29219d",
+      "words": 36,
+      "blockCount": 6,
+      "terms": 2,
+      "publicSourceUrl": "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/background/valintro.htm",
+      "sourceGroup": "public-R05"
+    },
+    {
+      "id": "IP1-F04",
+      "domain": "finance",
+      "provenance": "stored-public-source",
+      "resourceId": "R05",
+      "sourceVersionId": "6c868b56-d0f7-45f5-8863-50b6de627ec3",
+      "targetBlockId": "5383ae7f-eb6c-4b41-9307-55571afd4bc5",
+      "targetOrder": 57,
+      "targetTextSha256": "59ea2bf2171cebc9b6ad414ce5341820a7b92607bbd5c5295b8bc26c68ed9310",
+      "words": 150,
+      "blockCount": 5,
+      "terms": 3,
+      "publicSourceUrl": "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/background/valintro.htm",
+      "sourceGroup": "public-R05"
+    },
+    {
+      "id": "IP1-F05",
+      "domain": "finance",
+      "provenance": "assistant-authored-structured-fixture",
+      "resourceId": "fixture-ip1-f05",
+      "sourceVersionId": "fixture-ip1-f05-v1",
+      "targetBlockId": "fixture-ip1-f05-t",
+      "targetOrder": 2,
+      "targetTextSha256": "8c24011f5151f36d969fd416fe7167cf0a2625ad7476589fbb37f7ed7e1c081b",
+      "words": 56,
+      "blockCount": 4,
+      "terms": 3,
+      "publicSourceUrl": null,
+      "sourceGroup": "IP1-F-RELATIVE"
+    },
+    {
+      "id": "IP1-F06",
+      "domain": "finance",
+      "provenance": "assistant-authored-structured-fixture",
+      "resourceId": "fixture-ip1-f06",
+      "sourceVersionId": "fixture-ip1-f06-v1",
+      "targetBlockId": "fixture-ip1-f06-t",
+      "targetOrder": 2,
+      "targetTextSha256": "d1b6f2fbe73c95e6e23c74705951ffd7ac908c35bffc5cea4ddb0a2c44f9ee19",
+      "words": 58,
+      "blockCount": 4,
+      "terms": 3,
+      "publicSourceUrl": null,
+      "sourceGroup": "IP1-F-RELATIVE"
+    },
+    {
+      "id": "IP1-F07",
+      "domain": "finance",
+      "provenance": "assistant-authored-structured-fixture",
+      "resourceId": "fixture-ip1-f07",
+      "sourceVersionId": "fixture-ip1-f07-v1",
+      "targetBlockId": "fixture-ip1-f07-t",
+      "targetOrder": 2,
+      "targetTextSha256": "4591e9eea1bd3d17c06e96f8a246097a0209a94d1eddb301335f26546f551d68",
+      "words": 56,
+      "blockCount": 4,
+      "terms": 3,
+      "publicSourceUrl": null,
+      "sourceGroup": "IP1-F-TIMING"
+    },
+    {
+      "id": "IP1-F08",
+      "domain": "finance",
+      "provenance": "assistant-authored-structured-fixture",
+      "resourceId": "fixture-ip1-f08",
+      "sourceVersionId": "fixture-ip1-f08-v1",
+      "targetBlockId": "fixture-ip1-f08-t",
+      "targetOrder": 2,
+      "targetTextSha256": "66717db485d389f777b6240e0825254a15ca09b88608b2f18f20d4978c84f135",
+      "words": 56,
+      "blockCount": 4,
+      "terms": 3,
+      "publicSourceUrl": null,
+      "sourceGroup": "IP1-F-TIMING"
+    },
+    {
+      "id": "IP1-G01",
+      "domain": "general",
+      "provenance": "assistant-authored-structured-fixture",
+      "resourceId": "IP1-general-document-01",
+      "sourceVersionId": "IP1-general-document-01-A",
+      "targetBlockId": "IP1-G01-B03",
+      "targetOrder": 2,
+      "targetTextSha256": "2e5c81bf79cc69b19605a5cf12e4b0d48c0e880c2d68dd4f241a8b8906a2671f",
+      "words": 60,
+      "blockCount": 4,
+      "terms": 2,
+      "publicSourceUrl": null,
+      "sourceGroup": "IP1-GPAIR-01"
+    },
+    {
+      "id": "IP1-G02",
+      "domain": "general",
+      "provenance": "assistant-authored-structured-fixture",
+      "resourceId": "IP1-general-document-01",
+      "sourceVersionId": "IP1-general-document-01-B",
+      "targetBlockId": "IP1-G02-B03",
+      "targetOrder": 2,
+      "targetTextSha256": "ae465d681147b1236421ed1bb0bfd285150244eb8606d1be4ecfb5a041ab1ff0",
+      "words": 60,
+      "blockCount": 4,
+      "terms": 2,
+      "publicSourceUrl": null,
+      "sourceGroup": "IP1-GPAIR-01"
+    },
+    {
+      "id": "IP1-G03",
+      "domain": "general",
+      "provenance": "assistant-authored-structured-fixture",
+      "resourceId": "IP1-general-document-02",
+      "sourceVersionId": "IP1-general-document-02-A",
+      "targetBlockId": "IP1-G03-B03",
+      "targetOrder": 2,
+      "targetTextSha256": "b0290c951448dfab3f7d31911c5ab2d958edf4e10ceb9c9e651e949fac690397",
+      "words": 62,
+      "blockCount": 4,
+      "terms": 2,
+      "publicSourceUrl": null,
+      "sourceGroup": "IP1-GPAIR-02"
+    },
+    {
+      "id": "IP1-G04",
+      "domain": "general",
+      "provenance": "assistant-authored-structured-fixture",
+      "resourceId": "IP1-general-document-02",
+      "sourceVersionId": "IP1-general-document-02-B",
+      "targetBlockId": "IP1-G04-B03",
+      "targetOrder": 2,
+      "targetTextSha256": "3a8a91644d18563b1c77e7044b15697c34e77e4aa06c74bd4a192becfd39b4b1",
+      "words": 62,
+      "blockCount": 4,
+      "terms": 2,
+      "publicSourceUrl": null,
+      "sourceGroup": "IP1-GPAIR-02"
+    },
+    {
+      "id": "IP1-G05",
+      "domain": "general",
+      "provenance": "assistant-authored-structured-fixture",
+      "resourceId": "IP1-general-document-03",
+      "sourceVersionId": "IP1-general-document-03-A",
+      "targetBlockId": "IP1-G05-B03",
+      "targetOrder": 2,
+      "targetTextSha256": "d32a5a20a1232ac399fcef81c419107f332ff697b965b8dfbed36d28f7daaa90",
+      "words": 63,
+      "blockCount": 4,
+      "terms": 2,
+      "publicSourceUrl": null,
+      "sourceGroup": "IP1-GPAIR-03"
+    },
+    {
+      "id": "IP1-G06",
+      "domain": "general",
+      "provenance": "assistant-authored-structured-fixture",
+      "resourceId": "IP1-general-document-03",
+      "sourceVersionId": "IP1-general-document-03-B",
+      "targetBlockId": "IP1-G06-B03",
+      "targetOrder": 2,
+      "targetTextSha256": "cf7a7de26923db9c7e6bdd56d601435a8eeee8bec15d75b895c845fd2bebafcb",
+      "words": 63,
+      "blockCount": 4,
+      "terms": 2,
+      "publicSourceUrl": null,
+      "sourceGroup": "IP1-GPAIR-03"
+    },
+    {
+      "id": "IP1-G07",
+      "domain": "general",
+      "provenance": "assistant-authored-structured-fixture",
+      "resourceId": "IP1-general-document-04",
+      "sourceVersionId": "IP1-general-document-04-A",
+      "targetBlockId": "IP1-G07-B03",
+      "targetOrder": 2,
+      "targetTextSha256": "d83ac319fe3b0e8f41355299e2d83493fa14f5b7e923eeb67cd8defdf24acf0a",
+      "words": 62,
+      "blockCount": 4,
+      "terms": 2,
+      "publicSourceUrl": null,
+      "sourceGroup": "IP1-GPAIR-04"
+    },
+    {
+      "id": "IP1-G08",
+      "domain": "general",
+      "provenance": "assistant-authored-structured-fixture",
+      "resourceId": "IP1-general-document-04",
+      "sourceVersionId": "IP1-general-document-04-B",
+      "targetBlockId": "IP1-G08-B03",
+      "targetOrder": 2,
+      "targetTextSha256": "9900f5dfb9516346d1a342fda5a70b425732d878d96f15b675d8e448988aceae",
+      "words": 64,
+      "blockCount": 4,
+      "terms": 2,
+      "publicSourceUrl": null,
+      "sourceGroup": "IP1-GPAIR-04"
+    }
+  ],
+  "minimalPairGroups": {
+    "IP1-F-RELATIVE": 2,
+    "IP1-F-TIMING": 2,
+    "IP1-GPAIR-01": 2,
+    "IP1-GPAIR-02": 2,
+    "IP1-GPAIR-03": 2,
+    "IP1-GPAIR-04": 2
+  },
+  "dictionary": {
+    "entries": 8,
+    "senses": 24,
+    "sources": 11
+  },
+  "developmentGenerationPlan": {
+    "configurations": [
+      "C0",
+      "C1",
+      "C2",
+      "C3"
+    ],
+    "outputsPerConfiguration": 16,
+    "maximumOutputs": 64,
+    "actualOutputs": 0
+  },
+  "independentPlan": {
+    "financeUnits": 60,
+    "generalUnits": 20,
+    "totalUnits": 80,
+    "candidatePlusC0MaximumOutputs": 160,
+    "contentStatus": "not_created_not_exposed",
+    "selectionPolicy": "CONTRACT.md section7",
+    "termDenominator": "to_freeze_after_source_selection_before_any_output"
+  },
+  "leakageAudit": {
+    "historicalFiles": [
+      {
+        "path": "content/training/train.jsonl",
+        "bytes": 75885,
+        "sha256": "57a33cb6cb691b0c31fa6ab7a45e4dc8b52298bd7c77a5ded4ac744ad7e03cfc"
+      },
+      {
+        "path": "content/training/dev.jsonl",
+        "bytes": 16183,
+        "sha256": "8c94b2a249b90cda542cc206f9605aee9779b301aa789f308dd11722c877fe36"
+      },
+      {
+        "path": "content/training/evaluation.jsonl",
+        "bytes": 26526,
+        "sha256": "85d82f670f077e74ebc817583b555f5b4aae07046282170190e35a8468cbbd23"
+      },
+      {
+        "path": ".training/datasets/finance-v4/train.jsonl",
+        "bytes": 536691,
+        "sha256": "4cb6a18b165af96e746b7e000404e0cd7aa9ec9dd97872dd5911863475c0fbd7"
+      },
+      {
+        "path": ".training/datasets/finance-v4/dev.jsonl",
+        "bytes": 83163,
+        "sha256": "16ecde5ad5115d7d5dca67fd7d1f9451e596987537b54b10d2bc577e2451fb36"
+      },
+      {
+        "path": ".training/datasets/finance-v4/test.jsonl",
+        "bytes": 71472,
+        "sha256": "b0ed0de7d3a56d422a113d8cc0317f5d52e04877ebb2742309f3f45211e162ed"
+      },
+      {
+        "path": ".training/datasets/finance-v5/train.jsonl",
+        "bytes": 1195105,
+        "sha256": "0b1395d3050a09a1951b1ddc48f2be47f7732a91789e8c1beb87869ec0a0a7f3"
+      },
+      {
+        "path": ".training/datasets/finance-v5/dev.jsonl",
+        "bytes": 125873,
+        "sha256": "6f42a31d85c7a5eaf03dd65bbeb2d169318cfc39acce4dae8d20b6e523eb2398"
+      },
+      {
+        "path": ".training/datasets/finance-v5/test.jsonl",
+        "bytes": 148240,
+        "sha256": "5c94c92530f31eb240d57634d54e4006a8d3918ce2b8edff3daec7e3a41878a1"
+      },
+      {
+        "path": "content/model-comparison/finance-probe-20260909.jsonl",
+        "bytes": 16527,
+        "sha256": "7ccafce31068b98f5f4bcc32ead765da74e5947fbc730c39cc4e6bb19e35a76d"
+      },
+      {
+        "path": "content/model-comparison/linguistic-dev-20260910.jsonl",
+        "bytes": 45859,
+        "sha256": "b8a2b91802e36d96654631a9965566f774e050ea4139ca7270d9f84d2a916848"
+      },
+      {
+        "path": "content/model-comparison/general-context-dev-20260911.jsonl",
+        "bytes": 21198,
+        "sha256": "4d63cbbd7299835849cdf750813e7c18a051ae98149a8ec51b73d5e8057cdfd4"
+      },
+      {
+        "path": "content/model-comparison/real-reading-check-20260910/sources.jsonl",
+        "bytes": 11157,
+        "sha256": "becd55204f1533adf68c0512638f17db676d4848a175367c841ed71fca34f8d0"
+      },
+      {
+        "path": ".training/comparisons/finance-quality-20260910/dataset.jsonl",
+        "bytes": 50427,
+        "sha256": "73fb2b2c4291090e49205aeff34cecfa24132d91c19522834fe779139a457737"
+      }
+    ],
+    "historicalSourceOrContextRows": 2345,
+    "consumedTestOverlap": 0,
+    "historicalDevelopmentMatches": [
+      {
+        "unitId": "IP1-F01",
+        "blockId": "adc2ffb4-da90-456b-9646-2f93b86c8adc",
+        "isTarget": true,
+        "historicalFile": ".training/datasets/finance-v4/train.jsonl",
+        "reason": "exact-or-number-template",
+        "historicalId": "V4-R01-033-00"
+      },
+      {
+        "unitId": "IP1-F01",
+        "blockId": "adc2ffb4-da90-456b-9646-2f93b86c8adc",
+        "isTarget": true,
+        "historicalFile": ".training/datasets/finance-v5/train.jsonl",
+        "reason": "exact-or-number-template",
+        "historicalId": "V4-R01-033-00"
+      },
+      {
+        "unitId": "IP1-F02",
+        "blockId": "d9585e10-5f3f-4ff4-ad7a-c1c6448de01f",
+        "isTarget": true,
+        "historicalFile": ".training/datasets/finance-v4/train.jsonl",
+        "reason": "contained-source",
+        "historicalId": "V4-R01-038-00"
+      },
+      {
+        "unitId": "IP1-F02",
+        "blockId": "d9585e10-5f3f-4ff4-ad7a-c1c6448de01f",
+        "isTarget": true,
+        "historicalFile": ".training/datasets/finance-v4/train.jsonl",
+        "reason": "contained-source",
+        "historicalId": "V4-R01-038-01"
+      },
+      {
+        "unitId": "IP1-F02",
+        "blockId": "d9585e10-5f3f-4ff4-ad7a-c1c6448de01f",
+        "isTarget": true,
+        "historicalFile": ".training/datasets/finance-v5/train.jsonl",
+        "reason": "contained-source",
+        "historicalId": "V4-R01-038-00"
+      },
+      {
+        "unitId": "IP1-F02",
+        "blockId": "d9585e10-5f3f-4ff4-ad7a-c1c6448de01f",
+        "isTarget": true,
+        "historicalFile": ".training/datasets/finance-v5/train.jsonl",
+        "reason": "contained-source",
+        "historicalId": "V4-R01-038-01"
+      },
+      {
+        "unitId": "IP1-F02",
+        "blockId": "992d9c32-8c0b-4b69-bd05-c54f1987d198",
+        "isTarget": false,
+        "historicalFile": ".training/datasets/finance-v4/train.jsonl",
+        "reason": "exact-or-number-template",
+        "historicalId": "V4-R01-039-00"
+      },
+      {
+        "unitId": "IP1-F02",
+        "blockId": "992d9c32-8c0b-4b69-bd05-c54f1987d198",
+        "isTarget": false,
+        "historicalFile": ".training/datasets/finance-v5/train.jsonl",
+        "reason": "exact-or-number-template",
+        "historicalId": "V4-R01-039-00"
+      },
+      {
+        "unitId": "IP1-F03",
+        "blockId": "31dbe98e-c7a5-4b18-8936-20eb396c98d9",
+        "isTarget": false,
+        "historicalFile": ".training/datasets/finance-v4/train.jsonl",
+        "reason": "contained-source",
+        "historicalId": "V4-R05-052-00"
+      },
+      {
+        "unitId": "IP1-F03",
+        "blockId": "31dbe98e-c7a5-4b18-8936-20eb396c98d9",
+        "isTarget": false,
+        "historicalFile": ".training/datasets/finance-v4/train.jsonl",
+        "reason": "contained-source",
+        "historicalId": "V4-R05-052-01"
+      },
+      {
+        "unitId": "IP1-F03",
+        "blockId": "31dbe98e-c7a5-4b18-8936-20eb396c98d9",
+        "isTarget": false,
+        "historicalFile": ".training/datasets/finance-v4/train.jsonl",
+        "reason": "contained-source",
+        "historicalId": "V4-R05-052-02"
+      },
+      {
+        "unitId": "IP1-F03",
+        "blockId": "31dbe98e-c7a5-4b18-8936-20eb396c98d9",
+        "isTarget": false,
+        "historicalFile": ".training/datasets/finance-v4/train.jsonl",
+        "reason": "contained-source",
+        "historicalId": "V4-R05-052-03"
+      },
+      {
+        "unitId": "IP1-F03",
+        "blockId": "31dbe98e-c7a5-4b18-8936-20eb396c98d9",
+        "isTarget": false,
+        "historicalFile": ".training/datasets/finance-v5/train.jsonl",
+        "reason": "contained-source",
+        "historicalId": "V4-R05-052-00"
+      },
+      {
+        "unitId": "IP1-F03",
+        "blockId": "31dbe98e-c7a5-4b18-8936-20eb396c98d9",
+        "isTarget": false,
+        "historicalFile": ".training/datasets/finance-v5/train.jsonl",
+        "reason": "contained-source",
+        "historicalId": "V4-R05-052-01"
+      },
+      {
+        "unitId": "IP1-F03",
+        "blockId": "31dbe98e-c7a5-4b18-8936-20eb396c98d9",
+        "isTarget": false,
+        "historicalFile": ".training/datasets/finance-v5/train.jsonl",
+        "reason": "contained-source",
+        "historicalId": "V4-R05-052-02"
+      },
+      {
+        "unitId": "IP1-F03",
+        "blockId": "31dbe98e-c7a5-4b18-8936-20eb396c98d9",
+        "isTarget": false,
+        "historicalFile": ".training/datasets/finance-v5/train.jsonl",
+        "reason": "contained-source",
+        "historicalId": "V4-R05-052-03"
+      },
+      {
+        "unitId": "IP1-F03",
+        "blockId": "acf4804f-1446-4303-b3c0-1853b04a187f",
+        "isTarget": true,
+        "historicalFile": ".training/datasets/finance-v4/train.jsonl",
+        "reason": "exact-or-number-template",
+        "historicalId": "V4-R05-053-00"
+      },
+      {
+        "unitId": "IP1-F03",
+        "blockId": "acf4804f-1446-4303-b3c0-1853b04a187f",
+        "isTarget": true,
+        "historicalFile": ".training/datasets/finance-v5/train.jsonl",
+        "reason": "exact-or-number-template",
+        "historicalId": "V4-R05-053-00"
+      },
+      {
+        "unitId": "IP1-F04",
+        "blockId": "5383ae7f-eb6c-4b41-9307-55571afd4bc5",
+        "isTarget": true,
+        "historicalFile": ".training/datasets/finance-v4/train.jsonl",
+        "reason": "contained-source",
+        "historicalId": "V4-R05-057-00"
+      },
+      {
+        "unitId": "IP1-F04",
+        "blockId": "5383ae7f-eb6c-4b41-9307-55571afd4bc5",
+        "isTarget": true,
+        "historicalFile": ".training/datasets/finance-v4/train.jsonl",
+        "reason": "contained-source",
+        "historicalId": "V4-R05-057-01"
+      },
+      {
+        "unitId": "IP1-F04",
+        "blockId": "5383ae7f-eb6c-4b41-9307-55571afd4bc5",
+        "isTarget": true,
+        "historicalFile": ".training/datasets/finance-v5/train.jsonl",
+        "reason": "contained-source",
+        "historicalId": "V4-R05-057-00"
+      },
+      {
+        "unitId": "IP1-F04",
+        "blockId": "5383ae7f-eb6c-4b41-9307-55571afd4bc5",
+        "isTarget": true,
+        "historicalFile": ".training/datasets/finance-v5/train.jsonl",
+        "reason": "contained-source",
+        "historicalId": "V4-R05-057-01"
+      }
+    ],
+    "ungroupedInternalDuplicates": 0,
+    "policy": "numeric-masked exact + containment (minimum35 chars) + v5 near-template thresholds; full target and retained context blocks; machine-only consumed-test source reads, no answers/output to model",
+    "limitation": "Source fingerprint audit cannot establish semantic novelty. R01/R05 and all known error families remain exposed development groups; independent holdout excludes whole groups."
+  },
+  "registeredIdentity": {
+    "manifestSha256": "cb3031d87372fbb1b0c3dcaf2071064bb59a8a21bd96480ef2d5a66752ae52bd",
+    "identity": "hymt:58b3ad55dd6f6fa08c695cddc34fb5f8f708a844f78ae10508071914b0ed67c0:cb3031d87372fbb1b0c3dcaf2071064bb59a8a21bd96480ef2d5a66752ae52bd",
+    "registrationId": "hymt-contextual-q26-20260910-nativejob",
+    "model": "tencent/Hy-MT2-7B-GGUF",
+    "profile": "contextual",
+    "runtimeVersion": "hymt-local-v1:7a54164a4bded0f10fd538be4b47f9f310a53da3849dbcab5a07ae5607ea7953",
+    "execution": {
+      "contextPolicyVersion": "existing-title-neighbors-v1",
+      "contextSize": 8192,
+      "cpuOnly": true,
+      "jinjaVersion": "3.1.6",
+      "pythonVersion": "3.11.9",
+      "revision": "ab8472660ac61fac25f1af43fac2599d52a8a775",
+      "runtimeOverrides": {
+        "tokenizer.ggml.add_bos_token": "bool:false",
+        "tokenizer.ggml.add_eos_token": "bool:false",
+        "tokenizer.ggml.eos_token_id": "int:127960",
+        "tokenizer.ggml.eot_token_id": "int:127967"
+      },
+      "sampling": {
+        "cache_prompt": false,
+        "dry_multiplier": 0.0,
+        "dynatemp_range": 0.0,
+        "frequency_penalty": 0.0,
+        "id_slot": 0,
+        "ignore_eos": false,
+        "min_p": 0.0,
+        "mirostat": 0,
+        "n_keep": 0,
+        "n_predict": 4096,
+        "presence_penalty": 0.0,
+        "repeat_last_n": 8192,
+        "repeat_penalty": 1.05,
+        "return_tokens": true,
+        "samplers": [
+          "penalties",
+          "temperature",
+          "top_k",
+          "top_p"
+        ],
+        "seed": 42,
+        "stop": [
+          "<|eos|>",
+          "<|extra_5|>"
+        ],
+        "stream": false,
+        "temperature": 0.7,
+        "top_k": 20,
+        "top_n_sigma": -1.0,
+        "top_p": 0.6,
+        "typical_p": 1.0,
+        "xtc_probability": 0.0
+      },
+      "templateSha256": "788ac16c5d7bfefc28655928ad524c8f378a44cb24d24fb125d6a5859b167677",
+      "threads": 4
+    }
+  },
+  "artifacts": [
+    {
+      "path": ".gitattributes",
+      "bytes": 237,
+      "sha256": "1e155f2f04b6be8d994cea2489c4d7d86ea3cc51e5933da8e21ce04c31bd9ecb"
+    },
+    {
+      "path": ".training/comparisons/finance-quality-20260910/dataset.jsonl",
+      "bytes": 50427,
+      "sha256": "73fb2b2c4291090e49205aeff34cecfa24132d91c19522834fe779139a457737"
+    },
+    {
+      "path": ".training/comparisons/input-preparation-v1/source-bundles/finance-public-evaluation.json",
+      "bytes": 12580,
+      "sha256": "2b63f0185743c4a264f3da598992f9c796487df757a67b7155ffaa5f7621d0e2"
+    },
+    {
+      "path": ".training/comparisons/input-preparation-v1/source-bundles/finance-public-inputs.json",
+      "bytes": 17262,
+      "sha256": "bbd0d7b4b6c39e46d024b09a313b32707a8654fb5d63d1ca5793941ecccbfa5c"
+    },
+    {
+      "path": ".training/datasets/finance-v4/dev.jsonl",
+      "bytes": 83163,
+      "sha256": "16ecde5ad5115d7d5dca67fd7d1f9451e596987537b54b10d2bc577e2451fb36"
+    },
+    {
+      "path": ".training/datasets/finance-v4/test.jsonl",
+      "bytes": 71472,
+      "sha256": "b0ed0de7d3a56d422a113d8cc0317f5d52e04877ebb2742309f3f45211e162ed"
+    },
+    {
+      "path": ".training/datasets/finance-v4/train.jsonl",
+      "bytes": 536691,
+      "sha256": "4cb6a18b165af96e746b7e000404e0cd7aa9ec9dd97872dd5911863475c0fbd7"
+    },
+    {
+      "path": ".training/datasets/finance-v5/dev.jsonl",
+      "bytes": 125873,
+      "sha256": "6f42a31d85c7a5eaf03dd65bbeb2d169318cfc39acce4dae8d20b6e523eb2398"
+    },
+    {
+      "path": ".training/datasets/finance-v5/test.jsonl",
+      "bytes": 148240,
+      "sha256": "5c94c92530f31eb240d57634d54e4006a8d3918ce2b8edff3daec7e3a41878a1"
+    },
+    {
+      "path": ".training/datasets/finance-v5/train.jsonl",
+      "bytes": 1195105,
+      "sha256": "0b1395d3050a09a1951b1ddc48f2be47f7732a91789e8c1beb87869ec0a0a7f3"
+    },
+    {
+      "path": ".training/verifications/input-preparation-v1-public-snapshot-20260913.json",
+      "bytes": 2050,
+      "sha256": "1a1b6b0fe7b54bb20484b459b0bb5ff68912e057ceab6102ce7ff96ced0ecab6"
+    },
+    {
+      "path": "content/model-comparison/finance-probe-20260909.jsonl",
+      "bytes": 16527,
+      "sha256": "7ccafce31068b98f5f4bcc32ead765da74e5947fbc730c39cc4e6bb19e35a76d"
+    },
+    {
+      "path": "content/model-comparison/general-context-dev-20260911.jsonl",
+      "bytes": 21198,
+      "sha256": "4d63cbbd7299835849cdf750813e7c18a051ae98149a8ec51b73d5e8057cdfd4"
+    },
+    {
+      "path": "content/model-comparison/input-preparation-v1/CONTRACT.md",
+      "bytes": 21597,
+      "sha256": "a69b54946174aa4059f9e01c94f9bb22ceb8b8b12e800c8ec84d76d549a0d587"
+    },
+    {
+      "path": "content/model-comparison/input-preparation-v1/CURRENT_INPUT_AUDIT.md",
+      "bytes": 18331,
+      "sha256": "44516f057a53f67e4a8e40a25abf8c233f703bf0d4157fb84ff895ce79990df0"
+    },
+    {
+      "path": "content/model-comparison/input-preparation-v1/DICTIONARY_SOURCES.md",
+      "bytes": 10504,
+      "sha256": "28ea1348a7e6e78730298e8a9d6493785e1fca0a6b2435d1a76a8cabb1b0a579"
+    },
+    {
+      "path": "content/model-comparison/input-preparation-v1/README.md",
+      "bytes": 5327,
+      "sha256": "03d7cd8dee618aeb8d22ecf6ce0f61d3bd26304e4631b4e7a5bbef011fa93169"
+    },
+    {
+      "path": "content/model-comparison/input-preparation-v1/audit-identity.json",
+      "bytes": 54325,
+      "sha256": "b1355e1cc9554c953fff8aeba2071b73fdffcacd3fbbb14fc0fdc5a8dbd92739"
+    },
+    {
+      "path": "content/model-comparison/input-preparation-v1/author-review.json",
+      "bytes": 7513,
+      "sha256": "ffcaf276062b3580beef7a34584a39f43ff954125faa77115b87de93f174bfa6"
+    },
+    {
+      "path": "content/model-comparison/input-preparation-v1/evaluation/finance-synthetic-evaluation.json",
+      "bytes": 12603,
+      "sha256": "953257e4d357da73b1a9dc65bc3ecd2a74590e3dd612bc9a6ef7c303eb5cb5d0"
+    },
+    {
+      "path": "content/model-comparison/input-preparation-v1/evaluation/general-evaluation.json",
+      "bytes": 47883,
+      "sha256": "7786bde9fc57d00fa452608e91b9b71b0bdd346e3c2ea19811be527f36a46873"
+    },
+    {
+      "path": "content/model-comparison/input-preparation-v1/finance-synthetic-inputs.json",
+      "bytes": 10869,
+      "sha256": "550cbee9a97072022ed10e5539e7083643f1bd2f848f402b4499cb652a447789"
+    },
+    {
+      "path": "content/model-comparison/input-preparation-v1/general-inputs.json",
+      "bytes": 24694,
+      "sha256": "c72332b238626d77dbb43bb49eaf3fbdfb1e2bc48e96c0cdc608c29de5aee7a7"
+    },
+    {
+      "path": "content/model-comparison/input-preparation-v1/sense-dictionary.json",
+      "bytes": 51065,
+      "sha256": "ea645adff17ffb15089251389b1d741ae75134afbf9fc3de680dae778db62b9c"
+    },
+    {
+      "path": "content/model-comparison/linguistic-dev-20260910.jsonl",
+      "bytes": 45859,
+      "sha256": "b8a2b91802e36d96654631a9965566f774e050ea4139ca7270d9f84d2a916848"
+    },
+    {
+      "path": "content/model-comparison/real-reading-check-20260910/sources.jsonl",
+      "bytes": 11157,
+      "sha256": "becd55204f1533adf68c0512638f17db676d4848a175367c841ed71fca34f8d0"
+    },
+    {
+      "path": "content/training/dev.jsonl",
+      "bytes": 16183,
+      "sha256": "8c94b2a249b90cda542cc206f9605aee9779b301aa789f308dd11722c877fe36"
+    },
+    {
+      "path": "content/training/evaluation.jsonl",
+      "bytes": 26526,
+      "sha256": "85d82f670f077e74ebc817583b555f5b4aae07046282170190e35a8468cbbd23"
+    },
+    {
+      "path": "content/training/train.jsonl",
+      "bytes": 75885,
+      "sha256": "57a33cb6cb691b0c31fa6ab7a45e4dc8b52298bd7c77a5ded4ac744ad7e03cfc"
+    },
+    {
+      "path": "scripts/model-comparison/verify_input_preparation_v1.py",
+      "bytes": 15563,
+      "sha256": "0e89dba69fe9efb6e0338ca42e40c9ff3cec9caff786b420d7e561239a3f59da"
+    }
+  ],
+  "preservation": "No post-freeze overwrite. Create a new policy/data version for corrections; original public input/evaluation and source receipt are local ignored artifacts. Corpus does not authorize inference."
+}

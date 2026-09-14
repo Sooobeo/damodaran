@@ -1,0 +1,52 @@
+{
+  "createdAt": "2026-09-13T09:18:10.017194+00:00",
+  "criteriaAuthority": "content/model-comparison/input-preparation-v1/CONTRACT.md section 5",
+  "files": [
+    {
+      "path": "scripts/model-comparison/input_execution_v1/evaluation.py",
+      "sha256": "cd27996add9dfd39d6418ee455c5e3a4fb419b6f03fc9e83404e94c740c55aba"
+    },
+    {
+      "path": "scripts/model-comparison/input_execution_v1/test_evaluation.py",
+      "sha256": "d5b930e5d7938e57cad7da6d4a449bb1d7d0023f72fd3d961067bed2538f277b"
+    },
+    {
+      "path": "scripts/model-comparison/input_execution_v1/EVALUATION.md",
+      "sha256": "34a9ad611192a34f8dcff8f3f491d26de155e29c0ab9df2abac8089e116aec95"
+    },
+    {
+      "path": "scripts/model-comparison/input_execution_v1/provisional_reviews.py",
+      "sha256": "761344eb98c0793d7ca356a37e8ce476a7cfd290d5f426a080c49fc450b024d2"
+    },
+    {
+      "path": "scripts/model-comparison/input_execution_v1/test_provisional_reviews.py",
+      "sha256": "ef818769948c2815cc15387db6bd0ef68a8eec22252e8c70897f1956d62ff608"
+    },
+    {
+      "path": "scripts/model-comparison/input_execution_v1/review_io.py",
+      "sha256": "1fc845a5345d3f7338730907b0d122fbdfe660564e4a16301bc5adbe60b14a5b"
+    },
+    {
+      "path": "scripts/model-comparison/input_execution_v1/test_review_io.py",
+      "sha256": "fd9ed5982c22b6adb92f63c691b9be789d13fa85ab89d586abfec4d07fb2ebba"
+    },
+    {
+      "path": "scripts/model-comparison/input_execution_v1/relations.py",
+      "sha256": "158393490d82eff5b7be207b9bf02f40726ec21a3eef742e283cf549e8c9f9c1"
+    },
+    {
+      "path": "scripts/model-comparison/input_execution_v1/test_relations.py",
+      "sha256": "9d637f877ed0d65c372aa256e20f9489b1c9edb63cc4787ad37c3c83d3ab9a5d"
+    },
+    {
+      "path": ".training/quality-evaluation/input-preparation-v1/s5-source-drafts-20260913/GUIDE.md",
+      "sha256": "b801e84065707d3590db578ebe7b7ad853620fee304898056e23da12a3880217"
+    }
+  ],
+  "humanReviewed": false,
+  "s1FreezeSha256": "b70304bbd8a3961096f6d07116d51196ece3c4416977f0c0899cf712b7ada4cf",
+  "s2ManifestSha256": "b007e567881c1a6dfa556c775eda65916aa49d76559dedc14420c0e127866653",
+  "s4PlanSha256": "479b3ec44cc7a7c20662507484589bf1dc2f02eee5bf964f57aac3830305a054",
+  "stage": "S4 running; provisional source review assigned; no aggregate scores or candidate selection",
+  "version": "input-execution-v1-evaluation-tool-freeze-v1"
+}
