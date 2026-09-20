@@ -1,8 +1,10 @@
 # 공통 입력 처리 S4~S6 실행
 
-**최신 S5 상태 — 질문9/64개 실제 저장, 남은55개 부분 복구 준비.** 배터리 v4는9개의 단일 호출과 소유 프로세스 종료를 마친 뒤 R010의 시작 메모리 검사에서 중단됐다. 배터리는72%였고, 첫 관측의 여유 메모리가9GiB보다30,420,992바이트 부족했다가 두 번째 관측에서 회복됐다. [부분 복구 v5](LOCAL_QUESTION_PARTIAL_RECOVERY_V5.md)는 원9개와 원래 failed 실행·claim을 보존하며 R010~R064만 새로 생성한다. 시작 메모리 기준을 유지하고 native 생성 전 최대300초 회복을 기다린다. 현재 복구 구현·검증을 준비 중이며, 전체64개 답변 동결·질문 채점·후보 선택·S6은 아직 미완료다. [실제 중단 감사](../../../.training/verifications/question-battery-partial-stop-audit-20260914.json)를 기준으로 이어간다.
+**최신 S5 결과 — 2026-09-20 전체64개 답변 동결·128개 질문 채점 완료.** 기존9개와 memory-v6의 새55개 답변을 각 실행 정체성 그대로 보존했으며, 질문은117개 정답·11개 오답이다. 고정된 평가 기준을 충족하는 적격 후보가 없어 기존 등록 구성을 유지하고 S6 독립 평가로 확대하지 않는다(`retain_registered_configuration`). 상세 지표·판정 근거·평가 한계는 [9월 20일 결과](RESULT_20260920.md), 실행 조건과 이력은 [재개 기록](RESUME_20260920.md)에 기록했다. 새 모델 등록이나 앱 교체를 뜻하지 않는다.
 
-> 최신 사용자 지시: 충전기 없이 배터리로 진행한다. [배터리 실행 v4](LOCAL_QUESTION_BATTERY_EXECUTION_V4.md)로 이어가며 알려진 잔량20% 초과와 기존 메모리/프로세스 보호를 적용한다. 17:10 KST 배터리80% 사전검사 후 v4 실제 질문 실행을 시작했다. 전체64개 완료·답변 동결·채점은 아직 미완료다. 아래 AC 전용 중단과 v3는 이전 이력이다.
+입력 처리·관계 관측128건의 원장 추가도 완료했다(836→964건). 기존 사건 바이트와 번역 검토146건은 보존했다.
+
+> 2026-09-14 당시 이력: 충전기 없이 배터리로 진행하라는 사용자 지시에 따라 [배터리 실행 v4](LOCAL_QUESTION_BATTERY_EXECUTION_V4.md)로 이어가며 알려진 잔량20% 초과와 기존 메모리/프로세스 보호를 적용했다. 17:10 KST 배터리80% 사전검사 후 v4 실제 질문 실행을 시작했다. 당시 전체64개 완료·답변 동결·채점은 미완료였다. 아래 AC 전용 중단과 v3도 이전 이력이며, 현재 결과는 위의 9월20일 결과를 따른다.
 
 
 사용자의 2026-09-13 지시에 따라 [인수인계 28절](../../../TRANSLATION_HANDOFF_20260911.md#28-공통-입력-처리와-의미-관계-검사-개선-실행-계획)의 S4부터 조건부 S6까지 진행한다. [S1 계약](../input-preparation-v1/CONTRACT.md)과 [S2/S3 결과](../input-preparation-v1-s2s3/README.md)는 보존한다.
@@ -22,9 +24,9 @@
 
 두 번째 명령은 실제 모델 호출이다. 이미 생성 요청을 보낸 run이 있으면 이 v1 생성기는 다시 실행하지 않는다. 기술 실패를 수정해 이어야 할 때는 원래 실패·미완료·완료 응답을 보존하는 별도 복구 계약과 새 코드/run 정체성을 먼저 작성해야 한다. 임의로 run 폴더를 지우거나 완료 출력을 재생성하지 않는다.
 
-## 전원 중단 후 복구 경로
+## 전원 중단 후 복구 경로 — 2026-09-14 당시 이력
 
-최초 실행이 실패했으므로 실제 후속 작업은 [복구 계약](RECOVERY_V1.md)의 새 [복구 생성기](../../../scripts/model-comparison/input_execution_v1/recovery_producer.py)를 사용한다. 원래38개는 raw response와 당시 실행 정체성을 그대로 보존한다. 2026-09-14 AC1·메모리·경합 사전검사를 다시 확인했으며, 실제 시작 직전에도 같은 검사를 반복한다.
+최초 실행이 실패하여 실제 후속 작업에는 [복구 계약](RECOVERY_V1.md)의 새 [복구 생성기](../../../scripts/model-comparison/input_execution_v1/recovery_producer.py)를 사용했다. 원래38개는 raw response와 당시 실행 정체성을 그대로 보존한다. 2026-09-14 AC1·메모리·경합 사전검사를 다시 확인했으며, 실제 시작 직전에도 같은 검사를 반복했다. 아래는 당시 계약과 명령을 보존한 것으로, 완료된 생성을 재실행하는 안내가 아니다.
 
 ```powershell
 .venv-training/Scripts/python.exe -B -X utf8 scripts/model-comparison/input_execution_v1/recovery_producer.py --run
@@ -34,7 +36,7 @@
 
 정식 packet 준비와 잠정 원문 검토의 바이트 대조는 [복구 평가 v2 안내](../../../scripts/model-comparison/input_execution_v1/RECOVERY_EVALUATION_V2.md)의 `recovery_evaluation_v2.py prepare/verify-promotion/verify-recovery-provisional`을 따른다. [복구 관계 진단 v2](../../../scripts/model-comparison/input_execution_v1/recovery_relations_v2.py)는 `--cohort`와 새 `--destination`을 받아 같은 S3 검사기를 실행한다. v2의13개 코드·검사·설명 파일은 [별도 동결](recovery-evaluation-freeze-v2.json)에 기록했다. 최초 단일 실행용 경로에 혼합 실행을 넣지 않는다.
 
-새 질문 에이전트 생성 한도로 인해 질문 평가에는 [로컬 독립 질문 절차 v1](LOCAL_QUESTION_REVIEW_PROTOCOL_V1.md)을 추가했다. 설치된 Qwen3.5-9B Q4_K_M을 packet마다 완전히 새 소유 native 프로세스로 실행하고 단 한 번 답변한 뒤 종료한다. 모든64개에 같은 모델·설정을 적용하고 실제 `cache_n=0`을 확인한다. 컨트롤러가 정식 packet에서 한국어 번역·질문만 내보내며, runner는 원문·정답·평가 bundle을 읽지 않는다. 이 방법을 실제 에이전트 spawn이나 사람 검수로 표시하지 않는다. 기존 `local_question_*_v1.py`와 spawn용 절차를 보존한다. 실제 설치 목록 교정은 [별도 inventory v2 경로](LOCAL_QUESTION_INVENTORY_CORRECTION_V2.md)로 동결했고 질문 export는 그대로다. 실제 질문 시작은 native/호출0회에서 중단됐으며 현재 AC 전원이 필요하다. [중단 기록](QUESTION_POWER_STOP_20260914.md)의 원래 claim을 보존하는 [복구 v3](LOCAL_QUESTION_ZERO_CALL_RECOVERY_V3.md)를 구현·검사·동결했다. 실제 생성에는 이 v3만 사용하며 기존 실행기를 다시 호출하지 않는다. 새 실제 preflight는 AC0으로 실패했고 새 run/claim과 native/질문 호출은0이다. 코드 검사 통과와 실제64개 질문 완료는 별도 상태다.
+새 질문 에이전트 생성 한도로 인해 질문 평가에는 [로컬 독립 질문 절차 v1](LOCAL_QUESTION_REVIEW_PROTOCOL_V1.md)을 추가했다. 설치된 Qwen3.5-9B Q4_K_M을 packet마다 완전히 새 소유 native 프로세스로 실행하고 단 한 번 답변한 뒤 종료한다. 모든64개에 같은 모델·설정을 적용하고 실제 `cache_n=0`을 확인한다. 컨트롤러가 정식 packet에서 한국어 번역·질문만 내보내며, runner는 원문·정답·평가 bundle을 읽지 않는다. 이 방법을 실제 에이전트 spawn이나 사람 검수로 표시하지 않는다. 기존 `local_question_*_v1.py`와 spawn용 절차를 보존한다. 실제 설치 목록 교정은 [별도 inventory v2 경로](LOCAL_QUESTION_INVENTORY_CORRECTION_V2.md)로 동결했고 질문 export는 그대로다. 당시 실제 질문 시작은 native/호출0회에서 중단됐으며 AC 전원이 필요한 상태였다. [중단 기록](QUESTION_POWER_STOP_20260914.md)의 원래 claim을 보존하는 [복구 v3](LOCAL_QUESTION_ZERO_CALL_RECOVERY_V3.md)를 구현·검사·동결했다. 당시 복구 계획은 기존 실행기를 다시 호출하지 않고 v3만 사용하는 것이었다. 새 실제 preflight는 AC0으로 실패했고 새 run/claim과 native/질문 호출은0이었다. 이후 v4·memory-v6로 완료한 이력은 [9월20일 결과](RESULT_20260920.md)에 기록한다. 코드 검사 통과와 실제64개 질문 완료는 별도 상태다.
 
 ## 평가 순서
 
@@ -48,9 +50,9 @@
 
 S6은 개발 개선과 일반 회귀 없음이 확인된 후보만 선택·동결한다. 적격 후보가 있으면 S1에 고정한 미노출80단위/C0+후보 최대160출력의 독립 평가를 진행한다. 적격 후보가 없으면 기존 등록 유지가 S6의 결론이다. 독립 평가와 모든 수용 기준을 통과한 경우에만 새 등록·격리 앱 HTML3문단/PDF1페이지 생성·저장·캐시 검증으로 진행한다.
 
-## 현재 기록
+## 2026-09-14 당시 실행 기록
 
 - 실제 실행: `.training/comparisons/input-preparation-v1/s4-generation/attempt-001/`.
-- 최초 실행에서 S2의64개 서버 template/token 대조 후38개를 저장하고39번째 요청에서 응답을 확보하지 못했다. AC 감시 중단으로 status=failed, 미완료26개이며 소유 native 종료·전원 요청 해제·입력 무결성을 확인했다. [복구 계약](RECOVERY_V1.md)과 [원래 실행 정체성](RECOVERY_PRIOR.json)을 보존하고 새 producer로26개만 이어간다. 9월14일 새 실행에서26개를 모두 저장하고 소유 종료·전원 요청 해제·최종 무결성을 확인했다. 복구 elapsed3,072.766초다. `s4-cohort-v2-20260914`의64개 이력 검증·정식 `s5-formal-v2-20260914` 준비·원문 검토64개 채택·관계 진단64개를 완료했다. [독립 질문 실행16파일](local-question-execution-freeze-v1.json)과 [설치 목록 교정9파일](local-question-inventory-correction-freeze-v2.json)을 고정했다. 실제 질문 시작은 PowerRequest 진입에서 실패하여 호출0회이며, 후속 AC0 관측과 [재개 조건](QUESTION_POWER_STOP_20260914.md)을 기록했다. 실제 질문/채점·후보 선택·S6은 미완료다.
+- 최초 실행에서 S2의64개 서버 template/token 대조 후38개를 저장하고39번째 요청에서 응답을 확보하지 못했다. AC 감시 중단으로 status=failed, 미완료26개이며 소유 native 종료·전원 요청 해제·입력 무결성을 확인했다. [복구 계약](RECOVERY_V1.md)과 [원래 실행 정체성](RECOVERY_PRIOR.json)을 보존하고 새 producer로26개만 이어갔다. 9월14일 새 실행에서26개를 모두 저장하고 소유 종료·전원 요청 해제·최종 무결성을 확인했다. 복구 elapsed3,072.766초다. `s4-cohort-v2-20260914`의64개 이력 검증·정식 `s5-formal-v2-20260914` 준비·원문 검토64개 채택·관계 진단64개를 완료했다. [독립 질문 실행16파일](local-question-execution-freeze-v1.json)과 [설치 목록 교정9파일](local-question-inventory-correction-freeze-v2.json)을 고정했다. 실제 질문 시작은 PowerRequest 진입에서 실패하여 호출0회였으며, 후속 AC0 관측과 [재개 조건](QUESTION_POWER_STOP_20260914.md)을 기록했다. 당시 실제 질문/채점·후보 선택·조건부 S6은 미완료였으며, 이후 완료 결과는 [9월20일 결과](RESULT_20260920.md)를 따른다.
 - S4 실행은 운영 DB·원문 버전·개인 기록·활성 등록을 변경하지 않는다. 선택형 API와 가중치 학습은 실행하지 않는다.
 - 이번 개발16단위의 새 사전 금융 힌트는0개다. C2/C3의 차이를 새 금융 뜻 선택의 품질 입증으로 해석하지 않는다.
