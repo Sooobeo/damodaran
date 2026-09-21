@@ -8,7 +8,7 @@
 
 초기 설치에서 설정을 생략한 번역 기본값은 `TRANSLATION_PROVIDER=argos`다. 무료 공개 도구 Argos Translate의 로컬 영어→한국어 모델 1.1을 사용하며, `openai`를 명시적으로 선택한 경우만 키·모델과 외부 API를 사용한다. 기존 DB·원문·메모·번역은 보존한다. 새 제공자의 설치·성능·실제 번역 검증 결과는 구현 상태 문서에서 별도로 확인한다.
 
-추가 승인된 실제 모델 미세조정은 8.4절의 별도 로컬 CLI 작업이다. 금융 용어 사후 보정이나 검수 번역 메모리로 대체하지 않으며, 학습·평가·앱 적용을 각각 구분한다. 이 PC는 별도 Q26 비교·격리 앱 검증 후 `hymt`를 명시 선택했으며 운영 HTML 3문단의 생성·저장·캐시와 최종 API의 실제 검증 완료를 확인했다. 운영 metadata 범위는 `html-only`이며 격리 PDF QA와 구분한다.
+추가 승인된 실제 모델 미세조정은 8.4절의 별도 로컬 CLI 작업이다. 금융 용어 사후 보정이나 검수 번역 메모리로 대체하지 않으며, 학습·평가·앱 적용을 각각 구분한다. 이 PC는 별도 Q26 비교·격리 앱 검증 후 `hymt`의 운영 HTML 3문단 생성·저장·캐시를 확인했다. 이후 CPU 긴 문단의 지연과 절전 복귀 실패 때문에 2026-09-20 웹 운영 제공자를 `argos`로 전환했으며, Hy-MT2 모델·등록·기존 번역은 선택형 제공자 이력으로 보존한다.
 
 ## 1. DB는 누가, 어떻게 관리하는가
 
@@ -413,7 +413,7 @@ Argos는 `content/translation-glossary.json`의 출처 있는 복합구·명시�
 
 ### 8.5 문맥을 받는 추가 로컬 제공자
 
-사용자의 무료 로컬 전체 품질 개선 요구에 따라 선택형 `TRANSLATION_PROVIDER=hymt` 연결을 구현했다. 완료된 v5의 학습·최종 시험 기준은 유지하고, 별도 Q26의 네 구성·24문단·96개 익명 도우미 대조 후 Hy-MT2 Q8의 `contextual` 구성을 선택·등록했다. 첫 앱 QA 시작 실패 뒤 원자적 Windows Job 생성으로 수정하고 실제 제품 엔진의 모델 시작·정상 종료를 확인해 `hymt-contextual-q26-20260910-nativejob`으로 재등록했다. v1 HTML 3문단·PDF 7블록의 실제 생성·저장·캐시와 자동 검사는 완료했다. PDF 도입 블록의 내용 추가를 보완한 v2도 새 PDF 4블록의 실제 생성·저장·캐시와 기존 HTML 3문단의 캐시 재사용을 확인했다. 추가 HTML 추론은 0회였다. 이후 실제 운영 빌드·백업·기존 환경설정 보존을 마치고 이 PC는 Hymt를 명시 선택해 웹·worker를 시작했다. 운영 HTML 3문단의 새 생성·저장·캐시와 최종 API의 `configured: true`·`liveVerified: true`를 확인했다. 운영 metadata의 `html-only` 범위를 격리 PDF QA와 구분한다. 설정 생략 시 초기 기본값 Argos는 유지한다. 등록·엔진 시작·실제 앱 검증을 구분하며 최초 실패를 포함한 근거는 [로컬 품질 비교 기록](content/model-comparison/QUALITY_LOCAL_REPORT.md)을 따른다.
+사용자의 무료 로컬 전체 품질 개선 요구에 따라 선택형 `TRANSLATION_PROVIDER=hymt` 연결을 구현했다. 완료된 v5의 학습·최종 시험 기준은 유지하고, 별도 Q26의 네 구성·24문단·96개 익명 도우미 대조 후 Hy-MT2 Q8의 `contextual` 구성을 선택·등록했다. 첫 앱 QA 시작 실패 뒤 원자적 Windows Job 생성으로 수정하고 실제 제품 엔진의 모델 시작·정상 종료를 확인해 `hymt-contextual-q26-20260910-nativejob`으로 재등록했다. v1 HTML 3문단·PDF 7블록의 실제 생성·저장·캐시와 자동 검사는 완료했다. PDF 도입 블록의 내용 추가를 보완한 v2도 새 PDF 4블록의 실제 생성·저장·캐시와 기존 HTML 3문단의 캐시 재사용을 확인했다. 추가 HTML 추론은 0회였다. 이후 실제 운영 빌드·백업·기존 환경설정 보존을 마치고 이 PC는 Hymt를 명시 선택해 웹·worker를 시작했다. 운영 HTML 3문단의 새 생성·저장·캐시와 당시 API의 `configured: true`·`liveVerified: true`를 확인했다. 운영 metadata의 `html-only` 범위를 격리 PDF QA와 구분한다. 2026-09-20에는 4,742자 단일 블록을 CPU에서 처리하던 중 긴 지연과 절전 복귀 뒤 timeout·종료 확인 실패가 이어져 웹 운영 제공자를 Argos로 전환했다. Hy-MT2의 모델·manifest·번역·검증 이력은 삭제하거나 덮어쓰지 않는다. 설정 생략 시 초기 기본값 Argos도 유지한다. 등록·엔진 시작·실제 앱 검증·현재 운영 선택을 구분하며 최초 실패를 포함한 근거는 [로컬 품질 비교 기록](content/model-comparison/QUALITY_LOCAL_REPORT.md)을 따른다.
 
 상세 파일·NDJSON 계약은 [로컬 제공자 등록 계약](scripts/local-hymt/DEPLOYMENT.md)에 고정한다. `.translation/hymt/manifest.json`의 모델·Windows 실행기·Python 코드·사전·평가 근거를 검증하고, 모델 SHA와 manifest 원본 SHA를 함께 전체 정체성으로 쓴다. 미등록·파일 불일치는 준비되지 않은 상태이며 자동 fallback하지 않는다. 웹 페이지가 worker를 생성하지 않고 기존 단일 worker가 Python bridge를 실행한다. Python이 전용 Windows Job에 들어간 뒤 native localhost 서버는 `CreateProcessW`의 `PROC_THREAD_ATTRIBUTE_JOB_LIST`로 생성 시 같은 Job에 원자적으로 배정한다. 암묵적 상속·생성 후 배정에 의존하지 않으며 실패 시 소유권 없는 생성으로 재시도하지 않는다. Job 핸들은 자식에 상속하지 않고 강제 종료 시 OS의 핸들 회수로 소유한 서버도 정리한다. 지원 범위는 Windows·CPython 3.11과 고정 native 서버이며 실제 번역 로그를 파일·콘솔에 남기지 않는다.
 
